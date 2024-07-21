@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Rutledge Store House
+    </title>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block filter %}
+        Метод контроля
+        {% for unit in unit_list %}
+            {{unit.method}}
+        {% endfor %}
+    {% endblock %}
+
+    {% block content %}
+        <table class="table table-striped table-sm align-middle">
+            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+                <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">Метод контроля</th>
+                    <th scope="col">Производитель</th>
+                    <th scope="col">Тип</th>
+                    <th scope="col">Название</th>
+                    <th scope="col" class="text-nowrap">Серийный номер</th>
+                    <th scope="col" class="text-break">Количество</th>
+                    <th scope="col" class="text-break">Месторасположение</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Примечание</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider" style="text-align: center">
+                {% for unit in unit_list %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{unit.method}}</td>
+                    <td>{{unit.manufacturer}}</td>
+                    <td>{{unit.type}}</td>
+                    <td><a href="{{unit.equipment_name}}">{{unit.equipment_name}}</a></td>
+                    <td>{{unit.equipment_serial_number}}</td>
+                    <td>{{unit.total}}</td>
+                    <td>{{unit.location}}</td>
+                    <td>{{unit.status}}</td>
+                    <td>{{unit.notes}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}
+</body>
+</html>
