@@ -19,7 +19,7 @@
     <!-- добавление статического СSS-файла -->
     {% load static %}
     <!-- Функции JavaScript -->
-    <script type="text/javascript" src={% static 'func.js' %}></script>
+    <script type="text/javascript" src="{% static 'func.js' %}"></script>
     <!-- стиль css из файла в папке со статическими файлами -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block head %}
@@ -45,42 +45,112 @@
 {{form|crispy}}
 
 <script>
-     function HotSearching() {
-         var i;
-         var input_method = document.getElementById("hot_searching_method");
-         var input_manufacture = document.getElementById("hot_searching_manufacture");
-         var input_name = document.getElementById("hot_searching_name");
-         var input_serial = document.getElementById("hot_searching_serial");
-         var input_location = document.getElementById("hot_searching_location");
-         var filter_method = input_method.value.toUpperCase();
-         var filter_manufacture = input_manufacture.value.toUpperCase();
-         var filter_name = input_name.value.toUpperCase();
-         var filter_serial = input_serial.value.toUpperCase();
-         var filter_location = input_location.value.toUpperCase();
-         var table = document.getElementById("myTable");
-         var tr = table.getElementsByTagName("tr");
-         for (i = 0; i < tr.length; i++) {
-             var td_method = tr[i].getElementsByTagName("td")[1];
-             var td_manufacture = tr[i].getElementsByTagName("td")[2];
-             var td_name = tr[i].getElementsByTagName("td")[4];
-             var td_serial = tr[i].getElementsByTagName("td")[5];
-             var td_location = tr[i].getElementsByTagName("td")[7];
-             if (td_method || td_manufacture || td_name || td_serial) {
-                 var txtValue_method = td_method.textContent || td_method.innerText;
-                 var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
-                 var txtValue_name = td_name.textContent || td_name.innerText;
-                 var txtValue_serial = td_serial.textContent || td_serial.innerText;
-                 var txtValue_location = td_location.textContent || td_serial.innerText;
-                 if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 && txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 && txtValue_name.toUpperCase().indexOf(filter_name) > -1 && txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 && txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
-                     tr[i].style.display = "";
-                 } else {
-                     tr[i].style.display = "none";
-                 }
-             }
-         }
-     }
-</script>
+    function FirstLoad() {
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+    }
 
+    window.onload = FirstLoad;
+
+    var table = ''
+    var tr = ''
+
+    function HotSearching() {
+        console.log(tr)
+        var i;
+        var input_method = document.getElementById("hot_searching_method");
+        var input_manufacture = document.getElementById("hot_searching_manufacture");
+        var input_name = document.getElementById("hot_searching_name");
+        var input_serial = document.getElementById("hot_searching_serial");
+        var input_location = document.getElementById("hot_searching_location");
+        var filter_method = input_method.value.toUpperCase();
+        var filter_manufacture = input_manufacture.value.toUpperCase();
+        var filter_name = input_name.value.toUpperCase();
+        var filter_serial = input_serial.value.toUpperCase();
+        var filter_location = input_location.value.toUpperCase();
+        // var table = document.getElementById("myTable");
+        // var tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            var td_method = tr[i].getElementsByTagName("td")[1];
+            var td_manufacture = tr[i].getElementsByTagName("td")[2];
+            var td_name = tr[i].getElementsByTagName("td")[4];
+            var td_serial = tr[i].getElementsByTagName("td")[5];
+            var td_location = tr[i].getElementsByTagName("td")[7];
+            if (td_method || td_manufacture || td_name || td_serial) {
+                var txtValue_method = td_method.textContent || td_method.innerText;
+                var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
+                var txtValue_name = td_name.textContent || td_name.innerText;
+                var txtValue_serial = td_serial.textContent || td_serial.innerText;
+                var txtValue_location = td_location.textContent || td_serial.innerText;
+                if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 && txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 && txtValue_name.toUpperCase().indexOf(filter_name) > -1 && txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 && txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function get_filter() {
+        var checkboxesChecked = {};
+        checkboxesChecked['method'] = []
+        checkboxesChecked['location'] = []
+        checkboxesChecked['status'] = []
+        var checkboxes_method = document.getElementsByName('CheckMethod');
+        var label_method = document.getElementsByName('label_method');
+        for (var index = 0; index < checkboxes_method.length; index++) {
+            if (label_method[index].htmlFor == 'CheckMethod') {
+                if (checkboxes_method[index].checked) {
+                    checkboxesChecked['method'].push(label_method[index].textContent);
+                }
+            }
+        }
+        var checkboxes_location = document.getElementsByName('CheckLocation');
+        var label_location = document.getElementsByName('label_location');
+        for (var index = 0; index < checkboxes_location.length; index++) {
+            if (label_location[index].htmlFor == 'CheckLocation') {
+                if (checkboxes_location[index].checked) {
+                    checkboxesChecked['location'].push(label_location[index].textContent);
+                }
+            }
+        }
+        var checkboxes_status = document.getElementsByName('CheckStatus');
+        var label_status = document.getElementsByName('label_status');
+        for (var index = 0; index < checkboxes_status.length; index++) {
+            if (label_status[index].htmlFor == 'CheckStatus') {
+                if (checkboxes_status[index].checked) {
+                    checkboxesChecked['status'].push(label_status[index].textContent);
+                }
+            }
+        }
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        var new_tr =[]
+        for (var i = 1; i < tr.length; i++) {
+            var visible = false
+            var td_method = tr[i].getElementsByTagName("td")[1];
+            var td_location = tr[i].getElementsByTagName("td")[7];
+            var td_status = tr[i].getElementsByTagName("td")[8];
+            for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
+                for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
+                    for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
+                        if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
+                            visible = true;
+                        }
+                    }
+                }
+            }
+            if (visible == true) {
+                tr[i].style.display = "";
+                new_tr.push(tr[i])
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+        tr = new_tr
+    }
+</script>
+{% csrf_token %}
 <!-- Контейнер с полным внутренним заполнением текста, изображения и т.д. по ширине -->
 <div class="container-fluid">
     <!-- строки внутри контейнера -->
@@ -89,114 +159,150 @@
         <div class="col-sm-1">
             <!-- боковая панель навигации -->
             {% block sidebar-nav %}
-                <!-- фильтры в боковой панели-->
-                {% block filter %}
-                    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop" style="position: fixed !important">
-                          Доп. фильтры
-                    </button>
-                        <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
-                                <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
-                            <div class="offcanvas-body">
-                                <div class= "container">
-                                    <input class="btn btn-primary btn-sm pull-left" type="reset" value="Выделить всё" onclick="check()" id="all">
-                                    <input class="btn btn-primary btn-sm" type="reset" value="Снять выделение" onclick="uncheck()" id="empty">
+            <!-- фильтры в боковой панели-->
+            {% block filter %}
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasWithBothOptions"
+                    aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14.5px;">
+                Доп. фильтры
+            </button>
+            <br><br>
+            <a class="btn btn-primary" href="{% url 'unit_add' %}" type="button"
+               data-bs-target="#offcanvasWithBothOptions"
+               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
+                Добавить<br>оборудование
+            </a>
+            <div class="offcanvas offcanvas-start" data-bs-backdrop="true" tabindex="-1" id="offcanvasWithBothOptions"
+                 aria-labelledby="offcanvasWithBothOptionsLabel">
+                <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="offcanvas"
+                        aria-label="Закрыть"></button>
+                <div class="offcanvas-body">
+                    <div class="container">
+                        <input class="btn btn-primary btn-sm pull-left" type="reset" value="Выделить всё"
+                               onclick="check()" id="all">
+                        <input class="btn btn-primary btn-sm" type="reset" value="Снять выделение" onclick="uncheck()"
+                               id="empty">
+                    </div>
+                    <div class="container">
+                        <br>
+                        <div class="row gy-5">
+                            <div class="col-4">
+                                <button type="button" class="btn active" style="text-align:left" aria-pressed="true"
+                                        data-bs-toggle="button" onclick="check_method()" id="button_method">Метод
+                                    контроля
+                                </button>
+                                {% for method_ndt in context_filter_method %}
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="form-check-input" id="CheckMethod" checked
+                                           name="CheckMethod">
+                                    <label class="form-check-label" for="CheckMethod"
+                                           name="label_method">{{method_ndt}}</label>
                                 </div>
-                                <div class= "container">
-                                    <br>
-                                    <div class="row gy-5">
-                                        <div class="col-4">
-                                            <button type="button" class="btn active" style="text-align:left" aria-pressed="true" data-bs-toggle="button" onclick="check_method()" id="button_method">Метод контроля</button>
-                                            {% for method_ndt in context_filter_method %}
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="form-check-input" id="CheckMethod" checked name="CheckMethod">
-                                                    <label class="form-check-label" for="CheckMethod" name="label_method">{{method_ndt}}</label>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                        <div class="col-8">
-                                            <div class="row">
-                                                <button type="button" class="btn active col-6 text-break" style="text-align:left" aria-pressed="true" data-bs-toggle="button" onclick="check_location()" id="button_location">Месторасположение:</button>
-                                                {% for location in context_filter_location %}
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="form-check-input" id="CheckLocation" checked name="CheckLocation">
-                                                        <label class="form-check-label" for="CheckLocation" name="label_location">{{location}}</label>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                            <br>
-                                            <div class="row">
-                                                <button type="button" class="btn active col-4" style="text-align:left" aria-pressed="true" data-bs-toggle="button" onclick="check_status()" id="button_status">Статус:</button>
-                                                {% for status in context_filter_status %}
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="form-check-input" id="CheckStatus" checked name="CheckStatus">
-                                                        <label class="form-check-label" for="CheckStatus" name="label_status">{{status}}</label>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <button type="button" class="btn active col-6 text-break" style="text-align:left"
+                                            aria-pressed="true" data-bs-toggle="button" onclick="check_location()"
+                                            id="button_location">Месторасположение:
+                                    </button>
+                                    {% for location in context_filter_location %}
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="form-check-input" id="CheckLocation" checked
+                                               name="CheckLocation">
+                                        <label class="form-check-label" for="CheckLocation" name="label_location">{{location}}</label>
                                     </div>
+                                    {% endfor %}
                                 </div>
                                 <br>
-                                <button class="btn btn-primary" type="submit" onclick="get_filter()">Применить</button>
+                                <div class="row">
+                                    <button type="button" class="btn active col-4" style="text-align:left"
+                                            aria-pressed="true" data-bs-toggle="button" onclick="check_status()"
+                                            id="button_status">Статус:
+                                    </button>
+                                    {% for status in context_filter_status %}
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="form-check-input" id="CheckStatus" checked
+                                               name="CheckStatus">
+                                        <label class="form-check-label" for="CheckStatus"
+                                               name="label_status">{{status}}</label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-                {% endblock %}
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" type="submit" onclick="get_filter()">Применить</button>
+                </div>
+            </div>
+            {% endblock %}
             {% endblock %}
         </div>
         <div class="col-sm-11">
             {% block content %}
-                <table class="table table-striped table-sm align-middle" id="myTable">
+            <table class="table table-striped table-sm align-middle" id="myTable">
                 <thead style="position: sticky; top: 0; text-align: center" class="align-top">
-                    <tr>
-                        <th scope="col">№</th>
-                        <th scope="col">
-                            Метод
-                            <br>
-                            <input type="text" id="hot_searching_method" onkeyup="HotSearching()" style="width: 100px; font-size: 14px;" placeholder="Метод..." title="Введите название метода контроля">
-                        </th>
-                        <th scope="col">
-                            Производитель
+                <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">
+                        Метод
                         <br>
-                            <input type="text" id="hot_searching_manufacture" onkeyup="HotSearching()" style="width: 130px; font-size: 14px;" placeholder="Производитель..." title="Введите название производителя">
-                        </th>
-                        <th scope="col">Тип</th>
-                        <th scope="col">
-                            Название
-                            <br>
-                            <input type="text" id="hot_searching_name" onkeyup="HotSearching()" style="width: 250px; font-size: 14px;" placeholder="Название..." title="Введите название оборудования">
-                        </th>
-                        <th scope="col" class="text-nowrap">
-                            Серийный номер
-                            <br>
-                            <input type="text" id="hot_searching_serial" onkeyup="HotSearching()" style="width: 150px; font-size: 14px;" placeholder="Серийный номер..." title="Введите серийный номер оборудования">
-                        </th>
-                        <th scope="col" class="text-break">Количество</th>
-                        <th scope="col" class="text-break">
-                            Нахождение
-                            <br>
-                            <input type="text" id="hot_searching_location" onkeyup="HotSearching()" style="width: 100px; font-size: 14px;" placeholder="Нахождение..." title="Введите месторасположение оборудования">
-                        </th>
-                        <th scope="col">Статус</th>
-                        <th scope="col">Примечание</th>
-                    </tr>
+                        <input type="text" id="hot_searching_method" onkeyup="HotSearching()"
+                               style="width: 60px; font-size: 14px;" placeholder="Метод..."
+                               title="Введите название метода контроля">
+                    </th>
+                    <th scope="col">
+                        Производитель
+                        <br>
+                        <input type="text" id="hot_searching_manufacture" onkeyup="HotSearching()"
+                               style="width: 120px; font-size: 14px;" placeholder="Производитель..."
+                               title="Введите название производителя">
+                    </th>
+                    <th scope="col">Тип</th>
+                    <th scope="col">
+                        Название
+                        <br>
+                        <input type="text" id="hot_searching_name" onkeyup="HotSearching()"
+                               style="width: 250px; font-size: 14px;" placeholder="Название..."
+                               title="Введите название оборудования">
+                    </th>
+                    <th scope="col" class="text-nowrap">
+                        Серийный номер
+                        <br>
+                        <input type="text" id="hot_searching_serial" onkeyup="HotSearching()"
+                               style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
+                               title="Введите серийный номер оборудования">
+                    </th>
+                    <th scope="col" class="text-break">Количество</th>
+                    <th scope="col" class="text-break">
+                        Нахождение
+                        <br>
+                        <input type="text" id="hot_searching_location" onkeyup="HotSearching()"
+                               style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
+                               title="Введите месторасположение оборудования">
+                    </th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Примечание</th>
+                </tr>
                 </thead>
                 <tbody class="table-group-divider" style="text-align: center">
-                    {% for unit in unit_list %}
-                    <tr>
-                        <td style="width: 50px;">{{forloop.counter}}</td>
-                        <td style="width: 100px;">{{unit.method}}</td>
-                        <td style="width: 100px;">{{unit.manufacturer}}</td>
-                        <td style="width: 100px;">{{unit.type}}</td>
-                        <td style="width: 200px;"><a href="{{unit.equipment_name}}">{{unit.equipment_name}}</a></td>
-                        <td style="width: 100px;">{{unit.equipment_serial_number}}</td>
-                        <td style="width: 50px;">{{unit.total}}</td>
-                        <td style="width: 100px;">{{unit.location}}</td>
-                        <td style="width: 100px;">{{unit.status}}</td>
-                        <td style="width: 100px;">{{unit.notes}}</td>
-                    </tr>
-                    {% endfor %}
+                {% for unit in unit_list %}
+                <tr>
+                    <td style="width: 30px;">{{forloop.counter}}</td>
+                    <td style="width: 50px;">{{unit.method}}</td>
+                    <td style="width: 100px;">{{unit.manufacturer}}</td>
+                    <td style="width: 100px;">{{unit.type}}</td>
+                    <td style="width: 200px;"><a href="{{unit.equipment_name}}">{{unit.equipment_name}}</a></td>
+                    <td style="width: 130px;">{{unit.equipment_serial_number}}</td>
+                    <td style="width: 50px;">{{unit.total}}</td>
+                    <td style="width: 100px;">{{unit.location}}</td>
+                    <td style="width: 100px;">{{unit.status}}</td>
+                    <td style="width: 100px;">{{unit.notes}}</td>
+                </tr>
+                {% endfor %}
                 </tbody>
-                </table>
+            </table>
             {% endblock %}
         </div>
     </div>

@@ -153,5 +153,6 @@ function get_filter() {
             }
         }
     }
-    console.log(checkboxesChecked);
+    console.log(checkboxesChecked)
+    console.log('ok')
 }
