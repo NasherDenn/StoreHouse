@@ -46,7 +46,7 @@ class Status(models.Model):
         help_text="Введите статус оборудования",
         verbose_name="Статус оборудования",
         null=True,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):

@@ -15,8 +15,21 @@ class UnitForm(forms.Form):
     manufacture = forms.ModelChoiceField(label="Производитель", queryset=Manufacturer.objects, widget=forms.Select())
     type = forms.ModelChoiceField(label="Тип", queryset=Type.objects, widget=forms.Select())
     name = forms.CharField(label="Название")
-    serial = forms.CharField(label="Серийный номер")
+    serial = forms.CharField(label="Серийный номер", required=False)
     total = forms.IntegerField(label="Количество")
     location = forms.ModelChoiceField(label="Нахождение", queryset=Location.objects, widget=forms.Select())
     status = forms.ModelChoiceField(label="Статус", queryset=Status.objects, widget=forms.Select())
-    notes = forms.CharField(label="Примечание")
+    notes = forms.CharField(label="Примечание", required=False)
+
+
+class EditForm(forms.Form):
+    method = forms.ModelChoiceField(label="Метод контроля", queryset=MethodNdt.objects, widget=forms.Select())
+    manufacture = forms.ModelChoiceField(label="Производитель", queryset=Manufacturer.objects, widget=forms.Select())
+    type = forms.ModelChoiceField(label="Тип", queryset=Type.objects, widget=forms.Select())
+    name = forms.CharField(label="Название")
+    serial = forms.CharField(label="Серийный номер", required=False)
+    total = forms.IntegerField(label="Количество")
+    location = forms.ModelChoiceField(label="Нахождение", queryset=Location.objects, widget=forms.Select())
+    status = forms.ModelChoiceField(label="Статус", queryset=Status.objects, widget=forms.Select())
+    notes = forms.CharField(label="Примечание", required=False)
+    id = forms.IntegerField(label='id')

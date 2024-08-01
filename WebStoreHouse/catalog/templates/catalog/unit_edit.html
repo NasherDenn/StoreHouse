@@ -54,6 +54,11 @@
             <a class="btn btn-primary" href="{% url 'home' %}" type="button" data-bs-target="#staticBackdrop"
                aria-controls="staticBackdrop" style="position: fixed !important; font-size: 14px;">
                 На главную</a>
+            <br><br>
+            <a class="btn btn-primary" href="{% url 'choice_unit_edit' %}" type="button"
+               data-bs-target="#staticBackdrop"
+               aria-controls="staticBackdrop" style="position: fixed !important; font-size: 14px;">
+                Назад</a>
 
             {% endblock %}
             {% endblock %}
@@ -61,14 +66,12 @@
 
         </div>
         <div class="col-sm-11">
-            <form method="POST" action="/create/">
+            <form method="POST" action="{% url 'unit_update' %}">
                 {% csrf_token %}
-                <tаblе>
-                    {{ form|crispy }}
-
-                </tаblе>
+                {{ form|crispy }}
                 <input type="submit" vаluе="Сохранить">
             </form>
+
         </div>
     </div>
 </div>

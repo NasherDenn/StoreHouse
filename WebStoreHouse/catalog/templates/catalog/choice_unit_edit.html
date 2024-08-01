@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
 <html lang="ru">
 <head>
     {% block title %}<title>Rutledge Store House</title>{% endblock %}
@@ -161,87 +165,11 @@
             {% block sidebar-nav %}
             <!-- фильтры в боковой панели-->
             {% block filter %}
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasWithBothOptions"
-                    aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14.5px;">
-                Доп. фильтры
-            </button>
-            <br><br>
-            <a class="btn btn-primary" href="{% url 'unit_add' %}" type="button"
-               data-bs-target="#offcanvasWithBothOptions"
-               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
-                Добавить<br>оборудование
-            </a>
-            <br><br><br>
-            <a class="btn btn-primary" href="{% url 'choice_unit_edit' %}" type="button"
-               data-bs-target="#offcanvasWithBothOptions"
-               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
-                Редактировать<br>оборудование
-            </a>
-            <div class="offcanvas offcanvas-start" data-bs-backdrop="true" tabindex="-1" id="offcanvasWithBothOptions"
-                 aria-labelledby="offcanvasWithBothOptionsLabel">
-                <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="offcanvas"
-                        aria-label="Закрыть"></button>
-                <div class="offcanvas-body">
-                    <div class="container">
-                        <input class="btn btn-primary btn-sm pull-left" type="reset" value="Выделить всё"
-                               onclick="check()" id="all">
-                        <input class="btn btn-primary btn-sm" type="reset" value="Снять выделение" onclick="uncheck()"
-                               id="empty">
-                    </div>
-                    <div class="container">
-                        <br>
-                        <div class="row gy-5">
-                            <div class="col-4">
-                                <button type="button" class="btn active" style="text-align:left" aria-pressed="true"
-                                        data-bs-toggle="button" onclick="check_method()" id="button_method">Метод
-                                    контроля
-                                </button>
-                                {% for method_ndt in context_filter_method %}
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="form-check-input" id="CheckMethod" checked
-                                           name="CheckMethod">
-                                    <label class="form-check-label" for="CheckMethod"
-                                           name="label_method">{{method_ndt}}</label>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-8">
-                                <div class="row">
-                                    <button type="button" class="btn active col-6 text-break" style="text-align:left"
-                                            aria-pressed="true" data-bs-toggle="button" onclick="check_location()"
-                                            id="button_location">Месторасположение:
-                                    </button>
-                                    {% for location in context_filter_location %}
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="form-check-input" id="CheckLocation" checked
-                                               name="CheckLocation">
-                                        <label class="form-check-label" for="CheckLocation" name="label_location">{{location}}</label>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <button type="button" class="btn active col-4" style="text-align:left"
-                                            aria-pressed="true" data-bs-toggle="button" onclick="check_status()"
-                                            id="button_status">Статус:
-                                    </button>
-                                    {% for status in context_filter_status %}
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="form-check-input" id="CheckStatus" checked
-                                               name="CheckStatus">
-                                        <label class="form-check-label" for="CheckStatus"
-                                               name="label_status">{{status}}</label>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <button class="btn btn-primary" type="submit" onclick="get_filter()">Применить</button>
-                </div>
-            </div>
+
+            <a class="btn btn-primary" href="{% url 'home' %}" type="button" data-bs-target="#staticBackdrop"
+               aria-controls="staticBackdrop" style="position: fixed !important; font-size: 14px;">
+                На главную</a>
+
             {% endblock %}
             {% endblock %}
         </div>
@@ -290,6 +218,7 @@
                     </th>
                     <th scope="col">Статус</th>
                     <th scope="col">Примечание</th>
+                    <th scope="col">id</th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider" style="text-align: center">
@@ -299,12 +228,13 @@
                     <td style="width: 50px;">{{unit.method}}</td>
                     <td style="width: 100px;">{{unit.manufacturer}}</td>
                     <td style="width: 100px;">{{unit.type}}</td>
-                    <td style="width: 200px;">{{unit.equipment_name}}</td>
+                    <td style="width: 200px;"><a href="{% url 'unit_edit' unit.id %}">{{unit.equipment_name}}</a></td>
                     <td style="width: 130px;">{{unit.equipment_serial_number}}</td>
                     <td style="width: 50px;">{{unit.total}}</td>
                     <td style="width: 100px;">{{unit.location}}</td>
                     <td style="width: 100px;">{{unit.status}}</td>
                     <td style="width: 100px;">{{unit.notes}}</td>
+                    <td style="width: 50px;">{{unit.id}}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -313,5 +243,10 @@
         </div>
     </div>
 </div>
+</body>
+</html></title>
+</head>
+<body>
+
 </body>
 </html>
