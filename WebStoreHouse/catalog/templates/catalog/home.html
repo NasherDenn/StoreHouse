@@ -178,6 +178,18 @@
                aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
                 Редактировать<br>оборудование
             </a>
+            <br><br><br>
+            <a class="btn btn-primary" href="{% url 'choice_unit_delete' %}" type="button"
+               data-bs-target="#offcanvasWithBothOptions"
+               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
+                Удалить<br>оборудование
+            </a>
+            <br><br><br>
+            <a class="btn btn-primary" href="{% url 'unit_send' %}" type="button"
+               data-bs-target="#offcanvasWithBothOptions"
+               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
+                Отправить<br>оборудование
+            </a>
             <div class="offcanvas offcanvas-start" data-bs-backdrop="true" tabindex="-1" id="offcanvasWithBothOptions"
                  aria-labelledby="offcanvasWithBothOptionsLabel">
                 <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="offcanvas"

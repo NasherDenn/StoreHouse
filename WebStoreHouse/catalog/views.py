@@ -81,8 +81,17 @@ def create(request):
 
 
 def choice_unit_edit(request):
+    context_filter_method = MethodNdt.objects.all()
+    context_filter_location = Location.objects.all()
+    context_filter_status = Status.objects.all()
     unit_list = Unit.objects.all()
-    return render(request, "catalog/choice_unit_edit.html", {'unit_list': unit_list})
+    # return render(request, "catalog/choice_unit_edit.html", {'unit_list': unit_list})
+    return render(request, 'catalog/choice_unit_edit.html', {
+        'context_filter_method': context_filter_method,
+        'context_filter_location': context_filter_location,
+        'context_filter_status': context_filter_status,
+        'unit_list': unit_list,
+    })
 
 
 def unit_edit(request, id):
@@ -124,3 +133,43 @@ def unit_update(request):
         unit.notes = request.POST.get("notes")
         unit.save()
         return HttpResponseRedirect("/choice_unit_edit/")
+
+
+def choice_unit_delete(request):
+    context_filter_method = MethodNdt.objects.all()
+    context_filter_location = Location.objects.all()
+    context_filter_status = Status.objects.all()
+    unit_list = Unit.objects.all()
+    return render(request, 'catalog/choice_unit_delete.html', {
+        'context_filter_method': context_filter_method,
+        'context_filter_location': context_filter_location,
+        'context_filter_status': context_filter_status,
+        'unit_list': unit_list,
+    })
+
+
+def unit_delete(request, id):
+    delete_form = DeleteForm(initial={'id': id})
+    return render(request, "catalog/unit_delete.html", {'form_del': delete_form})
+
+
+def unit_del(request):
+    if request.method == "POST":
+        id = request.POST.get("id")
+        unit = Unit.objects.get(id=id)
+        unit.delete()
+
+        context_filter_method = MethodNdt.objects.all()
+        context_filter_location = Location.objects.all()
+        context_filter_status = Status.objects.all()
+        unit_list = Unit.objects.all()
+        return render(request, 'catalog/choice_unit_delete.html', {
+            'context_filter_method': context_filter_method,
+            'context_filter_location': context_filter_location,
+            'context_filter_status': context_filter_status,
+            'unit_list': unit_list,
+        })
+
+
+def unit_send(request):
+    pass

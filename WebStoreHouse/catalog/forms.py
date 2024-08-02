@@ -33,3 +33,8 @@ class EditForm(forms.Form):
     status = forms.ModelChoiceField(label="Статус", queryset=Status.objects, widget=forms.Select())
     notes = forms.CharField(label="Примечание", required=False)
     id = forms.IntegerField(label='id')
+
+
+class DeleteForm(forms.Form):
+    id = forms.IntegerField(label='id')
+
