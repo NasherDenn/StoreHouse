@@ -36,5 +36,8 @@ class EditForm(forms.Form):
 
 
 class DeleteForm(forms.Form):
-    id = forms.IntegerField(label='id')
+    name = forms.CharField(label="Вы действительно хотите удалить данное оборудование из базы данных?", disabled=True)
+    serial = forms.CharField(label="Серийный номер", disabled=True)
+    id = forms.IntegerField(label='id', disabled=True)
+
 

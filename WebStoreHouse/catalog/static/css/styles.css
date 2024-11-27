@@ -1,9 +1,51 @@
-.sidebar-nav {
-    margin-top: 20px;
-    padding: 0;
-    list-style: none;
+.btn-f {
+    transform: rotate(-90deg);
+    margin-left: -27px;
+    background: lightskyblue;
+    position: fixed;
+    padding-bottom: 0;
+    top: 325px;
+    font-size: 12px;
 }
 
-#head_logo {
-    background: transparent;
+.btn-f-check {
+    text-align: left;
 }
+
+.btn-f-check:hover {
+    background-color: darkgrey;
+}
+
+.navbar {
+    margin-left: 600px;
+    background-color: #4099c5 !important;
+    margin-right: 15px;
+}
+
+.navbar-text {
+    color: white;
+}
+
+.nav-item {
+    margin-left: 15px;
+    background: #e6f0fc;
+    border-radius: 5px 5px 0 0;
+}
+
+.nav-tabs {
+    background-color: #4099c5;
+    color: white;
+}
+
+.tab-pane {
+    background-color: white;
+}
+
+.table-group-divider {
+    height: 300px;
+	overflow-x: auto;
+	margin-top: 0;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #eee;
+}
+

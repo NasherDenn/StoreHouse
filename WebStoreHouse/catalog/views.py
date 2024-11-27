@@ -11,8 +11,6 @@ from .models import *
 from django.views import generic
 from .forms import *
 
-from urllib import parse
-
 
 class UnitList(generic.ListView):
     model = Unit
@@ -31,7 +29,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 auth.login(request, user)
-                return redirect('/home')
+                return redirect('home/')
         else:
             return render(request, 'registration/login.html', {'form': form})
     else:
@@ -45,17 +43,14 @@ def home(request):
     context_filter_status = Status.objects.all()
     # данные об оборудовании из БД
     unit_list = Unit.objects.all()
+    unit_form = UnitForm()
     return render(request, 'catalog/home.html', {
         'context_filter_method': context_filter_method,
         'context_filter_location': context_filter_location,
         'context_filter_status': context_filter_status,
         'unit_list': unit_list,
+        'form_add': unit_form,
     })
-
-
-def unit_add(request):
-    unit_form = UnitForm()
-    return render(request, "catalog/unit_add.html", {"form": unit_form})
 
 
 def create(request):
@@ -77,21 +72,7 @@ def create(request):
         unit.status = status
         unit.notes = request.POST.get("notes")
         unit.save()
-        return HttpResponseRedirect("/unit_add/")
-
-
-def choice_unit_edit(request):
-    context_filter_method = MethodNdt.objects.all()
-    context_filter_location = Location.objects.all()
-    context_filter_status = Status.objects.all()
-    unit_list = Unit.objects.all()
-    # return render(request, "catalog/choice_unit_edit.html", {'unit_list': unit_list})
-    return render(request, 'catalog/choice_unit_edit.html', {
-        'context_filter_method': context_filter_method,
-        'context_filter_location': context_filter_location,
-        'context_filter_status': context_filter_status,
-        'unit_list': unit_list,
-    })
+        return home(request)
 
 
 def unit_edit(request, id):
@@ -108,7 +89,7 @@ def unit_edit(request, id):
         'notes': unit.notes,
         'id': id,
     })
-    return render(request, "catalog/unit_edit.html", {"form": edit_form})
+    return render(request, "catalog/unit_edit.html", {"form_edit": edit_form})
 
 
 def unit_update(request):
@@ -116,7 +97,6 @@ def unit_update(request):
         id = request.POST.get("id")
         unit = Unit.objects.get(id=id)
         # выбираем из экземпляра значение по выбранному значению по id
-        unit.method = MethodNdt.objects.get(id=id)
         method = MethodNdt.objects.get(id=request.POST.get("method"))
         unit.method = method
         manufacture = Manufacturer.objects.get(id=request.POST.get("manufacture"))
@@ -132,44 +112,10 @@ def unit_update(request):
         unit.status = status
         unit.notes = request.POST.get("notes")
         unit.save()
-        return HttpResponseRedirect("/choice_unit_edit/")
-
-
-def choice_unit_delete(request):
-    context_filter_method = MethodNdt.objects.all()
-    context_filter_location = Location.objects.all()
-    context_filter_status = Status.objects.all()
-    unit_list = Unit.objects.all()
-    return render(request, 'catalog/choice_unit_delete.html', {
-        'context_filter_method': context_filter_method,
-        'context_filter_location': context_filter_location,
-        'context_filter_status': context_filter_status,
-        'unit_list': unit_list,
-    })
+        return HttpResponseRedirect("/home/")
 
 
 def unit_delete(request, id):
-    delete_form = DeleteForm(initial={'id': id})
-    return render(request, "catalog/unit_delete.html", {'form_del': delete_form})
-
-
-def unit_del(request):
-    if request.method == "POST":
-        id = request.POST.get("id")
-        unit = Unit.objects.get(id=id)
-        unit.delete()
-
-        context_filter_method = MethodNdt.objects.all()
-        context_filter_location = Location.objects.all()
-        context_filter_status = Status.objects.all()
-        unit_list = Unit.objects.all()
-        return render(request, 'catalog/choice_unit_delete.html', {
-            'context_filter_method': context_filter_method,
-            'context_filter_location': context_filter_location,
-            'context_filter_status': context_filter_status,
-            'unit_list': unit_list,
-        })
-
-
-def unit_send(request):
-    pass
+    unit = Unit.objects.get(id=id)
+    unit.delete()
+    return HttpResponseRedirect('/home/')

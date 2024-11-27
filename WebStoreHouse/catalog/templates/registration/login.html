@@ -88,14 +88,14 @@
         }
     </style>
 </head>
-
+<!--{% load static %}-->
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
 {% load crispy_forms_tags %}
 <main class="form-signin w-25 m-auto">
     <form method="post" autocomplete="off" action="{% url 'login' %}">
         {% csrf_token %}
         <img class="mb-2"
-             src="..\..\static\images\logo_ykr.png" alt=""
+             src="{% static 'images\logo_ykr.png' %}" alt=""
              width="85" height="90">
         <h1 class="h3 mb-3 fw-normal">Пожалуйста, войдите</h1>
         {{form|crispy}}

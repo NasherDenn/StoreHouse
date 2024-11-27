@@ -1,328 +1,426 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    {% block title %}<title>Rutledge Store House</title>{% endblock %}
-    <!-- кодировка страницы -->
     <meta charset="UTF-8">
-    <meta charset="UTF-8">
-    <!-- контроль масштаба отображения страницы -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- описание страницы -->
     <meta name="description" content="Электронный склад оборудования компании YKR">
-    <!-- автор, написавший страницу -->
     <meta name="author" content="Nasher">
-    <!-- ссылка стилей css на внешний ресурс -->
+    <title>Rutledge Store House</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <!-- подключение скрипта с внешнего ресурса -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- добавление статического СSS-файла -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     {% load static %}
-    <!-- Функции JavaScript -->
-    <script type="text/javascript" src="{% static 'func.js' %}"></script>
-    <!-- стиль css из файла в папке со статическими файлами -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    {% block head %}
-    <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary justify-content-end">
-            <div class="grid gap-3 nav-item list-inline">
-                <div class="p-2 g-col-6">
-                    <span class="navbar-text">
-                        Вы вошли как:
-                        <span class="fw-bold fst-italic">{{user.get_username}}</span>
-                    </span>
-                </div>
-            </div>
-            <div class="p-2 g-col-6 ">
-                <a class="btn btn-primary" href="/logout" role="button">Выход</a>
-            </div>
-        </nav>
-    </div>
-    {% endblock %}
+    <script type="text/javascript" src="{% static 'functions\functionsBase.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css\styles.css' %}">
 </head>
-<body style="background: #f8f9fa">
-{% load crispy_forms_tags %}
-{{form|crispy}}
-
-<script>
-    function FirstLoad() {
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-    }
-
-    window.onload = FirstLoad;
-
-    var table = ''
-    var tr = ''
-
-    function HotSearching() {
-        console.log(tr)
-        var i;
-        var input_method = document.getElementById("hot_searching_method");
-        var input_manufacture = document.getElementById("hot_searching_manufacture");
-        var input_name = document.getElementById("hot_searching_name");
-        var input_serial = document.getElementById("hot_searching_serial");
-        var input_location = document.getElementById("hot_searching_location");
-        var filter_method = input_method.value.toUpperCase();
-        var filter_manufacture = input_manufacture.value.toUpperCase();
-        var filter_name = input_name.value.toUpperCase();
-        var filter_serial = input_serial.value.toUpperCase();
-        var filter_location = input_location.value.toUpperCase();
-        // var table = document.getElementById("myTable");
-        // var tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-            var td_method = tr[i].getElementsByTagName("td")[1];
-            var td_manufacture = tr[i].getElementsByTagName("td")[2];
-            var td_name = tr[i].getElementsByTagName("td")[4];
-            var td_serial = tr[i].getElementsByTagName("td")[5];
-            var td_location = tr[i].getElementsByTagName("td")[7];
-            if (td_method || td_manufacture || td_name || td_serial) {
-                var txtValue_method = td_method.textContent || td_method.innerText;
-                var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
-                var txtValue_name = td_name.textContent || td_name.innerText;
-                var txtValue_serial = td_serial.textContent || td_serial.innerText;
-                var txtValue_location = td_location.textContent || td_serial.innerText;
-                if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 && txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 && txtValue_name.toUpperCase().indexOf(filter_name) > -1 && txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 && txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
-
-    function get_filter() {
-        var checkboxesChecked = {};
-        checkboxesChecked['method'] = []
-        checkboxesChecked['location'] = []
-        checkboxesChecked['status'] = []
-        var checkboxes_method = document.getElementsByName('CheckMethod');
-        var label_method = document.getElementsByName('label_method');
-        for (var index = 0; index < checkboxes_method.length; index++) {
-            if (label_method[index].htmlFor == 'CheckMethod') {
-                if (checkboxes_method[index].checked) {
-                    checkboxesChecked['method'].push(label_method[index].textContent);
-                }
-            }
-        }
-        var checkboxes_location = document.getElementsByName('CheckLocation');
-        var label_location = document.getElementsByName('label_location');
-        for (var index = 0; index < checkboxes_location.length; index++) {
-            if (label_location[index].htmlFor == 'CheckLocation') {
-                if (checkboxes_location[index].checked) {
-                    checkboxesChecked['location'].push(label_location[index].textContent);
-                }
-            }
-        }
-        var checkboxes_status = document.getElementsByName('CheckStatus');
-        var label_status = document.getElementsByName('label_status');
-        for (var index = 0; index < checkboxes_status.length; index++) {
-            if (label_status[index].htmlFor == 'CheckStatus') {
-                if (checkboxes_status[index].checked) {
-                    checkboxesChecked['status'].push(label_status[index].textContent);
-                }
-            }
-        }
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-        var new_tr =[]
-        for (var i = 1; i < tr.length; i++) {
-            var visible = false
-            var td_method = tr[i].getElementsByTagName("td")[1];
-            var td_location = tr[i].getElementsByTagName("td")[7];
-            var td_status = tr[i].getElementsByTagName("td")[8];
-            for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
-                for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
-                    for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
-                        if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
-                            visible = true;
-                        }
-                    }
-                }
-            }
-            if (visible == true) {
-                tr[i].style.display = "";
-                new_tr.push(tr[i])
-            } else {
-                tr[i].style.display = "none";
-            }
-        }
-        tr = new_tr
-    }
-</script>
+<body style="background-color: #4099c5">
 {% csrf_token %}
-<!-- Контейнер с полным внутренним заполнением текста, изображения и т.д. по ширине -->
-<div class="container-fluid">
-    <!-- строки внутри контейнера -->
-    <div class="row">
-        <!-- столбец внутри контейнера -->
-        <div class="col-sm-1">
-            <!-- боковая панель навигации -->
-            {% block sidebar-nav %}
-            <!-- фильтры в боковой панели-->
-            {% block filter %}
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasWithBothOptions"
-                    aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14.5px;">
-                Доп. фильтры
-            </button>
-            <br><br>
-            <a class="btn btn-primary" href="{% url 'unit_add' %}" type="button"
-               data-bs-target="#offcanvasWithBothOptions"
-               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
-                Добавить<br>оборудование
-            </a>
-            <br><br><br>
-            <a class="btn btn-primary" href="{% url 'choice_unit_edit' %}" type="button"
-               data-bs-target="#offcanvasWithBothOptions"
-               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
-                Редактировать<br>оборудование
-            </a>
-            <br><br><br>
-            <a class="btn btn-primary" href="{% url 'choice_unit_delete' %}" type="button"
-               data-bs-target="#offcanvasWithBothOptions"
-               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
-                Удалить<br>оборудование
-            </a>
-            <br><br><br>
-            <a class="btn btn-primary" href="{% url 'unit_send' %}" type="button"
-               data-bs-target="#offcanvasWithBothOptions"
-               aria-controls="offcanvasWithBothOptions" style="position: fixed !important; font-size: 14px;">
-                Отправить<br>оборудование
-            </a>
-            <div class="offcanvas offcanvas-start" data-bs-backdrop="true" tabindex="-1" id="offcanvasWithBothOptions"
-                 aria-labelledby="offcanvasWithBothOptionsLabel">
-                <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="offcanvas"
-                        aria-label="Закрыть"></button>
-                <div class="offcanvas-body">
-                    <div class="container">
-                        <input class="btn btn-primary btn-sm pull-left" type="reset" value="Выделить всё"
-                               onclick="check()" id="all">
-                        <input class="btn btn-primary btn-sm" type="reset" value="Снять выделение" onclick="uncheck()"
-                               id="empty">
+<ul class="navbar navbar-expand-lg bg-body-tertiary justify-content-end navbar-fixed-top" style="color: white">
+    <i>Вы вошли как: <b>{{user.get_username}}</b></i>
+    <a href="/logout" style="color: white; margin-left: 20px; text-decoration: none"><i>Выход</i></a>
+</ul>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"
+                role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="send-tab" data-bs-toggle="tab" data-bs-target="#send-tab-pane" type="button"
+                role="tab" aria-controls="send-tab-pane" aria-selected="false">Отправить
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="add-tab" data-bs-toggle="tab" data-bs-target="#add-tab-pane" type="button"
+                role="tab" aria-controls="add-tab-pane" aria-selected="false">Добавить
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-tab-pane" type="button"
+                role="tab" aria-controls="edit-tab-pane" aria-selected="false">Редактировать
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-tab-pane" type="button"
+                role="tab" aria-controls="delete-tab-pane" aria-selected="false">Удалить
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link flex-sm-fill">
+            <i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"></i>
+        </button>
+    </li>
+</ul>
+<button type="button" class="btn btn-sm btn-f" id="button-filter" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+    Фильтры
+</button>
+<div class="offcanvas offcanvas-start" data-bs-backdrop="true" tabindex="-1" id="offcanvasWithBothOptions"
+     data-bs-scroll="true"
+     aria-labelledby="offcanvasWithBothOptionsLabel">
+    <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="offcanvas"
+            aria-label="Закрыть">
+    </button>
+    <div class="offcanvas-body">
+        <div class="container">
+            <input class="btn btn-primary btn-sm pull-left" type="reset" value="Выделить всё"
+                   onclick="check()" id="all">
+            <input class="btn btn-primary btn-sm" type="reset" value="Снять выделение"
+                   onclick="uncheck()" id="empty">
+        </div>
+        <div class="container">
+            <br>
+            <div class="row gy-5">
+                <div class="col-4">
+                    <button type="button" class="btn active btn-f-check" aria-pressed="true"
+                            data-bs-toggle="button" onclick="check_method()" id="button_method">Метод контроля
+                    </button>
+                    {% for method_ndt in context_filter_method %}
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="form-check-input" id="CheckMethod" checked
+                               name="CheckMethod">
+                        <label class="form-check-label" for="CheckMethod"
+                               name="label_method">{{method_ndt}}</label>
                     </div>
-                    <div class="container">
-                        <br>
-                        <div class="row gy-5">
-                            <div class="col-4">
-                                <button type="button" class="btn active" style="text-align:left" aria-pressed="true"
-                                        data-bs-toggle="button" onclick="check_method()" id="button_method">Метод
-                                    контроля
-                                </button>
-                                {% for method_ndt in context_filter_method %}
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="form-check-input" id="CheckMethod" checked
-                                           name="CheckMethod">
-                                    <label class="form-check-label" for="CheckMethod"
-                                           name="label_method">{{method_ndt}}</label>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="col-8">
-                                <div class="row">
-                                    <button type="button" class="btn active col-6 text-break" style="text-align:left"
-                                            aria-pressed="true" data-bs-toggle="button" onclick="check_location()"
-                                            id="button_location">Месторасположение:
-                                    </button>
-                                    {% for location in context_filter_location %}
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="form-check-input" id="CheckLocation" checked
-                                               name="CheckLocation">
-                                        <label class="form-check-label" for="CheckLocation" name="label_location">{{location}}</label>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <button type="button" class="btn active col-4" style="text-align:left"
-                                            aria-pressed="true" data-bs-toggle="button" onclick="check_status()"
-                                            id="button_status">Статус:
-                                    </button>
-                                    {% for status in context_filter_status %}
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="form-check-input" id="CheckStatus" checked
-                                               name="CheckStatus">
-                                        <label class="form-check-label" for="CheckStatus"
-                                               name="label_status">{{status}}</label>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
+                    {% endfor %}
+                </div>
+                <div class="col-8">
+                    <div class="row">
+                        <button type="button" class="btn active col-6 text-break" style="text-align:left"
+                                aria-pressed="true" data-bs-toggle="button" onclick="check_location()"
+                                id="button_location">Месторасположение:
+                        </button>
+                        {% for location in context_filter_location %}
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="form-check-input" id="CheckLocation" checked
+                                   name="CheckLocation">
+                            <label class="form-check-label" for="CheckLocation"
+                                   name="label_location">{{location}}</label>
                         </div>
+                        {% endfor %}
                     </div>
                     <br>
-                    <button class="btn btn-primary" type="submit" onclick="get_filter()">Применить</button>
+                    <div class="row">
+                        <button type="button" class="btn active col-4" style="text-align:left"
+                                aria-pressed="true" data-bs-toggle="button" onclick="check_status()"
+                                id="button_status">Статус:
+                        </button>
+                        {% for status in context_filter_status %}
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="form-check-input" id="CheckStatus" checked
+                                   name="CheckStatus">
+                            <label class="form-check-label" for="CheckStatus"
+                                   name="label_status">{{status}}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-            {% endblock %}
-            {% endblock %}
         </div>
-        <div class="col-sm-11">
-            {% block content %}
-            <table class="table table-striped table-sm align-middle" id="myTable">
-                <thead style="position: sticky; top: 0; text-align: center" class="align-top">
-                <tr>
-                    <th scope="col">№</th>
-                    <th scope="col">
-                        Метод
-                        <br>
-                        <input type="text" id="hot_searching_method" onkeyup="HotSearching()"
-                               style="width: 60px; font-size: 14px;" placeholder="Метод..."
-                               title="Введите название метода контроля">
-                    </th>
-                    <th scope="col">
-                        Производитель
-                        <br>
-                        <input type="text" id="hot_searching_manufacture" onkeyup="HotSearching()"
-                               style="width: 120px; font-size: 14px;" placeholder="Производитель..."
-                               title="Введите название производителя">
-                    </th>
-                    <th scope="col">Тип</th>
-                    <th scope="col">
-                        Название
-                        <br>
-                        <input type="text" id="hot_searching_name" onkeyup="HotSearching()"
-                               style="width: 250px; font-size: 14px;" placeholder="Название..."
-                               title="Введите название оборудования">
-                    </th>
-                    <th scope="col" class="text-nowrap">
-                        Серийный номер
-                        <br>
-                        <input type="text" id="hot_searching_serial" onkeyup="HotSearching()"
-                               style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
-                               title="Введите серийный номер оборудования">
-                    </th>
-                    <th scope="col" class="text-break">Количество</th>
-                    <th scope="col" class="text-break">
-                        Нахождение
-                        <br>
-                        <input type="text" id="hot_searching_location" onkeyup="HotSearching()"
-                               style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
-                               title="Введите месторасположение оборудования">
-                    </th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Примечание</th>
-                </tr>
-                </thead>
-                <tbody class="table-group-divider" style="text-align: center">
-                {% for unit in unit_list %}
-                <tr>
-                    <td style="width: 30px;">{{forloop.counter}}</td>
-                    <td style="width: 50px;">{{unit.method}}</td>
-                    <td style="width: 100px;">{{unit.manufacturer}}</td>
-                    <td style="width: 100px;">{{unit.type}}</td>
-                    <td style="width: 200px;">{{unit.equipment_name}}</td>
-                    <td style="width: 130px;">{{unit.equipment_serial_number}}</td>
-                    <td style="width: 50px;">{{unit.total}}</td>
-                    <td style="width: 100px;">{{unit.location}}</td>
-                    <td style="width: 100px;">{{unit.status}}</td>
-                    <td style="width: 100px;">{{unit.notes}}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            {% endblock %}
+        <button class="btn btn-primary" style="margin-top: 10px" type="submit" onclick="getFilter()">Применить</button>
+    </div>
+</div>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+        <table class="table table-striped table-sm align-middle" style="margin-left: 15px"
+               id="myTableBase">
+            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">
+                    Метод
+                    <br>
+                    <input type="text" id="hot_searching_method_base" onkeyup="HotSearchingBase()"
+                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
+                           title="Введите название метода контроля">
+                </th>
+                <th scope="col">
+                    Производитель
+                    <br>
+                    <input type="text" id="hot_searching_manufacture_base" onkeyup="HotSearchingBase()"
+                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
+                           title="Введите название производителя">
+                </th>
+                <th scope="col">Тип</th>
+                <th scope="col">
+                    Название
+                    <br>
+                    <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"
+                           style="width: 250px; font-size: 14px;" placeholder="Название..."
+                           title="Введите название оборудования">
+                </th>
+                <th scope="col" class="text-nowrap">
+                    Серийный номер
+                    <br>
+                    <input type="text" id="hot_searching_serial_base" onkeyup="HotSearchingBase()"
+                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
+                           title="Введите серийный номер оборудования">
+                </th>
+                <th scope="col" class="text-break">Количество</th>
+                <th scope="col" class="text-break">
+                    Нахождение
+                    <br>
+                    <input type="text" id="hot_searching_location_base" onkeyup="HotSearchingBase()"
+                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
+                           title="Введите месторасположение оборудования">
+                </th>
+                <th scope="col">Статус</th>
+                <th scope="col">Примечание</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider" style="text-align: center">
+            {% for unit in unit_list %}
+            {% csrf_token %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{unit.method}}</td>
+                <td>{{unit.manufacturer}}</td>
+                <td>{{unit.type}}</td>
+                <td>{{unit.equipment_name}}</td>
+                <td>{{unit.equipment_serial_number}}</td>
+                <td>{{unit.total}}</td>
+                <td>{{unit.location}}</td>
+                <td>{{unit.status}}</td>
+                <td>{{unit.notes}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="send-tab-pane" role="tabpanel" aria-labelledby="send-tab" tabindex="0">
+        <table class="table table-striped table-sm align-middle" style="margin-left: 15px; margin-right: 15px"
+               id="myTableSend">
+            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">
+                    Метод
+                    <br>
+                    <input type="text" id="hot_searching_method_send" onkeyup="HotSearchingSend()"
+                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
+                           title="Введите название метода контроля">
+                </th>
+                <th scope="col">
+                    Производитель
+                    <br>
+                    <input type="text" id="hot_searching_manufacture_send" onkeyup="HotSearchingSend()"
+                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
+                           title="Введите название производителя">
+                </th>
+                <th scope="col">Тип</th>
+                <th scope="col">
+                    Название
+                    <br>
+                    <input type="text" id="hot_searching_name_send" onkeyup="HotSearchingSend()"
+                           style="width: 250px; font-size: 14px;" placeholder="Название..."
+                           title="Введите название оборудования">
+                    <input type="checkbox" class="form-check-input" id="CheckSendAll" name="CheckSendAll"
+                           style="float: right" onclick="check_send_all()">
+                </th>
+                <th scope="col" class="text-nowrap">
+                    Серийный номер
+                    <br>
+                    <input type="text" id="hot_searching_serial_send" onkeyup="HotSearchingSend()"
+                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
+                           title="Введите серийный номер оборудования">
+                </th>
+                <th scope="col" class="text-break">Количество</th>
+                <th scope="col" class="text-break">
+                    Нахождение
+                    <br>
+                    <input type="text" id="hot_searching_location_send" onkeyup="HotSearchingSend()"
+                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
+                           title="Введите месторасположение оборудования">
+                </th>
+                <th scope="col">Статус</th>
+                <th scope="col">Примечание</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider" style="text-align: center">
+            {% for unit in unit_list %}
+            {% csrf_token %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{unit.method}}</td>
+                <td>{{unit.manufacturer}}</td>
+                <td>{{unit.type}}</td>
+                <td>{{unit.equipment_name}}
+                    <input type="checkbox" class="form-check-input" id="CheckSend" name="CheckSend"
+                           style="float: right" onclick="check_send_all_active()">
+                </td>
+                <td>{{unit.equipment_serial_number}}</td>
+                <td>{{unit.total}}</td>
+                <td>{{unit.location}}</td>
+                <td>{{unit.status}}</td>
+                <td>{{unit.notes}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="add-tab-pane" role="tabpanel" aria-labelledby="add-tab" tabindex="0">
+        {% load crispy_forms_tags %}
+        <div class="container-fluid">
+            <div class="row justify-content-md-center">
+                <div class="col-md-6">
+                    <form method="POST" action="/create/" style="margin-top: 10px">
+                        {{ form_add|crispy }}
+                        {% csrf_token %}
+                        <div class="col-md-2 justify-content-md-center">
+                            <input class="btn btn-primary w-100 py-2" style="margin-bottom: 20px; width: 10px"
+                                   type="submit">
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="tab-pane fade" id="edit-tab-pane" role="tabpanel" aria-labelledby="edit-tab" tabindex="0">
+        <table class="table table-striped table-sm align-middle" style="margin-left: 15px; margin-right: 15px"
+               id="myTableEdit">
+            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">
+                    Метод
+                    <br>
+                    <input type="text" id="hot_searching_method_edit" onkeyup="HotSearchingEdit()"
+                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
+                           title="Введите название метода контроля">
+                </th>
+                <th scope="col">
+                    Производитель
+                    <br>
+                    <input type="text" id="hot_searching_manufacture_edit" onkeyup="HotSearchingEdit()"
+                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
+                           title="Введите название производителя">
+                </th>
+                <th scope="col">Тип</th>
+                <th scope="col">
+                    Название
+                    <br>
+                    <input type="text" id="hot_searching_name_edit" onkeyup="HotSearchingEdit()"
+                           style="width: 250px; font-size: 14px;" placeholder="Название..."
+                           title="Введите название оборудования">
+                </th>
+                <th scope="col" class="text-nowrap">
+                    Серийный номер
+                    <br>
+                    <input type="text" id="hot_searching_serial_edit" onkeyup="HotSearchingEdit()"
+                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
+                           title="Введите серийный номер оборудования">
+                </th>
+                <th scope="col" class="text-break">Количество</th>
+                <th scope="col" class="text-break">
+                    Нахождение
+                    <br>
+                    <input type="text" id="hot_searching_location_edit" onkeyup="HotSearchingEdit()"
+                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
+                           title="Введите месторасположение оборудования">
+                </th>
+                <th scope="col">Статус</th>
+                <th scope="col">Примечание</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider" style="text-align: center">
+            {% for unit in unit_list %}
+            {% csrf_token %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{unit.method}}</td>
+                <td>{{unit.manufacturer}}</td>
+                <td>{{unit.type}}</td>
+                <td>
+                    {{unit.equipment_name}}
+                    <a href="{% url 'unit_edit' unit.id %}" style="float: right">Редактировать</a>
+                    </button>
+                </td>
+                <td>{{unit.equipment_serial_number}}</td>
+                <td>{{unit.total}}</td>
+                <td>{{unit.location}}</td>
+                <td>{{unit.status}}</td>
+                <td>{{unit.notes}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="delete-tab-pane" role="tabpanel" aria-labelledby="delete-tab" tabindex="0">
+        <table class="table table-striped table-sm align-middle" style="margin-left: 15px; margin-right: 15px"
+               id="myTableDelete">
+            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">
+                    Метод
+                    <br>
+                    <input type="text" id="hot_searching_method_delete" onkeyup="HotSearchingDelete()"
+                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
+                           title="Введите название метода контроля">
+                </th>
+                <th scope="col">
+                    Производитель
+                    <br>
+                    <input type="text" id="hot_searching_manufacture_delete" onkeyup="HotSearchingDelete()"
+                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
+                           title="Введите название производителя">
+                </th>
+                <th scope="col">Тип</th>
+                <th scope="col">
+                    Название
+                    <br>
+                    <input type="text" id="hot_searching_name_delete" onkeyup="HotSearchingDelete()"
+                           style="width: 250px; font-size: 14px;" placeholder="Название..."
+                           title="Введите название оборудования">
+                </th>
+                <th scope="col" class="text-nowrap">
+                    Серийный номер
+                    <br>
+                    <input type="text" id="hot_searching_serial_delete" onkeyup="HotSearchingDelete()"
+                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
+                           title="Введите серийный номер оборудования">
+                </th>
+                <th scope="col" class="text-break">Количество</th>
+                <th scope="col" class="text-break">
+                    Нахождение
+                    <br>
+                    <input type="text" id="hot_searching_location_delete" onkeyup="HotSearchingDelete()"
+                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
+                           title="Введите месторасположение оборудования">
+                </th>
+                <th scope="col">Статус</th>
+                <th scope="col">Примечание</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider" style="text-align: center">
+            {% for unit in unit_list %}
+            {% csrf_token %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{unit.method}}</td>
+                <td>{{unit.manufacturer}}</td>
+                <td>{{unit.type}}</td>
+                <td>
+                    {{unit.equipment_name}}
+                    <a href="{% url 'unit_delete' unit.id %}" style="float: right">Удалить</a>
+                    </button>
+                </td>
+                <td>{{unit.equipment_serial_number}}</td>
+                <td>{{unit.total}}</td>
+                <td>{{unit.location}}</td>
+                <td>{{unit.status}}</td>
+                <td>{{unit.notes}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div onclick="topFunction()" id="myBtn" title="Go to top" style="background-color : #31B0D5; color: white;
+    padding: 0 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; height: 35px; border-color: #46b8da;
+    position: fixed; bottom: -4px; right: 70px; cursor: pointer;">Top
     </div>
 </div>
 </body>
