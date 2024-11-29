@@ -435,14 +435,22 @@ function check_status() {
 function check_send_all() {
     var check_send_all = document.getElementsByName('CheckSendAll');
     var check_all_equipment = document.getElementsByName('CheckSend');
+    var index_check_send = 0;
     if (check_send_all[0].checked == true) {
         for (var i = 0; i < check_all_equipment.length; i++) {
             check_all_equipment[i].checked = true
+            index_check_send++
         }
     } else {
         for (var i = 0; i < check_all_equipment.length; i++) {
             check_all_equipment[i].checked = false
+            index_check_send = 0
         }
+    }
+    if (index_check_send == 0) {
+        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"><i/>'
+    } else {
+        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"> ${index_check_send}<i/>`
     }
 }
 
@@ -461,6 +469,11 @@ function check_send_all_active() {
         } else {
             check_box_send_all[0].checked = true
         }
+    }
+    if (index_check_send == 0) {
+        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"><i/>'
+    } else {
+        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"> ${index_check_send}<i/>`
     }
 }
 
