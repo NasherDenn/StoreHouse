@@ -13,16 +13,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     {% load static %}
+<!--    <script type="text/javascript" src="{% static 'functions\ajax.js' %}"></script>-->
     <script type="text/javascript" src="{% static 'functions\functionsBase.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css\styles.css' %}">
 </head>
-<body style="background-color: #4099c5">
+<body style="background-color: #4099c5; width: 99%">
 {% csrf_token %}
-<ul class="navbar navbar-expand-lg bg-body-tertiary justify-content-end navbar-fixed-top" style="color: white">
+<ul class="navbar navbar-expand-lg bg-body-tertiary justify-content-end navbar-fixed-top"
+    style="color: white; position: sticky; top: 0; height: 29px">
     <i>Вы вошли как: <b>{{user.get_username}}</b></i>
     <a href="/logout" style="color: white; margin-left: 20px; text-decoration: none"><i>Выход</i></a>
 </ul>
-<ul class="nav nav-tabs" id="myTab" role="tablist">
+<ul class="nav nav-tabs" id="myTab" role="tablist" style="position: sticky; top: 29px">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"
                 role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная
@@ -49,7 +51,8 @@
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link flex-sm-fill" id="button-send" style="padding-left: 4px; padding-right: 5px">
+        <button class="nav-link flex-sm-fill btn-primary" id="button-send" style="padding-left: 4px; padding-right: 5px"
+        disabled="disabled" onclick="do_form_send()">
             <i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"></i>
         </button>
     </li>
@@ -89,7 +92,7 @@
                 </div>
                 <div class="col-8">
                     <div class="row">
-                        <button type="button" class="btn active col-6 text-break" style="text-align:left"
+                        <button type="button" class="btn active col-6 text-break btn-f-check" style="text-align:left"
                                 aria-pressed="true" data-bs-toggle="button" onclick="check_location()"
                                 id="button_location">Месторасположение:
                         </button>
@@ -104,7 +107,7 @@
                     </div>
                     <br>
                     <div class="row">
-                        <button type="button" class="btn active col-4" style="text-align:left"
+                        <button type="button" class="btn active col-4 btn-f-check" style="text-align:left"
                                 aria-pressed="true" data-bs-toggle="button" onclick="check_status()"
                                 id="button_status">Статус:
                         </button>
@@ -123,11 +126,10 @@
         <button class="btn btn-primary" style="margin-top: 10px" type="submit" onclick="getFilter()">Применить</button>
     </div>
 </div>
-<div class="tab-content" id="myTabContent">
+<div class="tab-content" id="myTabContent" style="width: 100%; padding-left: 1%">
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" style="margin-left: 15px"
-               id="myTableBase">
-            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+        <table class="table table-striped table-sm align-middle" id="myTableBase">
+            <thead style="position: sticky; top: 69px; text-align: center" class="align-middle">
             <tr>
                 <th scope="col">№</th>
                 <th scope="col">
@@ -191,9 +193,8 @@
         </table>
     </div>
     <div class="tab-pane fade" id="send-tab-pane" role="tabpanel" aria-labelledby="send-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" style="margin-left: 15px; margin-right: 15px"
-               id="myTableSend">
-            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+        <table class="table table-striped table-sm align-middle" id="myTableSend">
+            <thead style="position: sticky; top: 69px; text-align: center" class="align-middle">
             <tr>
                 <th scope="col">№</th>
                 <th scope="col">
@@ -256,6 +257,7 @@
                 <td>{{unit.location}}</td>
                 <td>{{unit.status}}</td>
                 <td>{{unit.notes}}</td>
+                <td class="hide-column">{{unit.id}}</td>
             </tr>
             {% endfor %}
             </tbody>
@@ -279,9 +281,8 @@
         </div>
     </div>
     <div class="tab-pane fade" id="edit-tab-pane" role="tabpanel" aria-labelledby="edit-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" style="margin-left: 15px; margin-right: 15px"
-               id="myTableEdit">
-            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+        <table class="table table-striped table-sm align-middle" id="myTableEdit">
+            <thead style="position: sticky; top: 69px; text-align: center" class="align-middle">
             <tr>
                 <th scope="col">№</th>
                 <th scope="col">
@@ -349,9 +350,8 @@
         </table>
     </div>
     <div class="tab-pane fade" id="delete-tab-pane" role="tabpanel" aria-labelledby="delete-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" style="margin-left: 15px; margin-right: 15px"
-               id="myTableDelete">
-            <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
+        <table class="table table-striped table-sm align-middle" id="myTableDelete">
+            <thead style="position: sticky; top: 69px; text-align: center" class="align-middle">
             <tr>
                 <th scope="col">№</th>
                 <th scope="col">
@@ -406,7 +406,6 @@
                 <td>
                     {{unit.equipment_name}}
                     <a href="{% url 'unit_delete' unit.id %}" style="float: right">Удалить</a>
-                    </button>
                 </td>
                 <td>{{unit.equipment_serial_number}}</td>
                 <td>{{unit.total}}</td>
@@ -418,10 +417,12 @@
             </tbody>
         </table>
     </div>
+</div>
+</body>
+<footer>
     <div onclick="topFunction()" id="myBtn" title="Go to top" style="background-color : #31B0D5; color: white;
     padding: 0 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; height: 35px; border-color: #46b8da;
     position: fixed; bottom: -4px; right: 70px; cursor: pointer;">Top
     </div>
-</div>
-</body>
+</footer>
 </html>

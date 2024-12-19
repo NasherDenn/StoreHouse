@@ -431,15 +431,22 @@ function check_status() {
     }
 }
 
+
+var equipment_send = []
+
+
 // кнопка для выделения или снятия всех флажков оборудования в закладке "Отправить"
 function check_send_all() {
     var check_send_all = document.getElementsByName('CheckSendAll');
     var check_all_equipment = document.getElementsByName('CheckSend');
     var index_check_send = 0;
+    // список id, выбранных строк (оборудования для отправки)
+    equipment_send = []
     if (check_send_all[0].checked == true) {
         for (var i = 0; i < check_all_equipment.length; i++) {
             check_all_equipment[i].checked = true
             index_check_send++
+            equipment_send.push(document.getElementById("myTableSend").rows[i + 1].cells[10].innerText)
         }
     } else {
         for (var i = 0; i < check_all_equipment.length; i++) {
@@ -449,9 +456,13 @@ function check_send_all() {
     }
     if (index_check_send == 0) {
         document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"><i/>'
+        document.getElementById('button-send').disabled = true
     } else {
         document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"> ${index_check_send}<i/>`
+        document.getElementById('button-send').disabled = false
+
     }
+    return equipment_send
 }
 
 
@@ -460,9 +471,12 @@ function check_send_all_active() {
     var index_check_send = 0
     var check_box_send_all = document.getElementsByName('CheckSendAll')
     var choose_check_box_send = document.getElementsByName('CheckSend')
+    // список id, выбранных строк (оборудования для отправки)
+    equipment_send = []
     for (var i = 0; i < choose_check_box_send.length; i++) {
         if (choose_check_box_send[i].checked == true) {
             index_check_send++
+            equipment_send.push(document.getElementById("myTableSend").rows[i + 1].cells[10].innerText)
         }
         if (index_check_send == 0) {
             check_box_send_all[0].checked = false
@@ -472,16 +486,25 @@ function check_send_all_active() {
     }
     if (index_check_send == 0) {
         document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"><i/>'
+        document.getElementById('button-send').disabled = true
     } else {
         document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"> ${index_check_send}<i/>`
+        document.getElementById('button-send').disabled = false
     }
+}
+
+
+function do_form_send() {
+    // загружаем список выбранного оборудования в localStorage
+    localStorage.setItem("data", equipment_send);
+    window.open('/forms_send', '_blank')
 }
 
 
 // When the user scrolls down 20px from the top of the document, show the button
 window.onscroll = function () {
     scrollFunction()
-};
+}
 
 function scrollFunction() {
     if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {

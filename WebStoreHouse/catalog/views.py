@@ -1,16 +1,17 @@
 import json
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView
-
+from django.core.serializers import serialize
+from django.http import JsonResponse
 from .models import *
 from django.views import generic
 from .forms import *
-
+# import wadofstuff
 
 class UnitList(generic.ListView):
     model = Unit
@@ -59,10 +60,12 @@ def create(request):
         # выбираем из экземпляра значение по выбранному значению по id
         method = MethodNdt.objects.get(id=request.POST.get("method"))
         unit.method = method
-        manufacture = Manufacturer.objects.get(id=request.POST.get("manufacture"))
-        unit.manufacturer = manufacture
-        type = Type.objects.get(id=request.POST.get("type"))
-        unit.type = type
+        # manufacture = Manufacturer.objects.get(id=request.POST.get("manufacture"))
+        # unit.manufacturer = manufacture
+        unit.manufacturer = request.POST.get("manufacturer")
+        # type = Type.objects.get(id=request.POST.get("type"))
+        # unit.type = type
+        unit.type = request.POST.get("type")
         unit.equipment_name = request.POST.get("name")
         unit.equipment_serial_number = request.POST.get("serial")
         unit.total = request.POST.get("total")
@@ -79,7 +82,7 @@ def unit_edit(request, id):
     unit = Unit.objects.get(id=id)
     edit_form = EditForm(initial={
         'method': unit.method,
-        'manufacture': unit.manufacturer,
+        'manufacturer': unit.manufacturer,
         'type': unit.type,
         'name': unit.equipment_name,
         'serial': unit.equipment_serial_number,
@@ -99,10 +102,12 @@ def unit_update(request):
         # выбираем из экземпляра значение по выбранному значению по id
         method = MethodNdt.objects.get(id=request.POST.get("method"))
         unit.method = method
-        manufacture = Manufacturer.objects.get(id=request.POST.get("manufacture"))
-        unit.manufacturer = manufacture
-        type = Type.objects.get(id=request.POST.get("type"))
-        unit.type = type
+        # manufacture = Manufacturer.objects.get(id=request.POST.get("manufacture"))
+        # unit.manufacturer = manufacture
+        unit.manufacturer = request.POST.get("manufacturer")
+        # type = Type.objects.get(id=request.POST.get("type"))
+        # unit.type = type
+        unit.type = request.POST.get("type")
         unit.equipment_name = request.POST.get("name")
         unit.equipment_serial_number = request.POST.get("serial")
         unit.total = request.POST.get("total")
@@ -119,3 +124,26 @@ def unit_delete(request, id):
     unit = Unit.objects.get(id=id)
     unit.delete()
     return HttpResponseRedirect('/home/')
+
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+
+
+def forms_send(request):
+    # if request.method == "POST":
+    # param = request.POST.get('param')
+
+    queryset = Unit.objects.all()
+    unit = {}
+    for index, i in enumerate(queryset):
+        unit[index] = {'id': i.id, 'name': i.equipment_name, 'serial': i.equipment_serial_number, 'total': i.total, 'type': i.type,
+                       'manufacturer': i.manufacturer, 'location': i.location.name}
+    data = json.dumps(unit)
+    return render(request, "catalog/forms_send.html", {'data': data})
+    # return HttpResponse(data, content_type="application/json")
+

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Электронный склад оборудования компании YKR">
+    <meta name="author" content="Nasher">
+    <title>Rutledge Store House</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    {% load static %}
+    <script type="text/javascript" src="{% static 'functions\functionsBase.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css\styles.css' %}">
+</head>
+<body>
+<a>OK</a>
+{{ data|json_script:"my-data" }}
+<script>
+    var data_equipment_send = []
+    // ждём полной загрузки страницы
+    window.addEventListener('load', function () {
+        // получаем данные в виде строки
+        let result = JSON.parse(document.getElementById('my-data').textContent);
+        result = eval('(' + result + ')');
+        // берём список выбранного оборудования из localStorage
+        let equipment_send = localStorage.getItem("data");
+        // localStorage.clear();
+        equipment_send = equipment_send.split(',')
+        for (let id in equipment_send) {
+            for (var i = 0; i < Object.keys(result).length; i++) {
+                if (equipment_send[id] == result[i]['id']) {
+                    data_equipment_send.push(result[i])
+                    break
+                }
+            }
+
+        }
+        console.log(data_equipment_send)
+    })
+</script>
+<div>
+    {% csrf_token %}
+</div>
+</body>
+</html>
