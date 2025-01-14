@@ -17,6 +17,11 @@ urlpatterns = [
     path('unit_update/', views.unit_update, name='unit_update'),
     path('unit_edit/<int:id>/', views.unit_edit, name='unit_edit'),
     path('unit_delete/<int:id>/', views.unit_delete, name='unit_delete'),
+
+
+    path('forms_send/', views.forms_send, name='forms_send'),
+
+
     # path('unit_del/', views.unit_del, name='unit_del'),
     # path('unit_form_send/', views.unit_form_send, name='unit_form_send'),
     path('admin/', admin.site.urls),

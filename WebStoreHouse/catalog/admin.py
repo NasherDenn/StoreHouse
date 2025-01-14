@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import MethodNdt, Type, Manufacturer, Status, Location, Unit
+from .models import MethodNdt, Status, Location, Unit
 
 admin.site.register(MethodNdt)
-admin.site.register(Type)
-admin.site.register(Manufacturer)
+# admin.site.register(Type)
+# admin.site.register(Manufacturer)
 admin.site.register(Status)
 admin.site.register(Location)
 

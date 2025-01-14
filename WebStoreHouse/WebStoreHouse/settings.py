@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'django_filters',
     'rest_framework',
+    'corsheaders',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -57,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'WebStoreHouse.urls'
@@ -134,3 +137,9 @@ STATIC_URL = os.path.join(BASE_DIR, '/static/css/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = ''
+
+# SERIALIZATION_MODULES = {
+#     'json': 'wadofstuff.django.serializers.json'
+# }
+
+CORS_ORIGIN_ALLOW_ALL = True

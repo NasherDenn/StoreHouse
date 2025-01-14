@@ -1,8 +1,7 @@
-
 .btn-f {
     transform: rotate(-90deg);
     margin-left: -27px;
-    background: lightskyblue;
+    background: #31B0D5;
     position: fixed;
     padding-bottom: 0;
     top: 325px;
@@ -14,13 +13,11 @@
 }
 
 .btn-f-check:hover {
-    background-color: darkgrey;
+    background-color: lightblue;
 }
 
 .navbar {
-    margin-left: 600px;
     background-color: #4099c5 !important;
-    margin-right: 15px;
 }
 
 .navbar-text {
@@ -50,3 +47,6 @@
 	border-bottom: 1px solid #eee;
 }
 
+.hide-column {
+    display: none;
+}
