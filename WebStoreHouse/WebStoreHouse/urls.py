@@ -20,7 +20,7 @@ urlpatterns = [
 
 
     path('forms_send/', views.forms_send, name='forms_send'),
-
+    path('send_excel/', views.send_excel, name='send_excel'),
 
     # path('unit_del/', views.unit_del, name='unit_del'),
     # path('unit_form_send/', views.unit_form_send, name='unit_form_send'),
@@ -28,3 +28,5 @@ urlpatterns = [
     path('logout/', views.login, name='logout'),
 
 ]
+
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

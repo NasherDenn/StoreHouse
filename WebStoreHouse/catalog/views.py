@@ -12,6 +12,11 @@ from .models import *
 from django.views import generic
 from .forms import *
 # import wadofstuff
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+from openpyxl import Workbook
+
 
 class UnitList(generic.ListView):
     model = Unit
@@ -147,3 +152,73 @@ def forms_send(request):
     return render(request, "catalog/forms_send.html", {'data': data})
     # return HttpResponse(data, content_type="application/json")
 
+
+import logging
+
+logger = logging.getLogger(__name__)  # Логирование
+
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from openpyxl import Workbook
+import io
+
+
+@csrf_exempt  # Отключение CSRF для упрощения (не используйте в production)
+def send_excel(request):
+    logger.error(f'0')
+    if request.method == 'POST':
+        logger.error(f'1')
+        try:
+            # # logger.error(f'2 {request.body}')
+            # # Получение данных из запроса
+            # data = json.loads(request.body)
+            # logger.error(f'3 {data}')
+            # cellVal = data.get('data', {})
+            # logger.error(f'4 {cellVal}')
+
+            floating_select = request.POST.get('floatingSelect')
+            count_values = request.POST.getlist('count')  # Для полей с несколькими значениями
+            logger.error(f'4 {floating_select}')
+            logger.error(f'5 {count_values}')
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Form Data"
+            ws.append(["Floating Select", "Count"])
+            ws.append([floating_select, ", ".join(count_values)])
+
+            # Создание Excel-файла
+            # wb = Workbook()
+            # for sheet_name, rows in cellVal.items():
+            #     ws = wb.create_sheet(title=sheet_name)
+            #     for row in rows:
+            #         ws.append(list(row.values()))
+
+            # Удаление дефолтного листа (если нужно)
+            # if 'Sheet' in wb.sheetnames:
+            #     del wb['Sheet']
+
+            # Сохранение файла в буфер
+            buffer = io.BytesIO()
+            wb.save(buffer)
+            buffer.seek(0)
+
+            # Возврат файла как ответ
+            response = HttpResponse(buffer.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=output.xlsx'
+            return response
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+# ToDo: forms_send.html - при нажатии на кнопку "Отправить" сформировать файл Excel с актом приёмо-передачи оборудования
+    # ToDo: при отправке данных в django отправляется форма, а не json - только значения из input (столбец - количество)
+
+
+# ToDo: изменить данные в БД (местонахождение, количество) при нажатии кнопки "Отправить" в forms_send.html
+# ToDo: занести сведения в БД (история перемещения) об оборудовании (дата, данные оборудования, откуда-куда, кто отправил)
+# ToDo: сделать БД с историей перемещения оборудования
+# ToDo: сделать ссылку (на закладке "Главная") на оборудовании для просмотра истории перемещения (отдельно открывающаяся страница) оборудования
+# ToDo: установить ограничения на действия для разных пользователей
+# ToDo: неправильно работают фильтры: если выбран фильтр и ввести в HotSearch, то не учитывается основной фильтр, затем после очистки HotSearch
+    # ToDo: основной фильтр не работает

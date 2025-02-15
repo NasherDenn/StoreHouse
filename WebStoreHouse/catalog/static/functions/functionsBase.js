@@ -455,10 +455,10 @@ function check_send_all() {
         }
     }
     if (index_check_send == 0) {
-        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"><i/>'
+        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"><i/>'
         document.getElementById('button-send').disabled = true
     } else {
-        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"> ${index_check_send}<i/>`
+        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"> ${index_check_send}<i/>`
         document.getElementById('button-send').disabled = false
 
     }
@@ -485,10 +485,10 @@ function check_send_all_active() {
         }
     }
     if (index_check_send == 0) {
-        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"><i/>'
+        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"><i/>'
         document.getElementById('button-send').disabled = true
     } else {
-        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: cornflowerblue; width: 150px"> ${index_check_send}<i/>`
+        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"> ${index_check_send}<i/>`
         document.getElementById('button-send').disabled = false
     }
 }
