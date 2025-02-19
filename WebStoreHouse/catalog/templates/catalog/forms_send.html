@@ -282,7 +282,7 @@
     <!-- Подключение кастомных стилей и скриптов -->
     {% load static %}
     <script type="text/javascript" src="{% static 'functions/functionsBase.js' %}"></script>
-<!--    <link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
+    <!--    <link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
 
     <!-- Подключение FileSaver.js и js-cookie -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
@@ -294,6 +294,15 @@
         body {
             background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
             font-family: Arial, sans-serif;
+        }
+
+        .cap {
+            align-content: center;
+        }
+
+        .cap-recipient {
+            align-content: center;
+            text-align: right;
         }
 
         .form-container {
@@ -361,43 +370,80 @@
             border-color: #4099c5;
             box-shadow: 0 0 5px rgba(64, 153, 197, 0.5);
         }
+
     </style>
 </head>
 <body>
-    {{ data|json_script:"my-data" }}
-    <script>
-        var data_equipment_send = [];
-        // Ждём полной загрузки страницы
-        window.addEventListener('load', function () {
-            // Получаем данные в виде строки
-            let result = JSON.parse(document.getElementById('my-data').textContent);
-            result = eval('(' + result + ')');
-            // Берём список выбранного оборудования из localStorage
-            let equipment_send = localStorage.getItem("data");
-            equipment_send = equipment_send.split(',');
-            for (let id in equipment_send) {
-                for (var i = 0; i < Object.keys(result).length; i++) {
-                    if (equipment_send[id] == result[i]['id']) {
-                        data_equipment_send.push(result[i]);
-                        break;
-                    }
+{{ data|json_script:"my-data" }}
+<script>
+    var data_equipment_send = [];
+    // Ждём полной загрузки страницы
+    window.addEventListener('load', function () {
+        // Получаем данные в виде строки
+        let result = JSON.parse(document.getElementById('my-data').textContent);
+        result = eval('(' + result + ')');
+        // Берём список выбранного оборудования из localStorage
+        let equipment_send = localStorage.getItem("data");
+        equipment_send = equipment_send.split(',');
+        for (let id in equipment_send) {
+            for (var i = 0; i < Object.keys(result).length; i++) {
+                if (equipment_send[id] == result[i]['id']) {
+                    data_equipment_send.push(result[i]);
+                    break;
                 }
             }
-            // Добавляем название столбцов в таблицу с выбранным оборудованием для отправки
+        }
+        // Добавляем название столбцов в таблицу с выбранным оборудованием для отправки
+        var tbody = document.getElementById('TableItemSend').getElementsByTagName("tbody")[0];
+        var row = document.createElement("tr");
+        var td0 = document.createElement("td");
+        td0.appendChild(document.createTextNode('N'));
+        var td1 = document.createElement("td");
+        td1.appendChild(document.createTextNode('Тип'));
+        var td2 = document.createElement("td");
+        td2.appendChild(document.createTextNode('Производитель'));
+        var td3 = document.createElement("td");
+        td3.appendChild(document.createTextNode('Описание'));
+        var td4 = document.createElement("td");
+        td4.appendChild(document.createTextNode('Серийный номер'));
+        var td5 = document.createElement("td");
+        td5.appendChild(document.createTextNode('Количество'));
+        row.appendChild(td0);
+        row.appendChild(td1);
+        row.appendChild(td2);
+        row.appendChild(td3);
+        row.appendChild(td4);
+        row.appendChild(td5);
+        tbody.appendChild(row);
+        // Перебираем информацию о выбранном оборудовании для отправки и добавляем её построчно
+        for (var i = 0; i < Object.keys(data_equipment_send).length; i++) {
             var tbody = document.getElementById('TableItemSend').getElementsByTagName("tbody")[0];
             var row = document.createElement("tr");
             var td0 = document.createElement("td");
-            td0.appendChild(document.createTextNode('N'));
+            td0.appendChild(document.createTextNode(i + 1));
             var td1 = document.createElement("td");
-            td1.appendChild(document.createTextNode('Тип'));
+            td1.appendChild(document.createTextNode(data_equipment_send[i]['type']));
             var td2 = document.createElement("td");
-            td2.appendChild(document.createTextNode('Производитель'));
+            td2.appendChild(document.createTextNode(data_equipment_send[i]['manufacturer']));
             var td3 = document.createElement("td");
-            td3.appendChild(document.createTextNode('Описание'));
+            td3.appendChild(document.createTextNode(data_equipment_send[i]['name']));
             var td4 = document.createElement("td");
-            td4.appendChild(document.createTextNode('Серийный номер'));
+            td4.appendChild(document.createTextNode(data_equipment_send[i]['serial']));
+
             var td5 = document.createElement("td");
-            td5.appendChild(document.createTextNode('Количество'));
+            var iDiv = document.createElement('div');
+            iDiv.class = "number";
+            var count = iDiv.appendChild(document.createElement("input"));
+            count.setAttribute("class", "number-text");
+            count.setAttribute("type", "number");
+            count.setAttribute("name", "count");
+            count.setAttribute("value", data_equipment_send[i]['total']);
+            count.setAttribute("min", "1");
+            count.setAttribute("max", data_equipment_send[i]['total']);
+            count.style.width = "80px";
+            count.style.textAlign = "center";
+
+            td5.appendChild(iDiv);
             row.appendChild(td0);
             row.appendChild(td1);
             row.appendChild(td2);
@@ -405,137 +451,142 @@
             row.appendChild(td4);
             row.appendChild(td5);
             tbody.appendChild(row);
-            // Перебираем информацию о выбранном оборудовании для отправки и добавляем её построчно
-            for (var i = 0; i < Object.keys(data_equipment_send).length; i++) {
-                var tbody = document.getElementById('TableItemSend').getElementsByTagName("tbody")[0];
-                var row = document.createElement("tr");
-                var td0 = document.createElement("td");
-                td0.appendChild(document.createTextNode(i + 1));
-                var td1 = document.createElement("td");
-                td1.appendChild(document.createTextNode(data_equipment_send[i]['type']));
-                var td2 = document.createElement("td");
-                td2.appendChild(document.createTextNode(data_equipment_send[i]['manufacturer']));
-                var td3 = document.createElement("td");
-                td3.appendChild(document.createTextNode(data_equipment_send[i]['name']));
-                var td4 = document.createElement("td");
-                td4.appendChild(document.createTextNode(data_equipment_send[i]['serial']));
+        }
+        // заполняем select получателя значениями из ДБ
+        var select_recipient = document.getElementById('locationSelect')
+        for (var i = 0; i < data_equipment_send[0]['location'].length; i++) {
+            var opt = document.createElement('option');
+            opt.value = i;
+            opt.innerHTML = data_equipment_send[0]['location'][i];
+            select_recipient.appendChild(opt);
+        }
+    });
 
-                var td5 = document.createElement("td");
-                var iDiv = document.createElement('div');
-                iDiv.class = "number";
-                var count = iDiv.appendChild(document.createElement("input"));
-                count.setAttribute("class", "number-text");
-                count.setAttribute("type", "number");
-                count.setAttribute("name", "count");
-                count.setAttribute("value", data_equipment_send[i]['total']);
-                count.setAttribute("min", "1");
-                count.setAttribute("max", data_equipment_send[i]['total']);
-                count.style.width = "80px";
-                count.style.textAlign = "center";
+    window.onload = function () {
+        jQuery(document).ready(function () {
+            // Работа кнопок "-" (слева) и "+" (справа) от количества отправляемого оборудования
+            $('.number-minus').click(function () {
+                var $input = $(this).parent().find('input');
+                var count = parseInt($input.val()) - 1;
+                count = count < 1 ? 1 : count;
+                $input.val(count);
+                $input.change();
+                return false;
+            });
+            $('.number-plus').click(function () {
+                var $input = $(this).parent().find('input');
+                $input.val(parseInt($input.val()) + 1);
+                $input.change();
+                return false;
+            });
 
-                td5.appendChild(iDiv);
-                row.appendChild(td0);
-                row.appendChild(td1);
-                row.appendChild(td2);
-                row.appendChild(td3);
-                row.appendChild(td4);
-                row.appendChild(td5);
-                tbody.appendChild(row);
-            }
-        });
-
-        window.onload = function () {
-            jQuery(document).ready(function () {
-                // Работа кнопок "-" (слева) и "+" (справа) от количества отправляемого оборудования
-                $('.number-minus').click(function () {
-                    var $input = $(this).parent().find('input');
-                    var count = parseInt($input.val()) - 1;
-                    count = count < 1 ? 1 : count;
-                    $input.val(count);
-                    $input.change();
-                    return false;
-                });
-                $('.number-plus').click(function () {
-                    var $input = $(this).parent().find('input');
-                    $input.val(parseInt($input.val()) + 1);
-                    $input.change();
-                    return false;
-                });
-
-                // Изменение изображения департамента в зависимости от выбранного названия (Rutledge или Arise)
-                $(document).ready(function () {
-                    $('#floatingSelect').on('change', function () {
-                        var url = $(this).find(':selected').data('divid');
-                        $('#start-photo-departament').attr('src', url);
-                    });
+            // Изменение изображения департамента в зависимости от выбранного названия (Rutledge или Arise)
+            $(document).ready(function () {
+                $('#floatingSelect').on('change', function () {
+                    var url = $(this).find(':selected').data('divid');
+                    $('#start-photo-departament').attr('src', url);
                 });
             });
+        });
+    }
+
+    function gatherTableData() {
+        const table = document.getElementById('TableItemSend');
+        const rows = table.getElementsByTagName('tr');
+        const data = [];
+
+        // Проходим по всем строкам таблицы (начиная с 1, если есть заголовок)
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            const rowData = {
+                index: cells[0].textContent.trim(), // Номер строки
+                type: cells[1].textContent.trim(), // Тип
+                manufacturer: cells[2].textContent.trim(), // Производитель
+                name: cells[3].textContent.trim(), // Название
+                serial: cells[4].textContent.trim(), // Серийный номер
+                count: cells[5].querySelector('input').value // Значение из input
+            };
+            data.push(rowData);
         }
+        return data;
+    }
 
-        function get_data_table() {
-            // Отправка данных на сервер
-            fetch('/send_excel/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // Добавьте CSRF-токен для защиты
-                },
-                body: JSON.stringify({ data: cellVal })
+    function get_data_table() {
+        const tableData = gatherTableData();
+        // Отправка данных на сервер
+        fetch('/send_excel/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // Добавьте CSRF-токен для защиты
+            },
+            body: JSON.stringify({data: tableData })
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                // Создание ссылки для скачивания файла
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'output.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                // document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
             })
-                .then(response => response.blob())
-                .then(blob => {
-                    // Создание ссылки для скачивания файла
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'output.xlsx';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-                })
-                .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error:', error));
 
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
                 }
-                return cookieValue;
             }
+            return cookieValue;
         }
-    </script>
+    }
+</script>
 
-    <div class="form-container">
-        <form action="/send_excel/" method="post">
-            {% csrf_token %}
-            <table class="table table-striped align-middle" id="TableItemSend">
-                <tbody class="table-group-divider" style="text-align: center;">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-4">
-                                <select class="form-select" name="floatingSelect" id="floatingSelect">
-                                    <option value="1" data-divid="{% static 'images/Rutledge.png' %}">YKR</option>
-                                    <option value="2" data-divid="{% static 'images/Arise.png' %}">Arise</option>
-                                </select>
-                            </div>
-                            <div class="col-4 image-swap">
-                                <img src="{% static 'images/Rutledge.png' %}" alt="" width="80" height="80"
-                                     id="start-photo-departament">
-                            </div>
-                        </div>
+<div class="form-container">
+    <form action="/send_excel/" method="post">
+        {% csrf_token %}
+        <table class="table table-striped align-middle" id="TableItemSend">
+            <tbody class="table-group-divider" style="text-align: center;">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-3 cap">
+                        <select class="form-select" name="floatingSelect" id="floatingSelect">
+                            <option value="1" data-divid="{% static 'images/Rutledge.png' %}">YKR</option>
+                            <option value="2" data-divid="{% static 'images/Arise.png' %}">Arise</option>
+                        </select>
                     </div>
-                </tbody>
-            </table>
-            <button type="submit" class="btn btn-primary w-100 py-2" onclick="get_data_table()">Отправить</button>
-        </form>
-    </div>
+                    <div class="col-3 image-swap cap">
+                        <img src="{% static 'images/Rutledge.png' %}" alt="" width="80" height="80"
+                             id="start-photo-departament">
+                    </div>
+
+                    <div class="col-3 cap-recipient">
+                        <label>
+                            Получатель
+                        </label>
+                    </div>
+                    <div class="col-3 cap">
+                        <select class="form-select" name="locationSelect" id="locationSelect">
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            </tbody>
+        </table>
+    </form>
+    <button type="submit" class="btn btn-primary w-100 py-2" onclick="get_data_table()">Отправить</button>
+</div>
 </body>
 </html>

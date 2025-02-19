@@ -140,17 +140,15 @@ import json
 
 
 def forms_send(request):
-    # if request.method == "POST":
-    # param = request.POST.get('param')
-
     queryset = Unit.objects.all()
     unit = {}
+    names = Location.objects.values_list('name', flat=True)
+    loc = list(names)
     for index, i in enumerate(queryset):
         unit[index] = {'id': i.id, 'name': i.equipment_name, 'serial': i.equipment_serial_number, 'total': i.total, 'type': i.type,
-                       'manufacturer': i.manufacturer, 'location': i.location.name}
+                       'manufacturer': i.manufacturer, 'location': loc}
     data = json.dumps(unit)
     return render(request, "catalog/forms_send.html", {'data': data})
-    # return HttpResponse(data, content_type="application/json")
 
 
 import logging
@@ -161,42 +159,99 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font
 import io
+import datetime
 
 
 @csrf_exempt  # Отключение CSRF для упрощения (не используйте в production)
 def send_excel(request):
-    logger.error(f'0')
     if request.method == 'POST':
-        logger.error(f'1')
         try:
-            # # logger.error(f'2 {request.body}')
-            # # Получение данных из запроса
-            # data = json.loads(request.body)
-            # logger.error(f'3 {data}')
-            # cellVal = data.get('data', {})
-            # logger.error(f'4 {cellVal}')
+            raw_body = request.body.decode('utf-8')
+            data = json.loads(raw_body)
+            # Извлекаем данные
+            table_data = data.get('data', [])
+            # logger.error(table_data)
 
-            floating_select = request.POST.get('floatingSelect')
-            count_values = request.POST.getlist('count')  # Для полей с несколькими значениями
-            logger.error(f'4 {floating_select}')
-            logger.error(f'5 {count_values}')
+            # создаём файл Excel
             wb = Workbook()
             ws = wb.active
             ws.title = "Form Data"
-            ws.append(["Floating Select", "Count"])
-            ws.append([floating_select, ", ".join(count_values)])
 
-            # Создание Excel-файла
-            # wb = Workbook()
-            # for sheet_name, rows in cellVal.items():
-            #     ws = wb.create_sheet(title=sheet_name)
-            #     for row in rows:
-            #         ws.append(list(row.values()))
+            # ширина столбцов
+            ws.column_dimensions['A'].width = 2.33
+            ws.column_dimensions['B'].width = 3.67
+            ws.column_dimensions['C'].width = 14.67
+            ws.column_dimensions['D'].width = 14.89
+            ws.column_dimensions['E'].width = 48.78
+            ws.column_dimensions['F'].width = 16.89
+            ws.column_dimensions['G'].width = 10.22
+            ws.column_dimensions['H'].width = 11.78
+            # шапка листа
+            ws['F3'] = 'Date:'
+            ws['F3'].font = Font(name='Times New Roman', size=11, bold=True)
+            ws['F4'] = 'Time:'
+            ws['F4'].font = Font(name='Times New Roman', size=11, bold=True)
+            ws['G3'] = f'{datetime.datetime.now(): %A, %d %B %Y}'
+            ws['G3'].font = Font(name='Times New Roman', size=9)
+            ws['G4'] = f'{datetime.datetime.now().time(): %H:%M}'
+            ws['G4'].font = Font(name='Times New Roman', size=10)
+            ws['E8'] = 'EQUIPMENT TRANSFER AGREEMENT'
+            ws['E8'].alignment = Alignment(horizontal='center')
+            ws['E8'].font = Font(name='Times New Roman', size=11, bold=True)
+            ws['E9'] = 'Акт приема-передачи оборудования'
+            ws['E9'].alignment = Alignment(horizontal='center')
+            ws['E9'].font = Font(name='Times New Roman', size=11)
+            # заголовки таблицы на английском
+            ws['B12'] = '№'
+            ws['C12'] = 'Type'
+            ws['D12'] = 'Manufacture'
+            ws['E12'] = 'Description'
+            ws['F12'] = 'Serial Number'
+            ws['G12'] = 'Quantity'
+            # жирный текст
+            ws['B12'].font = Font(bold=True)
+            ws['C12'].font = Font(bold=True)
+            ws['D12'].font = Font(bold=True)
+            ws['E12'].font = Font(bold=True)
+            ws['F12'].font = Font(bold=True)
+            ws['G12'].font = Font(bold=True)
+            # заголовки таблицы на русском
+            ws['C13'] = 'Тип'
+            ws['D13'] = 'Производитель'
+            ws['E13'] = 'Описание'
+            ws['F13'] = 'Серийный номер'
+            ws['G13'] = 'Количество'
+            # центрирование заголовок таблицы
+            ws['B12'].alignment = Alignment(horizontal='center')
+            ws['C12'].alignment = Alignment(horizontal='center')
+            ws['D12'].alignment = Alignment(horizontal='center')
+            ws['E12'].alignment = Alignment(horizontal='center')
+            ws['F12'].alignment = Alignment(horizontal='center')
+            ws['G12'].alignment = Alignment(horizontal='center')
+            ws['B13'].alignment = Alignment(horizontal='center')
+            ws['C13'].alignment = Alignment(horizontal='center')
+            ws['D13'].alignment = Alignment(horizontal='center')
+            ws['E13'].alignment = Alignment(horizontal='center')
+            ws['F13'].alignment = Alignment(horizontal='center')
+            ws['G13'].alignment = Alignment(horizontal='center')
+            # основные данные таблицы
+            for index, item in enumerate(table_data):
+                ws[f'B{14 + index}'] = item['index']
+                ws[f'C{14 + index}'] = item['type']
+                ws[f'D{14 + index}'] = item['manufacturer']
+                ws[f'E{14 + index}'] = item['name']
+                ws[f'F{14 + index}'] = item['serial']
+                ws[f'G{14 + index}'] = item['count']
+                # центрирование
+                ws[f'B{14 + index}'].alignment = Alignment(horizontal='center')
+                ws[f'C{14 + index}'].alignment = Alignment(horizontal='center')
+                ws[f'D{14 + index}'].alignment = Alignment(horizontal='center')
+                ws[f'E{14 + index}'].alignment = Alignment(horizontal='center')
+                ws[f'F{14 + index}'].alignment = Alignment(horizontal='center')
+                ws[f'G{14 + index}'].alignment = Alignment(horizontal='center')
 
-            # Удаление дефолтного листа (если нужно)
-            # if 'Sheet' in wb.sheetnames:
-            #     del wb['Sheet']
 
             # Сохранение файла в буфер
             buffer = io.BytesIO()
