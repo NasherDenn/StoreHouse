@@ -17,6 +17,23 @@ from django.views.decorators.http import require_http_methods
 
 from openpyxl import Workbook
 
+from django.core.serializers.json import DjangoJSONEncoder
+
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from openpyxl.drawing.image import Image
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, Border, Side, numbers
+from openpyxl.worksheet.page import PageMargins
+import io
+import os
+import datetime
+from django.conf import settings
+import warnings
+
+import logging
+
 
 class UnitList(generic.ListView):
     model = Unit
@@ -125,7 +142,24 @@ def unit_update(request):
         return HttpResponseRedirect("/home/")
 
 
-def unit_delete(request, id):
+def unit_update_send(request, list_id, recip):
+    '''
+    Обновляем данные в БД
+    :param list_id: список id из form-send.html, переменной tableData
+    :param recip: значение из select form-send.html - получатель оборудования
+    '''
+    if request.method == "POST":
+        for id_index in list_id:
+            unit = Unit.objects.get(id=id_index)
+            location = Location.objects.get(name=recip)
+            unit.location = location
+            unit.save()
+        return HttpResponse()
+    else:
+        return HttpResponse("Метод запроса должен быть POST.", status=405)
+
+
+def unit_delete(request, id_list):
     unit = Unit.objects.get(id=id)
     unit.delete()
     return HttpResponseRedirect('/home/')
@@ -133,10 +167,6 @@ def unit_delete(request, id):
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-
-
-from django.core.serializers.json import DjangoJSONEncoder
-import json
 
 
 def forms_send(request):
@@ -151,43 +181,26 @@ def forms_send(request):
     return render(request, "catalog/forms_send.html", {'data': data})
 
 
-import logging
-
 logger = logging.getLogger(__name__)  # Логирование
-
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from openpyxl.drawing.image import Image
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, Border, Side, numbers
-from openpyxl.worksheet.page import PageMargins
-import io
-import os
-import datetime
-from django.conf import settings
-import warnings
-
 
 
 @csrf_exempt  # Отключение CSRF для упрощения (не используйте в production)
 def send_excel(request):
     if request.method == 'POST':
         try:
+            # список id оборудования для отправки
+            id_list = []
+
             raw_body = request.body.decode('utf-8')
             data = json.loads(raw_body)
             # Извлекаем данные
             table_data = data.get('data', [])
             # logger.error(table_data)
 
-
-
             # создаём файл Excel
             wb = Workbook()
             ws = wb.active
             ws.title = "Form Data"
-
-
 
             # вписать лист в одну страницу
             ws.page_setup.fitToPage = True
@@ -323,7 +336,15 @@ def send_excel(request):
                     ws[f'F{14 + index}'].font = Font(name='Bahnschrift SemiLightn', size=10)
                     ws[f'G{14 + index}'].alignment = Alignment(horizontal='center', vertical='center')
                     ws[f'G{14 + index}'].font = Font(name='Bahnschrift SemiLight', size=10)
+
+                    id_list.append(item['id'])
+                    # logger.error('Данные на backed', item['id'][0])
+
                 last_index = 14 + index
+
+            # logger.error('ID список', id_list)
+            # logger.error('Данные на backed', table_data[-1]['recipient'])
+
             # граница шапки таблицы
             ws[f'B12'].border = Border(top=medium, bottom=medium, left=medium)
             ws[f'B13'].border = Border(top=medium, bottom=medium, left=medium)
@@ -405,6 +426,9 @@ def send_excel(request):
             wb.save(buffer)
             buffer.seek(0)
 
+            # изменяем значение "Местоположение"
+            unit_update_send(request, id_list, table_data[-1]['recipient'])
+
             # Возврат файла как ответ
             response = HttpResponse(buffer.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = 'attachment; filename=output.xlsx'
@@ -413,14 +437,28 @@ def send_excel(request):
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-# ToDo: forms_send.html - при нажатии на кнопку "Отправить" сформировать файл Excel с актом приёмо-передачи оборудования
-    # ToDo: при отправке данных в django отправляется форма, а не json - только значения из input (столбец - количество)
+
+# from channels.layers import get_channel_layer
+# from asgiref.sync import async_to_sync
 
 
-# ToDo: изменить данные в БД (местонахождение, количество) при нажатии кнопки "Отправить" в forms_send.html
+# def send_notification_to_all(request):
+#     channel_layer = get_channel_layer()
+#     async_to_sync(channel_layer.group_send)(
+#         "notifications",
+#         {
+#             "type": "send_notification",
+#             "message": "Новое уведомление для всех пользователей!"
+#         }
+#     )
+#     return HttpResponse("Уведомление отправлено всем пользователям.")
+
+
+# ToDo: изменить данные в БД (количество) при нажатии кнопки "Отправить" в forms_send.html
 # ToDo: занести сведения в БД (история перемещения) об оборудовании (дата, данные оборудования, откуда-куда, кто отправил)
 # ToDo: сделать БД с историей перемещения оборудования
 # ToDo: сделать ссылку (на закладке "Главная") на оборудовании для просмотра истории перемещения (отдельно открывающаяся страница) оборудования
+# ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
 # ToDo: установить ограничения на действия для разных пользователей
 # ToDo: неправильно работают фильтры: если выбран фильтр и ввести в HotSearch, то не учитывается основной фильтр, затем после очистки HotSearch
-    # ToDo: основной фильтр не работает
+# ToDo: основной фильтр не работает

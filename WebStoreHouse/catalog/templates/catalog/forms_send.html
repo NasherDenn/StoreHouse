@@ -1,268 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
-<!--    <meta name="description" content="Электронный склад оборудования компании YKR">-->
-<!--    <meta name="author" content="Nasher">-->
-<!--    <title>Rutledge Store House</title>-->
-
-<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
-<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">-->
-<!--    {% load static %}-->
-<!--    <script type="text/javascript" src="{% static 'functions\functionsBase.js' %}"></script>-->
-<!--    &lt;!&ndash;    <script type="text/javascript" src="{% static 'functions\ajax.js' %}"></script>&ndash;&gt;-->
-<!--    <link rel="stylesheet" href="{% static 'css\styles.css' %}">-->
-
-<!--    <script-->
-<!--            src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"-->
-<!--            integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw=="-->
-<!--            crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--    <script src=" https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js "></script>-->
-
-<!--</head>-->
-<!--<body>-->
-
-<!--{{ data|json_script:"my-data" }}-->
-<!--<script>-->
-<!--    var data_equipment_send = []-->
-<!--    // ждём полной загрузки страницы-->
-<!--    window.addEventListener('load', function () {-->
-<!--        // получаем данные в виде строки-->
-<!--        let result = JSON.parse(document.getElementById('my-data').textContent);-->
-<!--        result = eval('(' + result + ')');-->
-<!--        // берём список выбранного оборудования из localStorage-->
-<!--        let equipment_send = localStorage.getItem("data");-->
-<!--        // localStorage.clear();-->
-<!--        equipment_send = equipment_send.split(',')-->
-<!--        for (let id in equipment_send) {-->
-<!--            for (var i = 0; i < Object.keys(result).length; i++) {-->
-<!--                if (equipment_send[id] == result[i]['id']) {-->
-<!--                    data_equipment_send.push(result[i])-->
-<!--                    break-->
-<!--                }-->
-<!--            }-->
-<!--        }-->
-<!--        // console.log(data_equipment_send)-->
-<!--        // console.log(data_equipment_send[0])-->
-<!--        // console.log(data_equipment_send[0]['name'])-->
-<!--        // добавляем название столбцов в таблицу с выбранным оборудованием для отправки-->
-<!--        var tbody = document.getElementById('TableItemSend').getElementsByTagName("tbody")[0];-->
-<!--        var row = document.createElement("tr")-->
-<!--        var td0 = document.createElement("td")-->
-<!--        td0.appendChild(document.createTextNode('N'))-->
-<!--        var td1 = document.createElement("td")-->
-<!--        td1.appendChild(document.createTextNode('Тип'))-->
-<!--        var td2 = document.createElement("td")-->
-<!--        td2.appendChild(document.createTextNode('Производитель'))-->
-<!--        var td3 = document.createElement("td")-->
-<!--        td3.appendChild(document.createTextNode('Описание'))-->
-<!--        var td4 = document.createElement("td")-->
-<!--        td4.appendChild(document.createTextNode('Серийный номер'))-->
-<!--        var td5 = document.createElement("td")-->
-<!--        td5.appendChild(document.createTextNode('Количество'))-->
-<!--        row.appendChild(td0);-->
-<!--        row.appendChild(td1);-->
-<!--        row.appendChild(td2);-->
-<!--        row.appendChild(td3);-->
-<!--        row.appendChild(td4);-->
-<!--        row.appendChild(td5);-->
-<!--        tbody.appendChild(row);-->
-<!--        // перебираем информацию о выбранном оборудовании для отправки и добавляем её построчно-->
-<!--        for (var i = 0; i < Object.keys(data_equipment_send).length; i++) {-->
-<!--            // console.log(i)-->
-<!--            // console.log(data_equipment_send[i])-->
-<!--            var tbody = document.getElementById('TableItemSend').getElementsByTagName("tbody")[0];-->
-<!--            var row = document.createElement("tr");-->
-<!--            var td0 = document.createElement("td");-->
-<!--            td0.appendChild(document.createTextNode(i + 1));-->
-<!--            var td1 = document.createElement("td");-->
-<!--            td1.appendChild(document.createTextNode(data_equipment_send[i]['type']));-->
-<!--            var td2 = document.createElement("td");-->
-<!--            td2.appendChild(document.createTextNode(data_equipment_send[i]['manufacturer']));-->
-<!--            var td3 = document.createElement("td");-->
-<!--            td3.appendChild(document.createTextNode(data_equipment_send[i]['name']));-->
-<!--            var td4 = document.createElement("td");-->
-<!--            td4.appendChild(document.createTextNode(data_equipment_send[i]['serial']));-->
-
-<!--            var td5 = document.createElement("td");-->
-<!--            var iDiv = document.createElement('div');-->
-<!--            iDiv.class = "number";-->
-<!--            var count = iDiv.appendChild(document.createElement("input"));-->
-<!--            count.setAttribute("class", "number-text");-->
-<!--            count.setAttribute("type", "number");-->
-<!--            count.setAttribute("name", "count");-->
-<!--            count.setAttribute("value", data_equipment_send[i]['total']);-->
-<!--            count.setAttribute("min", "1");-->
-<!--            count.setAttribute("max", data_equipment_send[i]['total']);-->
-<!--            count.style.width = "80px";-->
-<!--            count.style.textAlign = "center";-->
-
-<!--            td5.appendChild(iDiv);-->
-<!--            row.appendChild(td0);-->
-<!--            row.appendChild(td1);-->
-<!--            row.appendChild(td2);-->
-<!--            row.appendChild(td3);-->
-<!--            row.appendChild(td4);-->
-<!--            row.appendChild(td5);-->
-<!--            tbody.appendChild(row);-->
-<!--        }-->
-<!--    })-->
-
-<!--    window.onload = function () {-->
-<!--        jQuery(document).ready(function () {-->
-<!--            // работа кнопок "-" (слева) и "+" (справа) от количества отправляемого оборудования-->
-<!--            $('.number-minus').click(function () {-->
-<!--                var $input = $(this).parent().find('input');-->
-<!--                var count = parseInt($input.val()) - 1;-->
-<!--                count = count < 1 ? 1 : count;-->
-<!--                $input.val(count);-->
-<!--                $input.change();-->
-<!--                return false;-->
-<!--            });-->
-<!--            $('.number-plus').click(function () {-->
-<!--                var $input = $(this).parent().find('input');-->
-<!--                $input.val(parseInt($input.val()) + 1);-->
-<!--                $input.change();-->
-<!--                return false;-->
-<!--            });-->
-
-<!--            // изменение изображения департамента в зависимости от выбранного названия (Rutledge или Arise)-->
-<!--            $(document).ready(function () {-->
-<!--                $('#floatingSelect').on('change', function () {-->
-<!--                    var url = $(this).find(':selected').data('divid');-->
-<!--                    $('#start-photo-departament').attr('src', url);-->
-<!--                });-->
-<!--            });-->
-<!--        });-->
-<!--    }-->
-
-<!--    // function get_data_table() {-->
-<!--    //     var table = document.getElementById('TableItemSend');-->
-<!--    //     var cellVal = {}-->
-<!--    //     cellVal["rows"] = []-->
-<!--    //     // Проходим по всем строкам таблицы-->
-<!--    //     for (let i = 0; i < table.rows.length; i++) {-->
-<!--    //         const row = table.rows[i];-->
-<!--    //         var rowVal = []-->
-<!--    //         if (i == 0) {-->
-<!--    //             for (let j = 0; j < row.cells.length; j++) {-->
-<!--    //                 const cell = row.cells[j];-->
-<!--    //                 rowVal.push(cell.textContent.trim());-->
-<!--    //             }-->
-<!--    //             ;-->
-<!--    //             cellVal["headers"] = rowVal-->
-<!--    //         } else {-->
-<!--    //             // Проходим по всем ячейкам в строке-->
-<!--    //             for (let j = 0; j < row.cells.length; j++) {-->
-<!--    //                 const cell = row.cells[j];-->
-<!--    //                 // Проверяем, есть ли в ячейке input-->
-<!--    //                 const input = cell.querySelector('input');-->
-<!--    //                 if (input) {-->
-<!--    //                     // Если есть input, получаем его значение-->
-<!--    //                     rowVal.push(input.value)-->
-<!--    //                 } else {-->
-<!--    //                     // Если input нет, получаем текстовое содержимое ячейки-->
-<!--    //                     rowVal.push(cell.textContent.trim())-->
-<!--    //                 }-->
-<!--    //                 ;-->
-<!--    //             }-->
-<!--    //             ;-->
-<!--    //             // заполняем список значениями из ячеек строки-->
-<!--    //             cellVal["rows"].push(rowVal)-->
-<!--    //         }-->
-<!--    //         ;-->
-<!--    //     }-->
-<!--    //     console.log('Отправляемые данные:', cellVal);-->
-<!--    // }-->
-
-<!--    function get_data_table() {-->
-
-<!--        // Отправка данных на сервер-->
-<!--        fetch('/send_excel/', {-->
-<!--            method: 'POST',-->
-<!--            headers: {-->
-<!--                'Content-Type': 'application/json',-->
-<!--                'X-CSRFToken': getCookie('csrftoken') // Добавьте CSRF-токен для защиты-->
-<!--            },-->
-<!--            // body: JSON.stringify({data: get_data_table_1})-->
-<!--            body: JSON.stringify({data: cellVal})-->
-<!--        })-->
-<!--            .then(response => response.blob())-->
-<!--            .then(blob => {-->
-<!--                // Создание ссылки для скачивания файла-->
-<!--                const url = window.URL.createObjectURL(blob);-->
-<!--                const a = document.createElement('a');-->
-<!--                a.href = url;-->
-<!--                a.download = 'output.xlsx';-->
-<!--                document.body.appendChild(a);-->
-<!--                a.click();-->
-<!--                document.body.removeChild(a);-->
-<!--                window.URL.revokeObjectURL(url);-->
-<!--            })-->
-<!--            .catch(error => console.error('Error:', error));-->
-
-
-<!--        function getCookie(name) {-->
-<!--            let cookieValue = null;-->
-<!--            if (document.cookie && document.cookie !== '') {-->
-<!--                const cookies = document.cookie.split(';');-->
-<!--                for (let i = 0; i < cookies.length; i++) {-->
-<!--                    const cookie = cookies[i].trim();-->
-<!--                    if (cookie.substring(0, name.length + 1) === (name + '=')) {-->
-<!--                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));-->
-<!--                        break;-->
-<!--                    }-->
-<!--                }-->
-<!--            }-->
-<!--            return cookieValue;-->
-<!--        }-->
-<!--    }-->
-
-
-<!--</script>-->
-<!--&lt;!&ndash;{% load static %}&ndash;&gt;-->
-<!--{% load crispy_forms_tags %}-->
-<!--<div class="tab-pane fade show active" id="item-send" role="tabpanel" aria-labelledby="home-tab" tabindex="0">-->
-<!--    <form action="/send_excel/" method="post">-->
-<!--        {% csrf_token %}-->
-<!--        <table class="table table-striped  align-middle" id="TableItemSend"-->
-<!--               style="display: flex; align-items: center; justify-content: center; ">-->
-<!--            <tbody class="table-group-divider" style="text-align: center; height: 500px">-->
-<!--            <br>-->
-<!--            <br>-->
-<!--            <div class="container">-->
-<!--                <div class="row justify-content-center">-->
-<!--                    <div class="col-4">-->
-<!--                        <select class="form-select" name="floatingSelect" id="floatingSelect"-->
-<!--                                style="width: 25%; position: sticky; left: 30%">-->
-<!--                            <option value="1" data-divid="{% static 'images\Rutledge.png' %}">YKR</option>-->
-<!--                            <option value="2" data-divid="{% static 'images\Arise.png' %}">Arise</option>-->
-<!--                        </select>-->
-<!--                    </div>-->
-<!--                    <div class="col-4 image-swap">-->
-<!--                        <img src="{% static 'images\Rutledge.png' %}" alt="" width="80" height="80"-->
-<!--                             id="start-photo-departament">-->
-<!--                    </div>-->
-<!--                    <br>-->
-<!--                    <br>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            </tbody>-->
-<!--        </table>-->
-<!--        <button type="submit" class="btn active btn-f-check" onclick="get_data_table()">Отправить-->
-<!--        </button>-->
-<!--    </form>-->
-<!--</div>-->
-
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
 <html lang="ru" data-bs-theme="auto">
 <head>
@@ -371,6 +106,61 @@
             box-shadow: 0 0 5px rgba(64, 153, 197, 0.5);
         }
 
+        .toast-container {
+            z-index: 1050; /* Убедитесь, что Toast отображается поверх других элементов */
+        }
+
+        .toast {
+            background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный белый фон */
+            border-radius: 8px; /* Меньшее скругление углов */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень, как в .form-container */
+            border: none; /* Убираем стандартную рамку */
+            width: 500px; /* Ширина */
+            font-size: 0.9rem; /* Уменьшенный размер текста */
+            backdrop-filter: blur(5px); /* Размытие фона для эффекта стекла */
+        }
+
+        .toast-header {
+            background-color: rgba(64, 153, 197, 0.4); /* Полупрозрачный цвет, как у .btn-primary */
+            color: white; /* Белый текст для контраста */
+            border-top-left-radius: 8px; /* Скругление углов заголовка */
+            border-top-right-radius: 8px;
+            padding: 0.25rem 1rem; /* Уменьшенные отступы для заголовка */
+            border-bottom: none; /* Убираем нижнюю границу */
+            display: flex; /* Делаем заголовок flex-контейнером */
+            align-items: center; /* Выравниваем элементы по центру */
+        }
+
+        .toast-header strong {
+            font-weight: bold; /* Жирный текст для заголовка */
+            margin-right: auto; /* Сдвигаем заголовок влево */
+        }
+
+        .toast-header .btn-close {
+            filter: invert(1); /* Инвертируем цвет кнопки закрытия для видимости на темном фоне */
+            margin-left: auto; /* Сдвигаем кнопку закрытия вправо */
+        }
+
+        .toast-body {
+            padding: 0.75rem; /* Уменьшенные отступы для содержимого */
+            color: #333; /* Цвет текста, как в вашем дизайне */
+        }
+
+        .toast {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -443,6 +233,10 @@
             count.style.width = "80px";
             count.style.textAlign = "center";
 
+            // id оборудования
+            var td6 = document.createElement("td");
+            td6.appendChild(document.createTextNode(data_equipment_send[i]['id']));
+
             td5.appendChild(iDiv);
             row.appendChild(td0);
             row.appendChild(td1);
@@ -450,6 +244,8 @@
             row.appendChild(td3);
             row.appendChild(td4);
             row.appendChild(td5);
+            row.appendChild(td6);
+            td6.setAttribute('style', 'display: none;');
             tbody.appendChild(row);
         }
         // заполняем select получателя значениями из ДБ
@@ -490,6 +286,7 @@
         });
     }
 
+    // Собираем данные из основной таблицы, выбранный департамент и получателя
     function gatherTableData() {
         const table = document.getElementById('TableItemSend');
         const rows = table.getElementsByTagName('tr');
@@ -504,15 +301,24 @@
                 manufacturer: cells[2].textContent.trim(), // Производитель
                 name: cells[3].textContent.trim(), // Название
                 serial: cells[4].textContent.trim(), // Серийный номер
-                count: cells[5].querySelector('input').value // Значение из input
+                count: cells[5].querySelector('input').value, // Значение из input
+                id: cells[6].textContent.trim(), // id оборудования
             };
             data.push(rowData);
         }
+        // какой департамент и получатель выбран
+        var departament_recipient = {
+            departament: document.getElementById('floatingSelect').options[document.getElementById('floatingSelect').selectedIndex].text,
+            recipient: document.getElementById('locationSelect').options[document.getElementById('locationSelect').selectedIndex].text
+        }
+        data.push(departament_recipient);
+        console.log('Собранные данные из таблицы', data)
         return data;
     }
 
     function get_data_table() {
         const tableData = gatherTableData();
+        console.log('Данные из frontend: ', tableData)
         // Отправка данных на сервер
         fetch('/send_excel/', {
             method: 'POST',
@@ -520,7 +326,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken') // Добавьте CSRF-токен для защиты
             },
-            body: JSON.stringify({data: tableData })
+            body: JSON.stringify({data: tableData})
         })
             .then(response => response.blob())
             .then(blob => {
@@ -533,8 +339,20 @@
                 a.click();
                 // document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
+
+                // уведомление на данной странице
+                pushNotification()
+
             })
             .catch(error => console.error('Error:', error));
+
+
+        // всплывающее уведомление
+        function pushNotification() {
+            const toastEl = document.getElementById('myToast');
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
 
         function getCookie(name) {
             let cookieValue = null;
@@ -552,8 +370,22 @@
         }
     }
 </script>
-
 <div class="form-container">
+    <!--всплывающее уведомление-->
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-absolute top-0 start-50 translate-middle-x p-3">
+            <div id="myToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast"
+                            aria-label="Закрыть"></button>
+                </div>
+                <div class="toast-body">
+                    Для выбранного оборудования изменено значение "Местоположение" в базе данных
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form action="/send_excel/" method="post">
         {% csrf_token %}
         <table class="table table-striped align-middle" id="TableItemSend">
