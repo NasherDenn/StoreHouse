@@ -11,6 +11,7 @@ var trDelete = ''
 
 function FirstLoad() {
     tableBase = document.getElementById("myTableBase");
+    // console.log(tableBase.innerText)
     trBase = tableBase.getElementsByTagName("tr");
     tableSend = document.getElementById("myTableSend");
     trSend = tableSend.getElementsByTagName("tr");
@@ -18,7 +19,9 @@ function FirstLoad() {
     trEdit = tableEdit.getElementsByTagName("tr");
     tableDelete = document.getElementById("myTableDelete");
     trDelete = tableDelete.getElementsByTagName("tr");
+    trTempTable = tableDelete.getElementById("tr");
 }
+
 
 function HotSearchingBase() {
     var i;
@@ -38,12 +41,12 @@ function HotSearchingBase() {
         var td_name = trBase[i].getElementsByTagName("td")[4];
         var td_serial = trBase[i].getElementsByTagName("td")[5];
         var td_location = trBase[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_name || td_serial) {
+        if (td_method || td_manufacture || td_name || td_serial || td_location) {
             var txtValue_method = td_method.textContent || td_method.innerText;
             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
             var txtValue_name = td_name.textContent || td_name.innerText;
             var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_serial.innerText;
+            var txtValue_location = td_location.textContent || td_location.innerText;
             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 && txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 && txtValue_name.toUpperCase().indexOf(filter_name) > -1 && txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 && txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
                 trBase[i].style.display = "";
             } else {
@@ -71,12 +74,12 @@ function HotSearchingSend() {
         var td_name = trSend[i].getElementsByTagName("td")[4];
         var td_serial = trSend[i].getElementsByTagName("td")[5];
         var td_location = trSend[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_name || td_serial) {
+        if (td_method || td_manufacture || td_name || td_serial || td_location) {
             var txtValue_method = td_method.textContent || td_method.innerText;
             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
             var txtValue_name = td_name.textContent || td_name.innerText;
             var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_serial.innerText;
+            var txtValue_location = td_location.textContent || td_location.innerText;
             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 && txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 && txtValue_name.toUpperCase().indexOf(filter_name) > -1 && txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 && txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
                 trSend[i].style.display = "";
             } else {
@@ -104,12 +107,12 @@ function HotSearchingEdit() {
         var td_name = trEdit[i].getElementsByTagName("td")[4];
         var td_serial = trEdit[i].getElementsByTagName("td")[5];
         var td_location = trEdit[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_name || td_serial) {
+        if (td_method || td_manufacture || td_name || td_serial || td_location) {
             var txtValue_method = td_method.textContent || td_method.innerText;
             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
             var txtValue_name = td_name.textContent || td_name.innerText;
             var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_serial.innerText;
+            var txtValue_location = td_location.textContent || td_location.innerText;
             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 && txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 && txtValue_name.toUpperCase().indexOf(filter_name) > -1 && txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 && txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
                 trEdit[i].style.display = "";
             } else {
@@ -137,12 +140,12 @@ function HotSearchingDelete() {
         var td_name = trDelete[i].getElementsByTagName("td")[4];
         var td_serial = trDelete[i].getElementsByTagName("td")[5];
         var td_location = trDelete[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_name || td_serial) {
+        if (td_method || td_manufacture || td_name || td_serial || td_location) {
             var txtValue_method = td_method.textContent || td_method.innerText;
             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
             var txtValue_name = td_name.textContent || td_name.innerText;
             var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_serial.innerText;
+            var txtValue_location = td_location.textContent || td_location.innerText;
             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 && txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 && txtValue_name.toUpperCase().indexOf(filter_name) > -1 && txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 && txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
                 trDelete[i].style.display = "";
             } else {
@@ -185,9 +188,11 @@ function getFilter() {
         }
     }
     tableBase = document.getElementById("myTableBase");
+    console.log(tableBase.innerText)
     trBase = tableBase.getElementsByTagName("tr");
     var new_tr_base = []
     for (var i = 1; i < trBase.length; i++) {
+
         var visible = false
         var td_method = trBase[i].getElementsByTagName("td")[1];
         var td_location = trBase[i].getElementsByTagName("td")[7];
@@ -208,6 +213,8 @@ function getFilter() {
             trBase[i].style.display = "none";
         }
     }
+    trBase = new_tr_base
+
     tableSend = document.getElementById("myTableSend");
     trSend = tableSend.getElementsByTagName("tr");
     var new_tr_send = []
@@ -233,6 +240,7 @@ function getFilter() {
         }
     }
     trSend = new_tr_send
+
     tableEdit = document.getElementById("myTableEdit");
     trEdit = tableEdit.getElementsByTagName("tr");
     var new_tr_edit = []
@@ -283,7 +291,9 @@ function getFilter() {
         }
     }
     trDelete = new_tr
+
 }
+
 
 // установить флажок всех checkbox в фильтрах и сделать нажатыми кнопки фильтров (Метод контроля, Месторасположение и Статус)
 function check() {
@@ -455,10 +465,10 @@ function check_send_all() {
         }
     }
     if (index_check_send == 0) {
-        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"><i/>'
+        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; width: 150px;"><i/>'
         document.getElementById('button-send').disabled = true
     } else {
-        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"> ${index_check_send}<i/>`
+        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; width: 150px;"> ${index_check_send}<i/>`
         document.getElementById('button-send').disabled = false
 
     }
@@ -485,10 +495,12 @@ function check_send_all_active() {
         }
     }
     if (index_check_send == 0) {
-        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"><i/>'
+        document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; width: 150px;"><i/>'
+        // document.getElementById('button-send').innerHTML = '<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"><i/>'
         document.getElementById('button-send').disabled = true
     } else {
-        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"> ${index_check_send}<i/>`
+        document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; width: 150px;"> ${index_check_send}<i/>`
+        // document.getElementById('button-send').innerHTML = `<i class="bi bi-truck" style="font-size: 1em; color: white; width: 150px; background-color: #e6f0fc;"> ${index_check_send}<i/>`
         document.getElementById('button-send').disabled = false
     }
 }
