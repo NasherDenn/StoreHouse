@@ -142,7 +142,7 @@ def unit_update(request):
         return HttpResponseRedirect("/home/")
 
 
-def unit_update_send(request, list_id, recip):
+def unit_update_send(request, list_id: list, recip: str):
     '''
     Обновляем данные в БД
     :param list_id: список id из form-send.html, переменной tableData
@@ -159,7 +159,147 @@ def unit_update_send(request, list_id, recip):
         return HttpResponse("Метод запроса должен быть POST.", status=405)
 
 
-def unit_delete(request, id_list):
+def check_count_send_equipment(request, list_id: list, table_data: dict):
+    '''
+    Проверяем какое количество оборудования перемещается.
+    1 Если в наличии больше, чем 1 штука (например 6 штук), а отправляется 4, то добавляем дополнительную строку с таким же оборудованием (новый id),
+    но с другим количеством и местоположением. А в первой строке уменьшаем значение количества.
+    2 Если в месте куда перемещается уже есть точно такое же оборудование (одинаковый метод контроля, производитель, тип, название),
+    то увеличиваем количество оборудования в месте перемещения, сливаем вместе примечание, оставляем статус как в месте куда перемещается
+    и удаляем оборудование (id), которое перемещаем.
+    :param list_id: список id из form-send.html, переменной tableData
+    :param table_data: отправляемые данные из таблицы tableData в form-send.html
+    '''
+    # переменная куда отправляется оборудование
+    recip = table_data[-1]['recipient']
+    table_data = table_data[:-1]
+    if request.method == "POST":
+        # обходим отправляемое оборудование по id
+        for index, index_id in enumerate(list_id):
+            # количество оборудования в БД
+            count_unit_db = Unit.objects.get(id=int(index_id)).total
+            # количество перемещаемого оборудования
+            count_unit_send = table_data[index]['count']
+            # если количество отправляемого оборудования равно количеству оборудования в БД, т.е. отправляем всё оборудование
+            if int(count_unit_send) == int(count_unit_db):
+                # проверяем есть ли уже точно такое же оборудование (метод контроля, производитель, тип, название) в месте назначения
+                # всё оборудование на локации
+                all_unit_location = Unit.objects.filter(location=Location.objects.get(name=recip))
+                if len(all_unit_location) != 0:
+                    for i in all_unit_location:
+                        no_unit_location = True
+                        # исключаем из обхода само перемещаемое оборудование
+                        if not int(i.id) == int(index_id):
+                            # если совпадают метод оборудования на локации и перемещаемого оборудования
+                            if i.method == Unit.objects.get(id=int(index_id)).method:
+                                # если совпадают производитель оборудования на локации и перемещаемого оборудования
+                                if i.manufacturer == Unit.objects.get(id=int(index_id)).manufacturer:
+                                    # если совпадают тип оборудования на локации и перемещаемого оборудования
+                                    if i.type == Unit.objects.get(id=int(index_id)).type:
+                                        # если совпадают название оборудования на локации и перемещаемого оборудования
+                                        if i.equipment_name == Unit.objects.get(id=int(index_id)).equipment_name:
+                                            # увеличиваем количество на локации
+                                            i.total = int(i.total) + int(Unit.objects.get(id=int(index_id)).total)
+                                            i.save()
+                                            # удаляем оборудование, которое отправляем
+                                            Unit.objects.get(id=int(index_id)).delete()
+                                            no_unit_location = False
+                    if no_unit_location:
+                        # меняем значение "локация" у оборудования, которое перемещаем
+                        unit = Unit.objects.get(id=index_id)
+                        location = Location.objects.get(name=recip)
+                        unit.location = location
+                        unit.save()
+                else:
+                    unit = Unit.objects.get(id=index_id)
+                    location = Location.objects.get(name=recip)
+                    unit.location = location
+                    unit.save()
+            # если количество отправляемого оборудования меньше чем количество оборудования в БД
+            else:
+                # проверяем есть ли уже точно такое же оборудование (метод контроля, производитель, тип, название) в месте назначения
+                # всё оборудование на локации
+                all_unit_location = Unit.objects.filter(location=Location.objects.get(name=recip))
+                if len(all_unit_location) != 0:
+                    for i in all_unit_location:
+                        no_unit_location = True
+                        # исключаем из обхода само перемещаемое оборудование
+                        if int(i.id) != int(index_id):
+                            # если совпадают метод оборудования на локации и перемещаемого оборудования
+                            if i.method == Unit.objects.get(id=int(index_id)).method:
+                                # если совпадают производитель оборудования на локации и перемещаемого оборудования
+                                if i.manufacturer == Unit.objects.get(id=int(index_id)).manufacturer:
+                                    # если совпадают тип оборудования на локации и перемещаемого оборудования
+                                    if i.type == Unit.objects.get(id=int(index_id)).type:
+                                        # если совпадают название оборудования на локации и перемещаемого оборудования
+                                        if i.equipment_name == Unit.objects.get(id=int(index_id)).equipment_name:
+                                            # увеличиваем количество на локации
+                                            i.total = int(i.total) + int(count_unit_send)
+                                            i.save()
+                                            no_unit_location = False
+                        unit_minus = Unit.objects.get(id=int(index_id))
+                        unit_minus.total = int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)
+                        unit_minus.save()
+                    if no_unit_location:
+                        # копируем сведения о перемещаемом оборудовании
+                        method = Unit.objects.get(id=index_id).method
+                        manufacturer = Unit.objects.get(id=index_id).manufacturer
+                        type = Unit.objects.get(id=index_id).type
+                        equipment_name = Unit.objects.get(id=index_id).equipment_name
+                        equipment_serial_number = Unit.objects.get(id=index_id).equipment_serial_number
+                        location = Location.objects.get(name=recip)
+                        # count_unit_send - количество оборудования
+                        status = Unit.objects.get(id=index_id).status
+                        notes = Unit.objects.get(id=index_id).notes
+                        # создаём новое оборудование
+                        unit = Unit()
+                        unit.method = method
+                        unit.manufacturer = manufacturer
+                        unit.type = type
+                        unit.equipment_name = equipment_name
+                        unit.equipment_serial_number = equipment_serial_number
+                        unit.total = count_unit_send
+                        unit.location = location
+                        unit.status = status
+                        unit.notes = notes
+                        unit.save()
+                        # уменьшаем количество отправленного оборудования в локации откуда отправляется оборудование
+                        unit = Unit.objects.get(id=index_id)
+                        unit.total = int(count_unit_db) - int(count_unit_send)
+                        unit.save()
+                else:
+                    # копируем сведения о перемещаемом оборудовании
+                    method = Unit.objects.get(id=index_id).method
+                    manufacturer = Unit.objects.get(id=index_id).manufacturer
+                    type = Unit.objects.get(id=index_id).type
+                    equipment_name = Unit.objects.get(id=index_id).equipment_name
+                    equipment_serial_number = Unit.objects.get(id=index_id).equipment_serial_number
+                    location = Location.objects.get(name=recip)
+                    # count_unit_send - количество оборудования
+                    status = Unit.objects.get(id=index_id).status
+                    notes = Unit.objects.get(id=index_id).notes
+                    # создаём новое оборудование
+                    unit = Unit()
+                    unit.method = method
+                    unit.manufacturer = manufacturer
+                    unit.type = type
+                    unit.equipment_name = equipment_name
+                    unit.equipment_serial_number = equipment_serial_number
+                    unit.total = count_unit_send
+                    unit.location = location
+                    unit.status = status
+                    unit.notes = notes
+                    unit.save()
+                    # уменьшаем количество отправленного оборудования в локации откуда отправляется оборудование
+                    unit = Unit.objects.get(id=index_id)
+                    unit.total = int(count_unit_db) - int(count_unit_send)
+                    unit.save()
+        return HttpResponse()
+    else:
+        return HttpResponse("Метод запроса должен быть POST.", status=405)
+
+
+def unit_delete(request, id):
     unit = Unit.objects.get(id=id)
     unit.delete()
     return HttpResponseRedirect('/home/')
@@ -338,6 +478,7 @@ def send_excel(request):
                     ws[f'G{14 + index}'].font = Font(name='Bahnschrift SemiLight', size=10)
 
                     id_list.append(item['id'])
+
                     # logger.error('Данные на backed', item['id'][0])
 
                 last_index = 14 + index
@@ -427,7 +568,10 @@ def send_excel(request):
             buffer.seek(0)
 
             # изменяем значение "Местоположение"
-            unit_update_send(request, id_list, table_data[-1]['recipient'])
+            # unit_update_send(request, id_list, table_data[-1]['recipient'])
+
+            # Проверяем какое количество оборудования перемещается и изменяем значение "Местоположение"
+            check_count_send_equipment(request, id_list, table_data)
 
             # Возврат файла как ответ
             response = HttpResponse(buffer.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -460,5 +604,4 @@ def send_excel(request):
 # ToDo: сделать ссылку (на закладке "Главная") на оборудовании для просмотра истории перемещения (отдельно открывающаяся страница) оборудования
 # ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
 # ToDo: установить ограничения на действия для разных пользователей
-# ToDo: неправильно работают фильтры: если выбран фильтр и ввести в HotSearch, то не учитывается основной фильтр, затем после очистки HotSearch
-# ToDo: основной фильтр не работает
+# ToDo: перенаправлять на закладку "Удалить" после удаления
