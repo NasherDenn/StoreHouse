@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'corsheaders',
+    'channels',
 ]
+
+ASGI_APPLICATION = 'WebStoreHouse.asgi.application'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -143,3 +146,16 @@ LOGIN_REDIRECT_URL = ''
 # }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+# import os
+#
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, '/static/media/')
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"  # Для тестирования
+#         # "BACKEND": "channels_redis.core.RedisChannelLayer"  # Для продакшена
+#         # "CONFIG": {"hosts": [("127.0.0.1", 6379)]},
+#     },
+# }

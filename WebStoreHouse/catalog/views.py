@@ -35,6 +35,9 @@ import warnings
 import logging
 
 
+logger = logging.getLogger(__name__)  # Логирование
+
+
 class UnitList(generic.ListView):
     model = Unit
 
@@ -82,11 +85,7 @@ def create(request):
         # выбираем из экземпляра значение по выбранному значению по id
         method = MethodNdt.objects.get(id=request.POST.get("method"))
         unit.method = method
-        # manufacture = Manufacturer.objects.get(id=request.POST.get("manufacture"))
-        # unit.manufacturer = manufacture
         unit.manufacturer = request.POST.get("manufacturer")
-        # type = Type.objects.get(id=request.POST.get("type"))
-        # unit.type = type
         unit.type = request.POST.get("type")
         unit.equipment_name = request.POST.get("name")
         unit.equipment_serial_number = request.POST.get("serial")
@@ -124,11 +123,7 @@ def unit_update(request):
         # выбираем из экземпляра значение по выбранному значению по id
         method = MethodNdt.objects.get(id=request.POST.get("method"))
         unit.method = method
-        # manufacture = Manufacturer.objects.get(id=request.POST.get("manufacture"))
-        # unit.manufacturer = manufacture
         unit.manufacturer = request.POST.get("manufacturer")
-        # type = Type.objects.get(id=request.POST.get("type"))
-        # unit.type = type
         unit.type = request.POST.get("type")
         unit.equipment_name = request.POST.get("name")
         unit.equipment_serial_number = request.POST.get("serial")
@@ -321,21 +316,16 @@ def forms_send(request):
     return render(request, "catalog/forms_send.html", {'data': data})
 
 
-logger = logging.getLogger(__name__)  # Логирование
-
-
 @csrf_exempt  # Отключение CSRF для упрощения (не используйте в production)
 def send_excel(request):
     if request.method == 'POST':
         try:
             # список id оборудования для отправки
             id_list = []
-
             raw_body = request.body.decode('utf-8')
             data = json.loads(raw_body)
             # Извлекаем данные
             table_data = data.get('data', [])
-            # logger.error(table_data)
 
             # создаём файл Excel
             wb = Workbook()
@@ -352,7 +342,6 @@ def send_excel(request):
             # чёрный стиль для границы
             thin = Side(border_style="thin", color="000000")
             medium = Side(border_style="medium", color="000000")
-
             # вставка изображение и адрес в зависимости от выбранного департамента
             if table_data[-1]['departament'] == 'YKR':
                 img = Image(os.path.join(settings.BASE_DIR, 'catalog', 'static', 'images', 'Rutledge.png'))
@@ -372,9 +361,6 @@ def send_excel(request):
                 ws['E4'].font = Font(name='Times New Roman', size=9)
                 ws['E5'] = '      NDT department'
                 ws['E5'].font = Font(name='Times New Roman', size=9)
-            # logger.error(table_data[-1]['departament'])
-            # logger.error(table_data[-1]['recipient'])
-
             # шапка листа с форматированием
             ws['F3'] = 'Date:'
             ws['F3'].alignment = Alignment(horizontal='right')
@@ -476,16 +462,8 @@ def send_excel(request):
                     ws[f'F{14 + index}'].font = Font(name='Bahnschrift SemiLightn', size=10)
                     ws[f'G{14 + index}'].alignment = Alignment(horizontal='center', vertical='center')
                     ws[f'G{14 + index}'].font = Font(name='Bahnschrift SemiLight', size=10)
-
                     id_list.append(item['id'])
-
-                    # logger.error('Данные на backed', item['id'][0])
-
                 last_index = 14 + index
-
-            # logger.error('ID список', id_list)
-            # logger.error('Данные на backed', table_data[-1]['recipient'])
-
             # граница шапки таблицы
             ws[f'B12'].border = Border(top=medium, bottom=medium, left=medium)
             ws[f'B13'].border = Border(top=medium, bottom=medium, left=medium)
@@ -507,7 +485,6 @@ def send_excel(request):
             ws[f'F{last_index}'].border = Border(top=medium)
             ws[f'G{last_index}'].border = Border(top=medium)
 
-            # logger.error(type(last_index))
             # футер листа с форматированием
             # высота первой строки
             ws.row_dimensions[last_index].height = 27
@@ -567,9 +544,6 @@ def send_excel(request):
             wb.save(buffer)
             buffer.seek(0)
 
-            # изменяем значение "Местоположение"
-            # unit_update_send(request, id_list, table_data[-1]['recipient'])
-
             # Проверяем какое количество оборудования перемещается и изменяем значение "Местоположение"
             check_count_send_equipment(request, id_list, table_data)
 
@@ -582,26 +556,15 @@ def send_excel(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-# from channels.layers import get_channel_layer
-# from asgiref.sync import async_to_sync
-
-
-# def send_notification_to_all(request):
-#     channel_layer = get_channel_layer()
-#     async_to_sync(channel_layer.group_send)(
-#         "notifications",
-#         {
-#             "type": "send_notification",
-#             "message": "Новое уведомление для всех пользователей!"
-#         }
-#     )
-#     return HttpResponse("Уведомление отправлено всем пользователям.")
-
-
-# ToDo: изменить данные в БД (количество) при нажатии кнопки "Отправить" в forms_send.html
-# ToDo: занести сведения в БД (история перемещения) об оборудовании (дата, данные оборудования, откуда-куда, кто отправил)
 # ToDo: сделать БД с историей перемещения оборудования
+# ToDo: занести сведения в БД (история перемещения) об оборудовании
+#  дата, время, все данные оборудования,                               кто отправил,  откуда,        кто получил, куда
+#  DATE, Time, Method, TYPE, Manufacturer, NAME, SERIAL NUMBER, Total, From_Employee, From_Location, To_Employee, To_Location
+
+# ToDo: добавить HotSearch для столбца 'Type'
+
 # ToDo: сделать ссылку (на закладке "Главная") на оборудовании для просмотра истории перемещения (отдельно открывающаяся страница) оборудования
 # ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
 # ToDo: установить ограничения на действия для разных пользователей
 # ToDo: перенаправлять на закладку "Удалить" после удаления
+# ToDo: перенаправлять на закладку "Редактировать" после редактирования

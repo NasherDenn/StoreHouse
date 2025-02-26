@@ -14,32 +14,6 @@ class MethodNdt(models.Model):
         return self.name
 
 
-# class Type(models.Model):
-#     name = models.CharField(
-#         max_length=30,
-#         help_text="Введите тип оборудования",
-#         verbose_name="Тип",
-#         null=True,
-#         blank=True
-#     )
-#
-#     def __str__(self):
-#         return self.name
-
-
-# class Manufacturer(models.Model):
-#     name = models.CharField(
-#         max_length=50,
-#         help_text="Введите производителя оборудования",
-#         verbose_name="Производитель",
-#         null=True,
-#         blank=True
-#     )
-#
-#     def __str__(self):
-#         return self.name
-
-
 class Status(models.Model):
     name = models.CharField(
         max_length=30,
@@ -74,7 +48,6 @@ class Unit(models.Model):
     )
 
     type = models.CharField(
-        # on_delete=models.CASCADE,
         max_length=30,
         verbose_name="Тип оборудования",
         null=True,
@@ -82,7 +55,6 @@ class Unit(models.Model):
     )
 
     manufacturer = models.CharField(
-        # on_delete=models.CASCADE,
         max_length=30,
         verbose_name="Производитель оборудования",
         null=True,
@@ -108,8 +80,6 @@ class Unit(models.Model):
     equipment_name = models.CharField(
         max_length=200,
         verbose_name="Название оборудования",
-        # null=True,
-        # blank=True
     )
 
     equipment_serial_number = models.CharField(
