@@ -289,6 +289,10 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                     unit = Unit.objects.get(id=index_id)
                     unit.total = int(count_unit_db) - int(count_unit_send)
                     unit.save()
+        try:
+            write_history(request)
+        except Exception as e:
+            logger.error(e)
         return HttpResponse()
     else:
         return HttpResponse("Метод запроса должен быть POST.", status=405)
@@ -554,6 +558,19 @@ def send_excel(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+# делаем запись действий (история) в БД
+def write_history(request):
+    # if request.method == 'POST':
+    crud_history = WriteHistory()
+    crud_history.name_write = 'MX2'
+    crud_history.date_write = '2025-02-26'
+    crud_history.time_write = '17:56:55'
+    crud_history.total_write = 5
+    crud_history.id_write = 99
+    crud_history.save()
+        # return HttpResponse()
 
 
 # ToDo: сделать БД с историей перемещения оборудования

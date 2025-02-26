@@ -103,3 +103,138 @@ class Unit(models.Model):
 
     def __str__(self):
         return self.equipment_name
+
+
+class WriteHistory(models.Model):
+    date_write = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    time_write = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    crud_write = models.CharField(
+        max_length=15,
+        verbose_name="Действие",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    who_write = models.CharField(
+        max_length=50,
+        verbose_name="Кто",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    from_write = models.CharField(
+        max_length=50,
+        verbose_name="Откуда",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    whom_write = models.CharField(
+        max_length=50,
+        verbose_name="Кому",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    to_write = models.CharField(
+        max_length=50,
+        verbose_name="Куда",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    method_write = models.CharField(
+        max_length=10,
+        verbose_name="Метод",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    manufacturer_write = models.CharField(
+        max_length=50,
+        verbose_name="Производитель",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    type_write = models.CharField(
+        max_length=50,
+        verbose_name="Тип",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    name_write = models.CharField(
+        max_length=100,
+        verbose_name="Название",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    serial_number_write = models.CharField(
+        max_length=30,
+        verbose_name="Серийный номер",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    total_write = models.IntegerField(
+        verbose_name="Количество",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    location_write = models.CharField(
+        max_length=20,
+        verbose_name="Местонахождение",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    status_write = models.CharField(
+        max_length=20,
+        verbose_name="Статус",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    notes_write = models.CharField(
+        max_length=200,
+        verbose_name="Примечание",
+        null=True,
+        blank=True,
+        default=''
+    )
+
+    id_write = models.IntegerField(
+        verbose_name="ID",
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        return (f"{self.date_write} - {self.time_write} - {self.crud_write} - {self.who_write} - {self.from_write} "
+                f"- {self.whom_write} - {self.to_write} - {self.method_write} - {self.manufacturer_write} - {self.type_write} "
+                f"- {self.name_write} - {self.serial_number_write} - {self.total_write} - {self.location_write} - {self.status_write} "
+                f"- {self.notes_write} - {self.id_write}")
