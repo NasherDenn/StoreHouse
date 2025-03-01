@@ -33,20 +33,76 @@
 
         .cap {
             align-content: center;
+            padding-left: 0;
+            min-width: 100px;
+        }
+
+        .cap-location {
+            align-content: center;
+            padding-left: 0;
+            min-width: 140px;
+        }
+
+        .cap-departament {
+            align-content: center;
+            text-align: right;
+            width: auto;
         }
 
         .cap-recipient {
             align-content: center;
-            text-align: right;
+            text-align: center;
+            width: auto;
+        }
+
+        .cap-recipient_name {
+            text-align: center; /* Выравнивание текста по центру */
+            /*display: flex; !* Используем Flexbox для лучшего контроля *!*/
+            align-items: center; /* Выравнивание по вертикали */
+            align-content: center;
+            text-align: center;
+            justify-content: center; /* Выравнивание по горизонтали */
+            padding-left: 0;
+            color: #333; /* Цвет текста */
+        }
+
+        .cap-recipient_input {
+            text-align: center; /* Выравнивание по центру */
+            /*display: flex; !* Используем Flexbox *!*/
+            align-items: center; /* Выравнивание по вертикали */
+            align-content: center;
+            text-align: center;
+            justify-content: center; /* Выравнивание по горизонтали */
+            padding-left: 0;
+        }
+
+        .cap-recipient_input input {
+            width: 100%; /* Полная ширина внутри колонки */
+            padding: 0.75rem; /* Внутренние отступы */
+            border-radius: 5px; /* Закругленные углы */
+            border: 1px solid #ddd; /* Граница */
+            transition: border-color 0.3s ease; /* Плавный переход при фокусе */
+            text-align: left; /* Выравнивание текста внутри input */
+        }
+
+        .cap-recipient_input input:focus {
+            border-color: #4099c5; /* Изменение цвета границы при фокусе */
+            box-shadow: 0 0 5px rgba(64, 153, 197, 0.5); /* Легкая тень */
+            outline: none; /* Убираем стандартную рамку */
         }
 
         .form-container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
             padding: 2rem;
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            display: flex; /* Включаем Flexbox */
+            justify-content: space-between; /* Равномерно распределяем элементы */
         }
 
         .table {
@@ -392,25 +448,35 @@
             <tbody class="table-group-divider" style="text-align: center;">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-3 cap">
+                    <div class="col-auto cap">
                         <select class="form-select" name="floatingSelect" id="floatingSelect">
                             <option value="1" data-divid="{% static 'images/Rutledge.png' %}">YKR</option>
                             <option value="2" data-divid="{% static 'images/Arise.png' %}">Arise</option>
                         </select>
                     </div>
-                    <div class="col-3 image-swap cap">
+                    <div class="col-auto image-swap cap-departament">
                         <img src="{% static 'images/Rutledge.png' %}" alt="" width="80" height="80"
                              id="start-photo-departament">
                     </div>
 
-                    <div class="col-3 cap-recipient">
+                    <div class="col-auto cap-recipient">
+                        <label>
+                            Место<br>назначения
+                        </label>
+                    </div>
+                    <div class="col-auto cap-location">
+                        <select class="form-select" name="locationSelect" id="locationSelect">
+                        </select>
+                    </div>
+
+                    <div class="col-auto cap-recipient_name">
                         <label>
                             Получатель
                         </label>
                     </div>
-                    <div class="col-3 cap">
-                        <select class="form-select" name="locationSelect" id="locationSelect">
-                        </select>
+
+                    <div class="col-auto cap-recipient_input">
+                        <input type="text" placeholder="Имя получателя..." maxlength="30">
                     </div>
 
                 </div>
