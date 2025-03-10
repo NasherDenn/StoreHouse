@@ -196,11 +196,11 @@ class WriteHistory(models.Model):
         default=''
     )
 
-    total_write = models.IntegerField(
+    total_write = models.CharField(
+        max_length=30,
         verbose_name="Количество",
         null=True,
         blank=True,
-        default=''
     )
 
     location_write = models.CharField(

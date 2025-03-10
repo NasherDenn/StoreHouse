@@ -167,7 +167,9 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
     :param table_data: отправляемые данные из таблицы tableData в form-send.html
     '''
     # переменная куда отправляется оборудование
+    logging.error(f'1111 {table_data}')
     recip = table_data[-1]['recipient']
+    recip_name = table_data[-1]['recipient_name']
     table_data = table_data[:-1]
     if request.method == "POST":
         # обходим отправляемое оборудование по id
@@ -228,8 +230,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                                 logging.error('7')
                                                 data_write['who_write'] = request.user.username
                                                 # Предварительная запись откуда отправляется оборудование - см. выше
-                                                # ToDo: добавить в forms_send.html поле для ввода получателя "whom_write" (сведения для истории в БД)
-                                                data_write['whom_write'] = ''
+                                                data_write['whom_write'] = recip_name
                                                 data_write['to_write'] = recip
                                                 data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
                                                 data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
@@ -268,7 +269,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                             data_write['crud_write'] = f'отправлено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
                             data_write['who_write'] = request.user.username
                             # Предварительная запись откуда отправляется оборудование - см. выше
-                            data_write['whom_write'] = ''
+                            data_write['whom_write'] = recip_name
                             data_write['to_write'] = recip
                             data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
                             data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
@@ -299,7 +300,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         data_write['crud_write'] = f'отправлено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
                         data_write['who_write'] = request.user.username
                         # Предварительная запись откуда отправляется оборудование - см. выше
-                        data_write['whom_write'] = ''
+                        data_write['whom_write'] = recip_name
                         data_write['to_write'] = recip
                         data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
                         data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
@@ -351,8 +352,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                                 data_write['who_write'] = request.user.username
                                                 data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
                                                 data_write['location_write'] = recip
-                                                # ToDo: добавить в forms_send.html поле для ввода получателя "whom_write" (сведения для истории в БД)
-                                                data_write['whom_write'] = ''
+                                                data_write['whom_write'] = recip_name
                                                 data_write['to_write'] = recip
                                                 data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
                                                 data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
@@ -413,8 +413,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                             data_write['who_write'] = request.user.username
                             data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
                             data_write['location_write'] = recip
-                            # ToDo: добавить в forms_send.html поле для ввода получателя "whom_write" (сведения для истории в БД)
-                            data_write['whom_write'] = ''
+                            data_write['whom_write'] = recip_name
                             data_write['to_write'] = recip
                             data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
                             data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
@@ -471,8 +470,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         data_write['who_write'] = request.user.username
                         data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
                         data_write['location_write'] = recip
-                        # ToDo: добавить в forms_send.html поле для ввода получателя "whom_write" (сведения для истории в БД)
-                        data_write['whom_write'] = ''
+                        data_write['whom_write'] = recip_name
                         data_write['to_write'] = recip
                         data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
                         data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
@@ -530,7 +528,6 @@ def send_excel(request):
             data = json.loads(raw_body)
             # Извлекаем данные
             table_data = data.get('data', [])
-
             # создаём файл Excel
             wb = Workbook()
             ws = wb.active
@@ -637,7 +634,7 @@ def send_excel(request):
             last_count_send_equipment = 0
             # основные данные таблицы
             for index, item in enumerate(table_data):
-                if not len(item) == 2:
+                if not len(item) == 3:
                     ws.row_dimensions[14 + index].height = 24.60
                     ws[f'B{14 + index}'] = int(item['index'])
                     ws[f'B{14 + index}'].number_format = numbers.FORMAT_NUMBER
@@ -747,7 +744,6 @@ def send_excel(request):
             buffer = io.BytesIO()
             wb.save(buffer)
             buffer.seek(0)
-
             # Проверяем какое количество оборудования перемещается и изменяем значение "Местоположение"
             check_count_send_equipment(request, id_list, table_data)
 

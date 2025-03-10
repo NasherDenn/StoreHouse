@@ -362,13 +362,15 @@
             };
             data.push(rowData);
         }
-        // какой департамент и получатель выбран
+        // какой департамент и локация получения и имя получателя выбраны
         var departament_recipient = {
             departament: document.getElementById('floatingSelect').options[document.getElementById('floatingSelect').selectedIndex].text,
-            recipient: document.getElementById('locationSelect').options[document.getElementById('locationSelect').selectedIndex].text
+            recipient: document.getElementById('locationSelect').options[document.getElementById('locationSelect').selectedIndex].text,
+            recipient_name: document.getElementById('nameSelect').value,
         }
         data.push(departament_recipient);
         console.log('Собранные данные из таблицы', data)
+        console.log('Получатель', data[departament_recipient])
         return data;
     }
 
@@ -476,7 +478,7 @@
                     </div>
 
                     <div class="col-auto cap-recipient_input">
-                        <input type="text" placeholder="Имя получателя..." maxlength="30">
+                        <input type="text" placeholder="Имя получателя..." maxlength="30" name="nameSelect" id="nameSelect">
                     </div>
 
                 </div>
