@@ -101,6 +101,13 @@ class Unit(models.Model):
         default=''
     )
 
+    first_id = models.CharField(
+        max_length=5,
+        verbose_name="ID",
+        null=True,
+        blank=True
+    )
+
     def __str__(self):
         return self.equipment_name
 
