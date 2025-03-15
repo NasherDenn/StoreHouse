@@ -523,7 +523,7 @@ def forms_send(request):
     loc = list(names)
     for index, i in enumerate(queryset):
         unit[index] = {'id': i.id, 'name': i.equipment_name, 'serial': i.equipment_serial_number, 'total': i.total, 'type': i.type,
-                       'manufacturer': i.manufacturer, 'location': loc}
+                       'manufacturer': i.manufacturer, 'location': loc, 'loc': i.location.name}
     data = json.dumps(unit)
     return render(request, "catalog/forms_send.html", {'data': data})
 
@@ -798,8 +798,6 @@ def write_history(request, data_write: dict):
 
 # ToDo: занести сведения в БД (история перемещения) об оборудовании - дополнить второй строкой: количество оставшегося оборудования на локации из которой передавали
 
-# ToDo: блокировать передачу оборудования одновременно из разных мест (локаций) в одном акте приёмо-передачи
-# ToDo: добавить HotSearch для столбца 'Type'
 # ToDo: сделать ссылку (на закладке "Главная") на оборудовании для просмотра истории перемещения (отдельно открывающаяся страница) оборудования
 # ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
 # ToDo: установить ограничения на действия для разных пользователей

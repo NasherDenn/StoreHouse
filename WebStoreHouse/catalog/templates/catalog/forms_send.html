@@ -239,6 +239,21 @@
                 }
             }
         }
+
+        // проверяем чтобы место отправления оборудования было из одного места
+        let l = []
+        for (let loc in data_equipment_send) {
+            l.push(data_equipment_send[loc]['loc'])
+        }
+        const counts = new Set(l);
+        if (counts.size > 1) {
+            // всплывающее уведомление
+            const toastEl = document.getElementById('myToastLocation');
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            return false;
+        }
+
         // Добавляем название столбцов в таблицу с выбранным оборудованием для отправки
         var tbody = document.getElementById('TableItemSend').getElementsByTagName("tbody")[0];
         var row = document.createElement("tr");
@@ -441,6 +456,17 @@
                     Для выбранного оборудования изменено значение "Местоположение" в базе данных
                 </div>
             </div>
+
+            <div id="myToastLocation" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast"
+                            aria-label="Закрыть"></button>
+                </div>
+                <div class="toast-body">
+                    Нельзя одновременно (в одном акте приёмо-передачи) перемещать оборудование из разных мест
+                </div>
+            </div>
+
         </div>
     </div>
 
