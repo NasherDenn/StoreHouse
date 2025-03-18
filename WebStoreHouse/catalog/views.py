@@ -190,37 +190,36 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
             #          - передаётся всё оборудование или часть оборудования
             #              - передаётся в новое место где ещё нет никакого оборудования или там есть хоть какое-нибудь оборудование
             #                  - передаваемое оборудование уже присутствует в месте назначения или такого там ещё нет
-            #   + одна позиция - всё оборудование - новое место где ещё нет никакого оборудования
-            #   + одна позиция - всё оборудование - место где хоть какое-нибудь оборудование - такое оборудование уже присутствует в месте назначения
-            #   + одна позиция - всё оборудование - место где хоть какое-нибудь оборудование - такого оборудования там ещё нет
-            #   + одна позиция - часть оборудования - новое место где ещё нет никакого оборудования
-            #   + одна позиция - часть оборудования - место где хоть какое-нибудь оборудование - такое оборудование уже присутствует в месте назначения
-            #   + одна позиция - часть оборудования - место где хоть какое-нибудь оборудование - такого оборудования там ещё нет
-            #   + несколько позиций - всё оборудование - новое место где ещё нет никакого оборудования
-            #   + несколько позиций - всё оборудование - место где хоть какое-нибудь оборудование - всё такое передаваемое оборудование уже присутствует в месте назначения
-            #   + несколько позиций - всё оборудование - место где хоть какое-нибудь оборудование - всего такого оборудования там ещё нет
-            #   + несколько позиций - всё оборудование - место где хоть какое-нибудь оборудование - часть такого передаваемого оборудования уже присутствует в месте назначения
-            #   + несколько позиций - часть оборудования - новое место где ещё нет никакого оборудования
-            #   ????? несколько позиций - часть оборудования - место где хоть какое-нибудь оборудование - всё такое оборудование уже присутствует в месте назначения:
-            #          !!!!!!!!!!!! дополнительно создаёт ещё строки с передаваемым оборудованием (дублирует) в таблице БД Unit, неправильно считает в таблице истории БД
-            #   + несколько позиций - часть оборудования - место где хоть какое-нибудь оборудование - часть такого оборудования уже присутствует в месте назначения
-            #   + несколько позиций - часть оборудования - место где хоть какое-нибудь оборудование - такого оборудования там ещё нет
+            #    одна позиция - всё оборудование - новое место где ещё нет никакого оборудования
+            #    одна позиция - всё оборудование - место где хоть какое-нибудь оборудование - такое оборудование уже присутствует в месте назначения
+            #    одна позиция - всё оборудование - место где хоть какое-нибудь оборудование - такого оборудования там ещё нет
+            #    одна позиция - часть оборудования - новое место где ещё нет никакого оборудования
+            #    одна позиция - часть оборудования - место где хоть какое-нибудь оборудование - такое оборудование уже присутствует в месте назначения
+            #    одна позиция - часть оборудования - место где хоть какое-нибудь оборудование - такого оборудования там ещё нет
+            #    несколько позиций - всё оборудование - новое место где ещё нет никакого оборудования
+            #    несколько позиций - всё оборудование - место где хоть какое-нибудь оборудование - всё такое передаваемое оборудование уже присутствует в месте назначения
+            #    несколько позиций - всё оборудование - место где хоть какое-нибудь оборудование - всего такого оборудования там ещё нет
+            #    несколько позиций - всё оборудование - место где хоть какое-нибудь оборудование - часть такого передаваемого оборудования уже присутствует в месте назначения
+            #    несколько позиций - часть оборудования - новое место где ещё нет никакого оборудования
+            #    несколько позиций - часть оборудования - место где хоть какое-нибудь оборудование - всё такое оборудование уже присутствует в месте назначения:
+            #    несколько позиций - часть оборудования - место где хоть какое-нибудь оборудование - часть такого оборудования уже присутствует в месте назначения
+            #    несколько позиций - часть оборудования - место где хоть какое-нибудь оборудование - такого оборудования там ещё нет
             # !!! если количество отправляемого оборудования равно количеству оборудования в БД (отправляем всё оборудование)
             if int(count_unit_send) == int(count_unit_db):
                 # проверяем есть ли уже точно такое же оборудование (метод контроля, производитель, тип, название) в месте назначения
                 # всё оборудование на локации
                 all_unit_location = Unit.objects.filter(location=Location.objects.get(name=recip))
-                logging.error(f'all_unit_location {all_unit_location}')
+                # logging.error(f'all_unit_location {all_unit_location}')
                 # !!! передаём всё оборудование на локацию, где есть хоть какое-нибудь оборудование
                 if len(all_unit_location) != 0:
                     for i in all_unit_location:
-                        logging.error(f'Оборудование {i}')
+                        # logging.error(f'Оборудование {i}')
                         no_unit_location = True
                         # !!! проверяем есть ли такое оборудование в месте назначения
                         # исключаем из обхода само перемещаемое оборудование
                         if not int(i.id) == int(index_id):
-                            logging.error(f'i.id {i.id}')
-                            logging.error(f'index_id {index_id}')
+                            # logging.error(f'i.id {i.id}')
+                            # logging.error(f'index_id {index_id}')
                             # если совпадают метод оборудования на локации и перемещаемого оборудования
                             if i.method == Unit.objects.get(id=int(index_id)).method:
                                 # если совпадают производитель оборудования на локации и перемещаемого оборудования
@@ -231,7 +230,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                         if i.equipment_name == Unit.objects.get(id=int(index_id)).equipment_name:
                                             # !!! передаваемое оборудование уже есть в месте назначения
                                             # увеличиваем количество на локации
-                                            logging.error('1')
+                                            # logging.error('1')
                                             # try:
                                             #     logging.error(i.total)
                                             #     logging.error(Unit.objects.get(id=int(index_id)).total)
@@ -241,20 +240,20 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                                 'total_write'] = f'{int(i.total)} -> {int(i.total) + int(Unit.objects.get(id=int(index_id)).total)}'
                                             i.total = int(i.total) + int(Unit.objects.get(id=int(index_id)).total)
                                             i.save()
-                                            logging.error('2')
+                                            # logging.error('2')
                                             # предварительная запись откуда отправляется оборудование
                                             data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
-                                            logging.error('3')
+                                            # logging.error('3')
                                             data_write['location_write'] = recip
-                                            logging.error('4')
+                                            # logging.error('4')
                                             # делаем запись истории в БД
                                             try:
                                                 data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
-                                                logging.error('5')
+                                                # logging.error('5')
                                                 data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
-                                                logging.error('6')
+                                                # logging.error('6')
                                                 data_write['crud_write'] = f'отправлено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
-                                                logging.error('7')
+                                                # logging.error('7')
                                                 data_write['who_write'] = request.user.username
                                                 # Предварительная запись откуда отправляется оборудование - см. выше
                                                 data_write['whom_write'] = recip_name
@@ -267,13 +266,13 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                                 # Предварительная запись откуда -> куда - см. выше
                                                 data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
                                                 data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
-                                                logging.error('8')
+                                                # logging.error('8')
                                                 data_write['id_write'] = Unit.objects.get(id=int(index_id)).first_id
-                                                logging.error('9')
+                                                # logging.error('9')
                                                 # удаляем оборудование, которое отправляем
-                                                logging.error(f'Удаляемое оборудование {Unit.objects.get(id=int(index_id))}')
+                                                # logging.error(f'Удаляемое оборудование {Unit.objects.get(id=int(index_id))}')
                                                 Unit.objects.get(id=int(index_id)).delete()
-                                                logging.error('10')
+                                                # logging.error('10')
                                                 no_unit_location = False
                                                 break
                                                 # logging(f'1-1 {data_write}')
@@ -351,31 +350,43 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                 # проверяем есть ли уже точно такое же оборудование (метод контроля, производитель, тип, название) в месте назначения
                 # всё оборудование на локации
                 all_unit_location = Unit.objects.filter(location=Location.objects.get(name=recip))
+
+                no_unit_location = True
+
                 # !!! передаём часть оборудования на локацию, где есть хоть какое-нибудь оборудование
                 if len(all_unit_location) != 0:
+                    # logging.error(f'------------------------------------------------------------------------------------------')
+                    # logging.error(f'Старт')
+                    # logging.error(f'Всё оборудование на локации {all_unit_location}')
                     for i in all_unit_location:
-                        no_unit_location = True
+                        # logging.error(f'i.id {i.id}')
+                        # logging.error(f'index_id {index_id}')
                         # !!! проверяем есть ли такое оборудование в месте назначения
                         # исключаем из обхода само перемещаемое оборудование
                         if int(i.id) != int(index_id):
+                            # logging.error(f'1')
                             # если совпадают метод оборудования на локации и перемещаемого оборудования
                             if i.method == Unit.objects.get(id=int(index_id)).method:
+                                # logging.error(f'2')
                                 # если совпадают производитель оборудования на локации и перемещаемого оборудования
                                 if i.manufacturer == Unit.objects.get(id=int(index_id)).manufacturer:
+                                    # logging.error(f'3')
                                     # если совпадают тип оборудования на локации и перемещаемого оборудования
                                     if i.type == Unit.objects.get(id=int(index_id)).type:
+                                        # logging.error(f'4')
                                         # если совпадают название оборудования на локации и перемещаемого оборудования
                                         if i.equipment_name == Unit.objects.get(id=int(index_id)).equipment_name:
-
-                                            #   ????? несколько позиций - часть оборудования - место где хоть какое-нибудь оборудование - всё такое оборудование уже присутствует в месте назначения:
-                                            #          !!!!!!!!!!!! дополнительно создаёт ещё строки с передаваемым оборудованием (дублирует) в таблице БД Unit, неправильно считает в таблице истории БД
-
+                                            # logging.error(f'Оборудование на локации: {i.equipment_name}')
+                                            # logging.error(f'Количество оборудования на локации: {i.total}')
+                                            # logging.error(f'Передаваемое оборудование: {Unit.objects.get(id=int(index_id)).equipment_name}')
+                                            # logging.error(f'Количество передаваемого оборудования: {int(count_unit_send)}')
                                             # !!! передаваемое оборудование уже есть в месте назначения
                                             # Предварительная запись было -> стало количество
                                             data_write['total_write'] = f'{int(i.total)} -> {int(i.total) + int(count_unit_send)}'
                                             # увеличиваем количество на локации
                                             i.total = int(i.total) + int(count_unit_send)
                                             i.save()
+                                            # logging.error(f'В итоге на локации: {i.total}')
                                             # делаем запись истории в БД
                                             try:
                                                 data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -400,15 +411,20 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                                 # logging.error('part 8')
                                                 data_write['id_write'] = Unit.objects.get(id=int(index_id)).first_id
                                                 # logging.error('part 9')
+                                                no_unit_location = False
+                                                # logging.error(f'10')
                                             except Exception as e:
                                                 logging.error(e)
                                                 logging.error(f'part 10 {data_write}')
-                                            no_unit_location = False
-                        unit_minus = Unit.objects.get(id=int(index_id))
-                        unit_minus.total = int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)
-                        unit_minus.save()
+                                            logging.error(f'11')
+                                            unit_minus = Unit.objects.get(id=int(index_id))
+                                            unit_minus.total = int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)
+                                            unit_minus.save()
+                                            logging.error(f'12')
+                                            logging.error(f'no_unit_location: {no_unit_location}')
                     # !!! в месте назначения ещё нет такого оборудования
                     if no_unit_location:
+
                         # копируем сведения о перемещаемом оборудовании
                         method = Unit.objects.get(id=index_id).method
                         manufacturer = Unit.objects.get(id=index_id).manufacturer
@@ -524,7 +540,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         logging.error(e)
                         logging.error(f'part 110 {data_write}')
             try:
-                logging.error(f'111111111')
+                logging.error(f'Финиш')
                 write_history(request, data_write)
             except Exception as e:
                 logger.error(f'2 {e}')
