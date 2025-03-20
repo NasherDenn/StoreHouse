@@ -99,6 +99,28 @@ def create(request):
         unit.save()
         unit.first_id = unit.id
         unit.save()
+
+        # словарь со значениями для формирования истории в БД
+        data_write = {'date_write': datetime.datetime.now().strftime('%Y-%m-%d'),
+                      'time_write': datetime.datetime.now().time().strftime('%H:%M:%S'),
+                      'crud_write': f'добавлено в БД',
+                      'from_write': '-',
+                      'who_write': request.user.username,
+                      'whom_write': '-',
+                      'to_write': '-',
+                      'method_write': method,
+                      'manufacturer_write': request.POST.get("manufacturer"),
+                      'type_write': request.POST.get("type"),
+                      'name_write': request.POST.get("name"),
+                      'serial_number_write': request.POST.get("serial"),
+                      'total_write': request.POST.get("total"),
+                      'location_write': location,
+                      'status_write': status,
+                      'notes_write': request.POST.get("notes"),
+                      'id_write': unit.id}
+        write_history_create(request, data_write)
+
+
         return home(request)
 
 
@@ -818,7 +840,7 @@ def send_excel(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-# делаем запись в БД отправки (приход) оборудования
+# делаем запись в историю БД об отправки (приход) оборудования
 def write_history_coming(request, data_write: dict):
     # if request.method == 'POST':
     crud_history = WriteHistory()
@@ -847,7 +869,7 @@ def write_history_coming(request, data_write: dict):
     crud_history.save()
 
 
-# делаем запись в БД отправки (расход) оборудования
+# делаем запись в историю БД об отправки (расход) оборудования
 def write_history_expense(request, data_write: dict):
     # if request.method == 'POST':
     crud_history = WriteHistory()
@@ -876,7 +898,33 @@ def write_history_expense(request, data_write: dict):
     crud_history.save()
 
 
-# ToDo: занести сведения в БД о создании оборудования
+# делаем запись в историю БД о создании оборудования
+def write_history_create(request, data_write: dict):
+    crud_history = WriteHistory()
+    try:
+        crud_history.date_write = data_write['date_write']
+        crud_history.time_write = data_write['time_write']
+        crud_history.crud_write = data_write['crud_write']
+        crud_history.who_write = data_write['who_write']
+        crud_history.from_write = data_write['from_write']
+        crud_history.whom_write = data_write['whom_write']
+        crud_history.to_write = data_write['to_write']
+        crud_history.method_write = data_write['method_write']
+        crud_history.manufacturer_write = data_write['manufacturer_write']
+        crud_history.type_write = data_write['type_write']
+        crud_history.name_write = data_write['name_write']
+        crud_history.serial_number_write = data_write['serial_number_write']
+        crud_history.total_write = data_write['total_write']
+        crud_history.location_write = data_write['location_write']
+        crud_history.status_write = data_write['status_write']
+        crud_history.notes_write = data_write['notes_write']
+        crud_history.id_write = data_write['id_write']
+    except Exception as e:
+        logging.error(f'4 {e}')
+        logging.error(f'4-2 {data_write}')
+    crud_history.save()
+
+
 # ToDo: занести сведения в БД о удалении оборудования
 # ToDo: занести сведения в БД о редактировании оборудования
 
