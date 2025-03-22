@@ -213,7 +213,8 @@ def unit_update(request):
         data_write['id_write'] = Unit.objects.get(id=id).first_id
         unit.save()
         write_history(request, data_write)
-        return HttpResponseRedirect("/home/")
+        return HttpResponseRedirect("/home/#edit-tab-pane")
+        # return HttpResponseRedirect("/home/")
 
 
 def unit_update_send(request, list_id: list, recip: str):
@@ -665,7 +666,8 @@ def unit_delete(request, id):
                   }
     unit.delete()
     write_history(request, data_write)
-    return HttpResponseRedirect('/home/')
+    return HttpResponseRedirect('/home/#delete-tab-pane')
+    # return HttpResponseRedirect('/home/')
 
 
 def is_ajax(request):
@@ -1008,9 +1010,9 @@ def write_history(request, data_write: dict):
 
 
 # ToDo: сделать ссылку (на закладке "Главная") на оборудовании для просмотра истории перемещения (отдельно открывающаяся страница) оборудования
+
 # ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
 # ToDo: установить ограничения на действия для разных пользователей
-# ToDo: перенаправлять на закладку "Удалить" после удаления
-# ToDo: перенаправлять на закладку "Редактировать" после редактирования
 
 # ToDo: Написать скрипт для добавления оборудования в БД из рабочих таблиц Excel
+

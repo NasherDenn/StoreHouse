@@ -515,7 +515,9 @@
                 <td>{{ unit.type }}</td>
                 <td>
                     {{ unit.equipment_name }}
-                    <a href="{% url 'unit_edit' unit.id %}" style="float: right; text-decoration: none; color: #0056b3">Редактировать</a>
+                    <a href="{% url 'unit_edit' unit.id %}" style="float: right; text-decoration: none; color: #0056b3">
+                        <img src="{% static 'images/edit.png' %}" alt="edit" width="25" height="25">
+                    </a>
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>
@@ -591,7 +593,9 @@
                 <td>
                     {{ unit.equipment_name }}
                     <a href="{% url 'unit_delete' unit.id %}"
-                       style="float: right; text-decoration: none; color: tomato">Удалить</a>
+                       style="float: right; text-decoration: none; color: tomato">
+                        <img src="{% static 'images/trash.png' %}" alt="delete" width="25" height="25">
+                    </a>
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>

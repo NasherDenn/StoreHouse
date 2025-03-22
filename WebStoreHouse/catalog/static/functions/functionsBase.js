@@ -567,3 +567,37 @@ function topFunction() {
 }
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Получаем фрагмент URL (например, "#delete-tab-pane")
+    const hash = window.location.hash;
+
+    if (hash) {
+        // Находим кнопку вкладки, соответствующую фрагменту
+        const tabButton = document.querySelector(`[data-bs-target="${hash}"]`);
+
+        if (tabButton) {
+            // Открываем вкладку с помощью Bootstrap Tab API
+            const tab = new bootstrap.Tab(tabButton);
+            tab.show();
+
+            // Очищаем фрагмент URL после открытия вкладки
+            history.replaceState(null, null, ' '); // Убираем фрагмент из URL
+        }
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const hash = window.location.hash;
+
+    if (hash && hash.includes("-tab-pane")) { // Проверяем, что фрагмент относится к вкладкам
+        const tabButton = document.querySelector(`[data-bs-target="${hash}"]`);
+
+        if (tabButton) {
+            const tab = new bootstrap.Tab(tabButton);
+            tab.show();
+
+            // Очищаем фрагмент URL
+            history.replaceState(null, null, ' ');
+        }
+    }
+});
