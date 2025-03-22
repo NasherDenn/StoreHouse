@@ -1009,7 +1009,15 @@ def write_history(request, data_write: dict):
     crud_history.save()
 
 
-# ToDo: сделать ссылку (на закладке "Главная") на оборудовании для просмотра истории перемещения (отдельно открывающаяся страница) оборудования
+# ToDo: сделать страницу истории оборудования
+def unit_history(request, first_id):
+    unit = Unit.objects.get(id=first_id)
+    unit_history_form = {}
+
+    return render(request, "catalog/unit_history.html", {"form_edit": unit_history_form})
+
+
+
 
 # ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
 # ToDo: установить ограничения на действия для разных пользователей
