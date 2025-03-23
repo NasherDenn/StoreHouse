@@ -183,31 +183,41 @@
                 role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная
         </button>
     </li>
+    {% if perms.catalog.can_send_task %}
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="send-tab" data-bs-toggle="tab" data-bs-target="#send-tab-pane" type="button"
                 role="tab" aria-controls="send-tab-pane" aria-selected="false">Отправить
         </button>
     </li>
+    {% endif %}
+    {% if perms.catalog.can_create_task %}
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="add-tab" data-bs-toggle="tab" data-bs-target="#add-tab-pane" type="button"
                 role="tab" aria-controls="add-tab-pane" aria-selected="false">Добавить
         </button>
     </li>
+    {% endif %}
+    {% if perms.catalog.can_edit_task %}
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-tab-pane" type="button"
                 role="tab" aria-controls="edit-tab-pane" aria-selected="false">Редактировать
         </button>
     </li>
+    {% endif %}
+    {% if perms.catalog.can_delete_task %}
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-tab-pane" type="button"
                 role="tab" aria-controls="delete-tab-pane" aria-selected="false">Удалить
         </button>
     </li>
+    {% endif %}
+    {% if perms.catalog.can_send_task %}
     <li class="nav-item" role="presentation">
         <button class="nav-link flex-sm-fill btn-primary" id="button-send" disabled="disabled" onclick="do_form_send()">
             <i class="bi bi-truck"></i>
         </button>
     </li>
+    {% endif %}
 </ul>
 
 <!-- Кнопка фильтров -->
@@ -425,12 +435,8 @@
                 <td>{{ unit.type }}</td>
                 <td>
                     {{ unit.equipment_name }}
-
-                    {% if perms.catalog.can_send_task %}
                     <input type="checkbox" class="form-check-input" id="CheckSend" name="CheckSend"
                            style="float: right" onclick="check_send_all_active()">
-                    {% endif %}
-
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>
@@ -525,12 +531,9 @@
                 <td>{{ unit.type }}</td>
                 <td>
                     {{ unit.equipment_name }}
-
-                    {% if perms.catalog.can_edit_task %}
                     <a href="{% url 'unit_edit' unit.id %}" style="float: right; text-decoration: none; color: #0056b3">
                         <img src="{% static 'images/edit.png' %}" alt="edit" width="25" height="25">
                     </a>
-                    {% endif %}
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>
@@ -605,14 +608,10 @@
                 <td>{{ unit.type }}</td>
                 <td>
                     {{ unit.equipment_name }}
-
-                    {% if perms.catalog.can_delete_task %}
                     <a href="{% url 'unit_delete' unit.id %}"
                        style="float: right; text-decoration: none; color: tomato">
                         <img src="{% static 'images/trash.png' %}" alt="delete" width="25" height="25">
                     </a>
-                    {% endif %}
-
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>
