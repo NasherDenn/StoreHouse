@@ -425,8 +425,12 @@
                 <td>{{ unit.type }}</td>
                 <td>
                     {{ unit.equipment_name }}
+
+                    {% if perms.catalog.can_send_task %}
                     <input type="checkbox" class="form-check-input" id="CheckSend" name="CheckSend"
                            style="float: right" onclick="check_send_all_active()">
+                    {% endif %}
+
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>
@@ -521,9 +525,12 @@
                 <td>{{ unit.type }}</td>
                 <td>
                     {{ unit.equipment_name }}
+
+                    {% if perms.catalog.can_edit_task %}
                     <a href="{% url 'unit_edit' unit.id %}" style="float: right; text-decoration: none; color: #0056b3">
                         <img src="{% static 'images/edit.png' %}" alt="edit" width="25" height="25">
                     </a>
+                    {% endif %}
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>
@@ -598,10 +605,14 @@
                 <td>{{ unit.type }}</td>
                 <td>
                     {{ unit.equipment_name }}
+
+                    {% if perms.catalog.can_delete_task %}
                     <a href="{% url 'unit_delete' unit.id %}"
                        style="float: right; text-decoration: none; color: tomato">
                         <img src="{% static 'images/trash.png' %}" alt="delete" width="25" height="25">
                     </a>
+                    {% endif %}
+
                 </td>
                 <td>{{ unit.equipment_serial_number }}</td>
                 <td>{{ unit.total }}</td>

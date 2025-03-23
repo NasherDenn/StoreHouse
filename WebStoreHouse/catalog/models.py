@@ -111,6 +111,14 @@ class Unit(models.Model):
     def __str__(self):
         return self.equipment_name
 
+    class Meta:
+        permissions = [
+            ("can_create_task", "Can create task"),
+            ("can_delete_task", "Can delete task"),
+            ("can_edit_task", "Can edit task"),
+            ("can_send_task", "Can send task"),
+        ]
+
 
 class WriteHistory(models.Model):
     date_write = models.DateField(

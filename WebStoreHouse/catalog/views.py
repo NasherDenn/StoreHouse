@@ -1,6 +1,7 @@
 import json
 import time
 
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
@@ -124,6 +125,7 @@ def create(request):
         return home(request)
 
 
+@permission_required('catalog.can_edit_task', raise_exception=True)
 def unit_edit(request, id):
     unit = Unit.objects.get(id=id)
     edit_form = EditForm(initial={
@@ -644,6 +646,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
         return HttpResponse("Метод запроса должен быть POST.", status=405)
 
 
+@permission_required('catalog.can_delete_task', raise_exception=True)
 def unit_delete(request, id):
     unit = Unit.objects.get(id=id)
     # словарь со значениями для формирования истории в БД
@@ -677,6 +680,7 @@ def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
+@permission_required('catalog.can_send_task', raise_exception=True)
 def forms_send(request):
     queryset = Unit.objects.all()
     unit = {}
@@ -1020,10 +1024,10 @@ def get_rows_as_dicts(query, params=None):
         cursor.execute(query, params or [])
         columns = [col[0] for col in cursor.description]  # Получаем имена столбцов
         rows = cursor.fetchall()
-        logging.error(f'0 rows {rows}')
+        # logging.error(f'0 rows {rows}')
     # Преобразуем строки в словари
     result = [dict(zip(columns, row)) for row in rows]
-    logging.error(f'1 result {result}')
+    # logging.error(f'1 result {result}')
     return result
 
 
@@ -1044,13 +1048,12 @@ def unit_history(request, first_id):
 
     # Получаем данные из таблицы в виде списка словарей
     row_list = get_rows_as_dicts(query, [first_id])
-    logging.error(f'2 first_id {first_id}')
-    logging.error(f'3 row_list {row_list}')
+    # logging.error(f'2 first_id {first_id}')
+    # logging.error(f'3 row_list {row_list}')
     # Передаем данные в шаблон
     return render(request, 'catalog/unit_history.html', {"row_list": row_list})
 
 
 # ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
-# ToDo: установить ограничения на действия для разных пользователей
 
 # ToDo: Написать скрипт для добавления оборудования в БД из рабочих таблиц Excel
