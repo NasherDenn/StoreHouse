@@ -35,6 +35,9 @@ import warnings
 
 import logging
 
+from django.db import connection
+from django.shortcuts import render
+
 
 logger = logging.getLogger(__name__)  # Логирование
 
@@ -1009,18 +1012,45 @@ def write_history(request, data_write: dict):
     crud_history.save()
 
 
-# ToDo: сделать страницу истории оборудования
+def get_rows_as_dicts(query, params=None):
+    """
+    Выполняет SQL-запрос и возвращает результат в виде списка словарей.
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(query, params or [])
+        columns = [col[0] for col in cursor.description]  # Получаем имена столбцов
+        rows = cursor.fetchall()
+        logging.error(f'0 rows {rows}')
+    # Преобразуем строки в словари
+    result = [dict(zip(columns, row)) for row in rows]
+    logging.error(f'1 result {result}')
+    return result
+
+
 def unit_history(request, first_id):
-    unit = Unit.objects.get(id=first_id)
-    unit_history_form = {}
+    if not first_id:
+        return render(request, 'catalog/unit_history.html', {
+            "error": "first_id is required",  # Сообщение об ошибке, если first_id не передан
+        })
 
-    return render(request, "catalog/unit_history.html", {"form_edit": unit_history_form})
+    # SQL-запрос для выборки строк по столбцу id_write
+    query = """
+        SELECT date_write, time_write, from_write, who_write, crud_write, to_write, whom_write, method_write, name_write, 
+               serial_number_write, status_write, notes_write, location_write, total_write, type_write, manufacturer_write
+        FROM catalog_writehistory
+        WHERE id_write = %s
+        ORDER BY date_write DESC
+    """
 
-
+    # Получаем данные из таблицы в виде списка словарей
+    row_list = get_rows_as_dicts(query, [first_id])
+    logging.error(f'2 first_id {first_id}')
+    logging.error(f'3 row_list {row_list}')
+    # Передаем данные в шаблон
+    return render(request, 'catalog/unit_history.html', {"row_list": row_list})
 
 
 # ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
 # ToDo: установить ограничения на действия для разных пользователей
 
 # ToDo: Написать скрипт для добавления оборудования в БД из рабочих таблиц Excel
-
