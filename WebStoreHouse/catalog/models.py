@@ -21,6 +21,7 @@ class Status(models.Model):
         verbose_name="Статус оборудования",
         null=True,
         blank=True,
+        default=None
     )
 
     def __str__(self):
