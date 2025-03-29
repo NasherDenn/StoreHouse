@@ -171,47 +171,47 @@ def unit_update(request):
         data_write['to_write'] = '-'
 
         if method != Unit.objects.get(id=id).method:
-            data_write['method_write'] = f'{Unit.objects.get(id=id).method} -> {method}'
+            data_write['method_write'] = f'{Unit.objects.get(id=id).method} &#x2192  {method}'
         else:
             data_write['method_write'] = method
 
         if request.POST.get("manufacturer") != Unit.objects.get(id=id).manufacturer:
-            data_write['manufacturer_write'] = f'{Unit.objects.get(id=id).manufacturer} -> {request.POST.get("manufacturer")}'
+            data_write['manufacturer_write'] = f'{Unit.objects.get(id=id).manufacturer} &#x2192 {request.POST.get("manufacturer")}'
         else:
             data_write['manufacturer_write'] = request.POST.get("manufacturer")
 
         if request.POST.get("type") != Unit.objects.get(id=id).type:
-            data_write['type_write'] = f'{Unit.objects.get(id=id).type} -> {request.POST.get("type")}'
+            data_write['type_write'] = f'{Unit.objects.get(id=id).type} &#x2192 {request.POST.get("type")}'
         else:
             data_write['type_write'] = request.POST.get("type")
 
         if request.POST.get("name") != Unit.objects.get(id=id).equipment_name:
-            data_write['name_write'] = f'{Unit.objects.get(id=id).equipment_name} -> {request.POST.get("name")}'
+            data_write['name_write'] = f'{Unit.objects.get(id=id).equipment_name} &#x2192 {request.POST.get("name")}'
         else:
             data_write['name_write'] = request.POST.get("name")
 
         if request.POST.get("serial") != Unit.objects.get(id=id).equipment_serial_number:
-            data_write['serial_number_write'] = f'{Unit.objects.get(id=id).equipment_serial_number} -> {request.POST.get("serial")}'
+            data_write['serial_number_write'] = f'{Unit.objects.get(id=id).equipment_serial_number} &#x2192 {request.POST.get("serial")}'
         else:
             data_write['serial_number_write'] = request.POST.get("serial")
 
         if int(request.POST.get("total")) != int(Unit.objects.get(id=id).total):
-            data_write['total_write'] = f'{Unit.objects.get(id=id).total} -> {request.POST.get("total")}'
+            data_write['total_write'] = f'{Unit.objects.get(id=id).total} &#x2192 {request.POST.get("total")}'
         else:
             data_write['total_write'] = request.POST.get("total")
 
         if location != Unit.objects.get(id=id).location:
-            data_write['location_write'] = f'{Unit.objects.get(id=id).location} -> {location}'
+            data_write['location_write'] = f'{Unit.objects.get(id=id).location} &#x2192 {location}'
         else:
             data_write['location_write'] = location
 
         if status != Unit.objects.get(id=id).status:
-            data_write['status_write'] = f'{Unit.objects.get(id=id).status} -> {status}'
+            data_write['status_write'] = f'{Unit.objects.get(id=id).status} &#x2192 {status}'
         else:
             data_write['status_write'] = status
 
         if request.POST.get("notes") != Unit.objects.get(id=id).notes:
-            data_write['notes_write'] = f'{Unit.objects.get(id=id).notes} -> {request.POST.get("notes")}'
+            data_write['notes_write'] = f'{Unit.objects.get(id=id).notes} &#x2192 {request.POST.get("notes")}'
         else:
             data_write['notes_write'] = request.POST.get("notes")
 
@@ -318,9 +318,9 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                             # except Exception as e:
                                             #     logging.error(f'ошибка {e}')
                                             data_write[
-                                                'total_write_coming'] = f'{int(i.total)} -> {int(i.total) + int(Unit.objects.get(id=int(index_id)).total)}'
+                                                'total_write_coming'] = f'{int(i.total)} &#x2192 {int(i.total) + int(Unit.objects.get(id=int(index_id)).total)}'
                                             data_write[
-                                                'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} -> {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
+                                                'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
                                             i.total = int(i.total) + int(Unit.objects.get(id=int(index_id)).total)
                                             i.save()
                                             # logging.error('2')
@@ -347,7 +347,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                                 data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
                                                 data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
                                                 data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
-                                                # Предварительная запись откуда -> куда - см. выше
+                                                # Предварительная запись откуда &#x2192 куда - см. выше
                                                 data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
                                                 data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
                                                 # logging.error('8')
@@ -368,11 +368,11 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         # предварительная запись откуда отправляется оборудование
                         data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
                         data_write['location_write'] = recip
-                        # Предварительная запись было -> стало количество
-                        data_write['total_write_coming'] = f'0 -> {count_unit_send}'
+                        # Предварительная запись было &#x2192 стало количество
+                        data_write['total_write_coming'] = f'0 &#x2192 {count_unit_send}'
                         data_write[
-                            'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} -> {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
-                        # data_write['total_write'] = f'0 -> {int(i.total)}'
+                            'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
+                        # data_write['total_write'] = f'0 &#x2192 {int(i.total)}'
                         unit = Unit.objects.get(id=index_id)
                         location = Location.objects.get(name=recip)
                         unit.location = location
@@ -393,7 +393,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                             data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
                             data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
                             data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
-                            # Предварительная запись откуда -> куда - см. выше
+                            # Предварительная запись откуда &#x2192 куда - см. выше
                             data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
                             data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
                             # logging.error(f'2-1 {data_write}')
@@ -424,10 +424,10 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
                         data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
                         data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
-                        data_write['total_write_coming'] = f'0 -> {int(Unit.objects.get(id=int(index_id)).total)}'
+                        data_write['total_write_coming'] = f'0 &#x2192 {int(Unit.objects.get(id=int(index_id)).total)}'
                         data_write[
-                            'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} -> {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
-                        # Предварительная запись откуда -> куда - см. выше
+                            'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
+                        # Предварительная запись откуда &#x2192 куда - см. выше
                         data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
                         data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
                         data_write['id_write'] = Unit.objects.get(id=int(index_id)).first_id
@@ -469,10 +469,10 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                             # logging.error(f'Передаваемое оборудование: {Unit.objects.get(id=int(index_id)).equipment_name}')
                                             # logging.error(f'Количество передаваемого оборудования: {int(count_unit_send)}')
                                             # !!! передаваемое оборудование уже есть в месте назначения
-                                            # Предварительная запись было -> стало количество
-                                            data_write['total_write_coming'] = f'{int(i.total)} -> {int(i.total) + int(count_unit_send)}'
+                                            # Предварительная запись было &#x2192 стало количество
+                                            data_write['total_write_coming'] = f'{int(i.total)} &#x2192 {int(i.total) + int(count_unit_send)}'
                                             data_write[
-                                                'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} -> {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
+                                                'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
                                             # увеличиваем количество на локации
                                             i.total = int(i.total) + int(count_unit_send)
                                             i.save()
@@ -496,7 +496,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                                 data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
                                                 data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
                                                 data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
-                                                # Предварительная запись было -> стало количество - см. выше
+                                                # Предварительная запись было &#x2192 стало количество - см. выше
                                                 data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
                                                 data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
                                                 # logging.error('part 8')
@@ -538,10 +538,10 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         unit.notes = notes
                         unit.first_id = Unit.objects.get(id=int(index_id)).first_id
                         unit.save()
-                        # Предварительная запись было -> стало количество
-                        data_write['total_write_coming'] = f'0 -> {int(count_unit_send)}'
+                        # Предварительная запись было &#x2192 стало количество
+                        data_write['total_write_coming'] = f'0 &#x2192 {int(count_unit_send)}'
                         data_write[
-                            'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} -> {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
+                            'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
                         # уменьшаем количество отправленного оборудования в локации откуда отправляется оборудование
                         unit = Unit.objects.get(id=index_id)
                         unit.total = int(count_unit_db) - int(count_unit_send)
@@ -566,7 +566,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                             data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
                             data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
                             data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
-                            # Предварительная запись было -> стало количество - см. выше
+                            # Предварительная запись было &#x2192 стало количество - см. выше
                             data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
                             data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
                             # logging.error('part 18')
@@ -599,10 +599,10 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                     unit.notes = notes
                     unit.first_id = Unit.objects.get(id=index_id).first_id
                     unit.save()
-                    # Предварительная запись было -> стало количество
-                    data_write['total_write_coming'] = f'0 -> {int(count_unit_send)}'
+                    # Предварительная запись было &#x2192 стало количество
+                    data_write['total_write_coming'] = f'0 &#x2192 {int(count_unit_send)}'
                     data_write[
-                        'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} -> {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
+                        'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
                     data_write['id_write'] = Unit.objects.get(id=int(index_id)).first_id
                     # уменьшаем количество отправленного оборудования в локации откуда отправляется оборудование
                     unit = Unit.objects.get(id=index_id)
@@ -627,7 +627,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
                         data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
                         data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
-                        # Предварительная запись было -> стало количество - см. выше
+                        # Предварительная запись было &#x2192 стало количество - см. выше
                         data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
                         data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
                         # logging.error('part 18')
@@ -1043,7 +1043,7 @@ def unit_history(request, first_id):
                serial_number_write, status_write, notes_write, location_write, total_write, type_write, manufacturer_write
         FROM catalog_writehistory
         WHERE id_write = %s
-        ORDER BY date_write DESC
+        ORDER BY date_write, time_write DESC
     """
 
     # Получаем данные из таблицы в виде списка словарей
@@ -1054,6 +1054,7 @@ def unit_history(request, first_id):
     return render(request, 'catalog/unit_history.html', {"row_list": row_list})
 
 
-# ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
+# ToDo: Загрузить все данные (таблицы из Excel) в БД
+# ToDo: Убрать все HotSearching со страницы истории БД
 
-# ToDo: Написать скрипт для добавления оборудования в БД из рабочих таблиц Excel
+# ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных

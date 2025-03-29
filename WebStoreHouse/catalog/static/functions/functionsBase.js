@@ -23,47 +23,95 @@ function FirstLoad() {
 }
 
 
-function HotSearchingBase() {
-    var i;
-    var input_method = document.getElementById("hot_searching_method_base");
-    var input_manufacture = document.getElementById("hot_searching_manufacture_base");
-    var input_type = document.getElementById("hot_searching_type_base");
-    var input_name = document.getElementById("hot_searching_name_base");
-    var input_serial = document.getElementById("hot_searching_serial_base");
-    var input_location = document.getElementById("hot_searching_location_base");
-    var filter_method = input_method.value.toUpperCase();
-    var filter_manufacture = input_manufacture.value.toUpperCase();
-    var filter_type = input_type.value.toUpperCase();
-    var filter_name = input_name.value.toUpperCase();
-    var filter_serial = input_serial.value.toUpperCase();
-    var filter_location = input_location.value.toUpperCase();
-    for (i = 0; i < trBase.length; i++) {
-        var td_method = trBase[i].getElementsByTagName("td")[1];
-        var td_manufacture = trBase[i].getElementsByTagName("td")[2];
-        var td_type = trBase[i].getElementsByTagName("td")[3];
-        var td_name = trBase[i].getElementsByTagName("td")[4];
-        var td_serial = trBase[i].getElementsByTagName("td")[5];
-        var td_location = trBase[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
-            var txtValue_method = td_method.textContent || td_method.innerText;
-            var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
-            var txtValue_type = td_type.textContent || td_type.innerText;
-            var txtValue_name = td_name.textContent || td_name.innerText;
-            var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_location.innerText;
-            if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
-                txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
-                txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
-                txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
-                txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
-                txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
-                trBase[i].style.display = "";
-            } else {
-                trBase[i].style.display = "none";
-            }
-        }
-    }
+// function HotSearchingBase() {
+//     var i;
+//     var input_method = document.getElementById("hot_searching_method_base");
+//     var input_manufacture = document.getElementById("hot_searching_manufacture_base");
+//     var input_type = document.getElementById("hot_searching_type_base");
+//     var input_name = document.getElementById("hot_searching_name_base");
+//     var input_serial = document.getElementById("hot_searching_serial_base");
+//     var input_location = document.getElementById("hot_searching_location_base");
+//     var filter_method = input_method.value.toUpperCase();
+//     var filter_manufacture = input_manufacture.value.toUpperCase();
+//     var filter_type = input_type.value.toUpperCase();
+//     var filter_name = input_name.value.toUpperCase();
+//     var filter_serial = input_serial.value.toUpperCase();
+//     var filter_location = input_location.value.toUpperCase();
+//     for (i = 0; i < trBase.length; i++) {
+//         var td_method = trBase[i].getElementsByTagName("td")[1];
+//         var td_manufacture = trBase[i].getElementsByTagName("td")[2];
+//         var td_type = trBase[i].getElementsByTagName("td")[3];
+//         var td_name = trBase[i].getElementsByTagName("td")[4];
+//         var td_serial = trBase[i].getElementsByTagName("td")[5];
+//         var td_location = trBase[i].getElementsByTagName("td")[7];
+//         if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
+//             var txtValue_method = td_method.textContent || td_method.innerText;
+//             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
+//             var txtValue_type = td_type.textContent || td_type.innerText;
+//             var txtValue_name = td_name.textContent || td_name.innerText;
+//             var txtValue_serial = td_serial.textContent || td_serial.innerText;
+//             var txtValue_location = td_location.textContent || td_location.innerText;
+//             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
+//                 txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
+//                 txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
+//                 txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
+//                 txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
+//                 txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
+//                 trBase[i].style.display = "";
+//             } else {
+//                 trBase[i].style.display = "none";
+//             }
+//         }
+//     }
+// }
+
+
+// Оптимизированная версия HotSearching
+function HotSearching(tableId, methodId, manufactureId, typeId, nameId, serialId, locationId) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+
+    const rows = table.querySelectorAll("tbody tr");
+    if (!rows.length) return;
+
+    const filters = {
+        method: document.getElementById(methodId).value.toUpperCase(),
+        manufacture: document.getElementById(manufactureId).value.toUpperCase(),
+        type: document.getElementById(typeId).value.toUpperCase(),
+        name: document.getElementById(nameId).value.toUpperCase(),
+        serial: document.getElementById(serialId).value.toUpperCase(),
+        location: document.getElementById(locationId).value.toUpperCase()
+    };
+
+    rows.forEach(row => {
+        const cells = row.cells;
+        if (!cells || cells.length < 8) return;
+
+        const methodMatch = !filters.method || cells[1].textContent.toUpperCase().includes(filters.method);
+        const manufactureMatch = !filters.manufacture || cells[2].textContent.toUpperCase().includes(filters.manufacture);
+        const typeMatch = !filters.type || cells[3].textContent.toUpperCase().includes(filters.type);
+        const nameMatch = !filters.name || cells[4].textContent.toUpperCase().includes(filters.name);
+        const serialMatch = !filters.serial || cells[5].textContent.toUpperCase().includes(filters.serial);
+        const locationMatch = !filters.location || cells[7].textContent.toUpperCase().includes(filters.location);
+
+        row.style.display = methodMatch && manufactureMatch && typeMatch &&
+                          nameMatch && serialMatch && locationMatch ? "" : "none";
+    });
 }
+
+// Использование:
+function HotSearchingBase() {
+    HotSearching(
+        "myTableBase",
+        "hot_searching_method_base",
+        "hot_searching_manufacture_base",
+        "hot_searching_type_base",
+        "hot_searching_name_base",
+        "hot_searching_serial_base",
+        "hot_searching_location_base"
+    );
+}
+
 
 function HotSearchingSend() {
     var i;
@@ -191,143 +239,204 @@ function HotSearchingDelete() {
     }
 }
 
+// function getFilter() {
+//     var checkboxesChecked = {};
+//     checkboxesChecked['method'] = []
+//     checkboxesChecked['location'] = []
+//     checkboxesChecked['status'] = []
+//     var checkboxes_method = document.getElementsByName('CheckMethod');
+//     var label_method = document.getElementsByName('label_method');
+//     for (var index = 0; index < checkboxes_method.length; index++) {
+//         if (label_method[index].htmlFor == 'CheckMethod') {
+//             if (checkboxes_method[index].checked) {
+//                 checkboxesChecked['method'].push(label_method[index].textContent);
+//             }
+//         }
+//     }
+//     var checkboxes_location = document.getElementsByName('CheckLocation');
+//     var label_location = document.getElementsByName('label_location');
+//     for (var index = 0; index < checkboxes_location.length; index++) {
+//         if (label_location[index].htmlFor == 'CheckLocation') {
+//             if (checkboxes_location[index].checked) {
+//                 checkboxesChecked['location'].push(label_location[index].textContent);
+//             }
+//         }
+//     }
+//     var checkboxes_status = document.getElementsByName('CheckStatus');
+//     var label_status = document.getElementsByName('label_status');
+//     for (var index = 0; index < checkboxes_status.length; index++) {
+//         if (label_status[index].htmlFor == 'CheckStatus') {
+//             if (checkboxes_status[index].checked) {
+//                 checkboxesChecked['status'].push(label_status[index].textContent);
+//             }
+//         }
+//     }
+//     tableBase = document.getElementById("myTableBase");
+//     console.log(tableBase.innerText)
+//     trBase = tableBase.getElementsByTagName("tr");
+//     var new_tr_base = []
+//     for (var i = 1; i < trBase.length; i++) {
+//
+//         var visible = false
+//         var td_method = trBase[i].getElementsByTagName("td")[1];
+//         var td_location = trBase[i].getElementsByTagName("td")[7];
+//         var td_status = trBase[i].getElementsByTagName("td")[8];
+//         for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
+//             for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
+//                 for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
+//                     if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
+//                         visible = true;
+//                     }
+//                 }
+//             }
+//         }
+//         if (visible == true) {
+//             trBase[i].style.display = "";
+//             new_tr_base.push(trBase[i])
+//         } else {
+//             trBase[i].style.display = "none";
+//         }
+//     }
+//     trBase = new_tr_base
+//
+//     tableSend = document.getElementById("myTableSend");
+//     trSend = tableSend.getElementsByTagName("tr");
+//     var new_tr_send = []
+//     for (var i = 1; i < trSend.length; i++) {
+//         var visible = false
+//         var td_method = trSend[i].getElementsByTagName("td")[1];
+//         var td_location = trSend[i].getElementsByTagName("td")[7];
+//         var td_status = trSend[i].getElementsByTagName("td")[8];
+//         for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
+//             for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
+//                 for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
+//                     if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
+//                         visible = true;
+//                     }
+//                 }
+//             }
+//         }
+//         if (visible == true) {
+//             trSend[i].style.display = "";
+//             new_tr_send.push(trSend[i])
+//         } else {
+//             trSend[i].style.display = "none";
+//         }
+//     }
+//     trSend = new_tr_send
+//
+//     tableEdit = document.getElementById("myTableEdit");
+//     trEdit = tableEdit.getElementsByTagName("tr");
+//     var new_tr_edit = []
+//     for (var i = 1; i < trEdit.length; i++) {
+//         var visible = false
+//         var td_method = trEdit[i].getElementsByTagName("td")[1];
+//         var td_location = trEdit[i].getElementsByTagName("td")[7];
+//         var td_status = trEdit[i].getElementsByTagName("td")[8];
+//         for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
+//             for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
+//                 for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
+//                     if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
+//                         visible = true;
+//                     }
+//                 }
+//             }
+//         }
+//         if (visible == true) {
+//             trEdit[i].style.display = "";
+//             new_tr_edit.push(trEdit[i])
+//         } else {
+//             trEdit[i].style.display = "none";
+//         }
+//     }
+//     trEdit = new_tr_edit
+//     tableDelete = document.getElementById("myTableDelete");
+//     trDelete = tableDelete.getElementsByTagName("tr");
+//     var new_tr = []
+//     for (var i = 1; i < trDelete.length; i++) {
+//         var visible = false
+//         var td_method = trDelete[i].getElementsByTagName("td")[1];
+//         var td_location = trDelete[i].getElementsByTagName("td")[7];
+//         var td_status = trDelete[i].getElementsByTagName("td")[8];
+//         for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
+//             for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
+//                 for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
+//                     if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
+//                         visible = true;
+//                     }
+//                 }
+//             }
+//         }
+//         if (visible == true) {
+//             trDelete[i].style.display = "";
+//             new_tr.push(trDelete[i])
+//         } else {
+//             trDelete[i].style.display = "none";
+//         }
+//     }
+//     trDelete = new_tr
+//
+// }
+
+
+// Кэшируем данные таблицы при первой загрузке
+let cachedTableData = null;
+
+function cacheTableData() {
+    if (cachedTableData) return cachedTableData;
+
+    const tables = {};
+    ['Base', 'Send', 'Edit', 'Delete'].forEach(type => {
+        const table = document.getElementById(`myTable${type}`);
+        if (table) {
+            const rows = Array.from(table.querySelectorAll("tbody tr")).map(row => {
+                const cells = row.cells;
+                return {
+                    element: row,
+                    method: cells[1]?.textContent,
+                    location: cells[7]?.textContent,
+                    status: cells[8]?.textContent
+                };
+            });
+            tables[type.toLowerCase()] = rows;
+        }
+    });
+
+    cachedTableData = tables;
+    return tables;
+}
+
+function applyFilters(filters) {
+    const tables = cacheTableData();
+
+    Object.entries(tables).forEach(([type, rows]) => {
+        rows.forEach(rowData => {
+            const methodMatch = !filters.method.length || filters.method.includes(rowData.method);
+            const locationMatch = !filters.location.length || filters.location.includes(rowData.location);
+            const statusMatch = !filters.status.length || filters.status.includes(rowData.status);
+
+            rowData.element.style.display = methodMatch && locationMatch && statusMatch ? "" : "none";
+        });
+    });
+}
+
 function getFilter() {
-    var checkboxesChecked = {};
-    checkboxesChecked['method'] = []
-    checkboxesChecked['location'] = []
-    checkboxesChecked['status'] = []
-    var checkboxes_method = document.getElementsByName('CheckMethod');
-    var label_method = document.getElementsByName('label_method');
-    for (var index = 0; index < checkboxes_method.length; index++) {
-        if (label_method[index].htmlFor == 'CheckMethod') {
-            if (checkboxes_method[index].checked) {
-                checkboxesChecked['method'].push(label_method[index].textContent);
-            }
-        }
-    }
-    var checkboxes_location = document.getElementsByName('CheckLocation');
-    var label_location = document.getElementsByName('label_location');
-    for (var index = 0; index < checkboxes_location.length; index++) {
-        if (label_location[index].htmlFor == 'CheckLocation') {
-            if (checkboxes_location[index].checked) {
-                checkboxesChecked['location'].push(label_location[index].textContent);
-            }
-        }
-    }
-    var checkboxes_status = document.getElementsByName('CheckStatus');
-    var label_status = document.getElementsByName('label_status');
-    for (var index = 0; index < checkboxes_status.length; index++) {
-        if (label_status[index].htmlFor == 'CheckStatus') {
-            if (checkboxes_status[index].checked) {
-                checkboxesChecked['status'].push(label_status[index].textContent);
-            }
-        }
-    }
-    tableBase = document.getElementById("myTableBase");
-    console.log(tableBase.innerText)
-    trBase = tableBase.getElementsByTagName("tr");
-    var new_tr_base = []
-    for (var i = 1; i < trBase.length; i++) {
+    const getCheckedValues = name => {
+        const checkboxes = Array.from(document.getElementsByName(`Check${name}`));
+        const labels = Array.from(document.getElementsByName(`label_${name.toLowerCase()}`));
 
-        var visible = false
-        var td_method = trBase[i].getElementsByTagName("td")[1];
-        var td_location = trBase[i].getElementsByTagName("td")[7];
-        var td_status = trBase[i].getElementsByTagName("td")[8];
-        for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
-            for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
-                for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
-                    if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
-                        visible = true;
-                    }
-                }
-            }
-        }
-        if (visible == true) {
-            trBase[i].style.display = "";
-            new_tr_base.push(trBase[i])
-        } else {
-            trBase[i].style.display = "none";
-        }
-    }
-    trBase = new_tr_base
+        return checkboxes
+            .map((checkbox, i) => checkbox.checked ? labels[i]?.textContent : null)
+            .filter(Boolean);
+    };
 
-    tableSend = document.getElementById("myTableSend");
-    trSend = tableSend.getElementsByTagName("tr");
-    var new_tr_send = []
-    for (var i = 1; i < trSend.length; i++) {
-        var visible = false
-        var td_method = trSend[i].getElementsByTagName("td")[1];
-        var td_location = trSend[i].getElementsByTagName("td")[7];
-        var td_status = trSend[i].getElementsByTagName("td")[8];
-        for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
-            for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
-                for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
-                    if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
-                        visible = true;
-                    }
-                }
-            }
-        }
-        if (visible == true) {
-            trSend[i].style.display = "";
-            new_tr_send.push(trSend[i])
-        } else {
-            trSend[i].style.display = "none";
-        }
-    }
-    trSend = new_tr_send
+    const filters = {
+        method: getCheckedValues('Method'),
+        location: getCheckedValues('Location'),
+        status: getCheckedValues('Status')
+    };
 
-    tableEdit = document.getElementById("myTableEdit");
-    trEdit = tableEdit.getElementsByTagName("tr");
-    var new_tr_edit = []
-    for (var i = 1; i < trEdit.length; i++) {
-        var visible = false
-        var td_method = trEdit[i].getElementsByTagName("td")[1];
-        var td_location = trEdit[i].getElementsByTagName("td")[7];
-        var td_status = trEdit[i].getElementsByTagName("td")[8];
-        for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
-            for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
-                for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
-                    if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
-                        visible = true;
-                    }
-                }
-            }
-        }
-        if (visible == true) {
-            trEdit[i].style.display = "";
-            new_tr_edit.push(trEdit[i])
-        } else {
-            trEdit[i].style.display = "none";
-        }
-    }
-    trEdit = new_tr_edit
-    tableDelete = document.getElementById("myTableDelete");
-    trDelete = tableDelete.getElementsByTagName("tr");
-    var new_tr = []
-    for (var i = 1; i < trDelete.length; i++) {
-        var visible = false
-        var td_method = trDelete[i].getElementsByTagName("td")[1];
-        var td_location = trDelete[i].getElementsByTagName("td")[7];
-        var td_status = trDelete[i].getElementsByTagName("td")[8];
-        for (var method_index = 0; method_index < checkboxesChecked['method'].length; method_index++) {
-            for (var location_index = 0; location_index < checkboxesChecked['location'].length; location_index++) {
-                for (var status_index = 0; status_index < checkboxesChecked['status'].length; status_index++) {
-                    if (td_method.innerText == checkboxesChecked['method'][method_index] && td_location.innerText == checkboxesChecked['location'][location_index] && td_status.innerText == checkboxesChecked['status'][status_index]) {
-                        visible = true;
-                    }
-                }
-            }
-        }
-        if (visible == true) {
-            trDelete[i].style.display = "";
-            new_tr.push(trDelete[i])
-        } else {
-            trDelete[i].style.display = "none";
-        }
-    }
-    trDelete = new_tr
-
+    applyFilters(filters);
 }
 
 

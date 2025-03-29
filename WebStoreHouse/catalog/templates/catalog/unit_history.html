@@ -192,48 +192,48 @@
             <th scope="col" class="text-nowrap">Получатель</th>
             <th scope="col" class="text-nowrap">
                 Метод
-                <br>
-                <input type="text" id="hot_searching_method_base" onkeyup="HotSearchingBase()"
-                       style="width: 50px; font-size: 10px;" placeholder="Метод..."
-                       title="Введите название метода контроля">
+<!--                <br>-->
+<!--                <input type="text" id="hot_searching_method_base" onkeyup="HotSearchingBase()"-->
+<!--                       style="width: 50px; font-size: 10px;" placeholder="Метод..."-->
+<!--                       title="Введите название метода контроля">-->
             </th>
             <th scope="col" class="text-nowrap">
                 Название
-                <br>
-                <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"
-                       style="width: 250px; font-size: 10px;" placeholder="Название..."
-                       title="Введите название оборудования">
+<!--                <br>-->
+<!--                <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"-->
+<!--                       style="width: 250px; font-size: 10px;" placeholder="Название..."-->
+<!--                       title="Введите название оборудования">-->
             </th>
             <th scope="col" class="text-nowrap">
                 Серийный номер
-                <br>
-                <input type="text" id="hot_searching_serial_base" onkeyup="HotSearchingBase()"
-                       style="width: 100px; font-size: 10px;" placeholder="Серийный номер..."
-                       title="Введите серийный номер оборудования">
+<!--                <br>-->
+<!--                <input type="text" id="hot_searching_serial_base" onkeyup="HotSearchingBase()"-->
+<!--                       style="width: 100px; font-size: 10px;" placeholder="Серийный номер..."-->
+<!--                       title="Введите серийный номер оборудования">-->
             </th>
             <th scope="col" class="text-nowrap">Статус</th>
             <th scope="col" class="text-nowrap">Примечание</th>
             <th scope="col" class="text-break">
                 Нахождение
-                <br>
-                <input type="text" id="hot_searching_location_base" onkeyup="HotSearchingBase()"
-                       style="width: 90px; font-size: 10px;" placeholder="Нахождение..."
-                       title="Введите месторасположение оборудования">
+<!--                <br>-->
+<!--                <input type="text" id="hot_searching_location_base" onkeyup="HotSearchingBase()"-->
+<!--                       style="width: 90px; font-size: 10px;" placeholder="Нахождение..."-->
+<!--                       title="Введите месторасположение оборудования">-->
             </th>
             <th scope="col" class="text-break">Количество</th>
             <th scope="col" class="text-nowrap">
                 Тип
-                <br>
-                <input type="text" id="hot_searching_type_base" onkeyup="HotSearchingBase()"
-                       style="width: 80px; font-size: 10px;" placeholder="Тип..."
-                       title="Введите тип оборудования">
+<!--                <br>-->
+<!--                <input type="text" id="hot_searching_type_base" onkeyup="HotSearchingBase()"-->
+<!--                       style="width: 80px; font-size: 10px;" placeholder="Тип..."-->
+<!--                       title="Введите тип оборудования">-->
             </th>
             <th scope="col" class="text-nowrap">
                 Производитель
-                <br>
-                <input type="text" id="hot_searching_manufacture_base" onkeyup="HotSearchingBase()"
-                       style="width: 80px; font-size: 10px;" placeholder="Производитель..."
-                       title="Введите название производителя">
+<!--                <br>-->
+<!--                <input type="text" id="hot_searching_manufacture_base" onkeyup="HotSearchingBase()"-->
+<!--                       style="width: 80px; font-size: 10px;" placeholder="Производитель..."-->
+<!--                       title="Введите название производителя">-->
             </th>
         </tr>
         </thead>
@@ -248,15 +248,15 @@
             <td>{{ row.crud_write }}</td>
             <td>{{ row.to_write }}</td>
             <td>{{ row.whom_write }}</td>
-            <td>{{ row.method_write }}</td>
-            <td>{{ row.name_write }}</td>
-            <td>{{ row.serial_number_write }}</td>
-            <td>{{ row.status_write }}</td>
-            <td>{{ row.notes_write }}</td>
-            <td>{{ row.location_write }}</td>
-            <td>{{ row.total_write }}</td>
-            <td>{{ row.type_write }}</td>
-            <td>{{ row.manufacturer_write }}</td>
+            <td>{{ row.method_write|safe }}</td>
+            <td>{{ row.name_write|safe }}</td>
+            <td>{{ row.serial_number_write|safe }}</td>
+            <td>{{ row.status_write|safe }}</td>
+            <td>{{ row.notes_write|safe }}</td>
+            <td>{{ row.location_write|safe }}</td>
+            <td>{{ row.total_write|safe }}</td>
+            <td>{{ row.type_write|safe }}</td>
+            <td>{{ row.manufacturer_write|safe }}</td>
         </tr>
         {% endfor %}
         </tbody>
