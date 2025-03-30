@@ -1,52 +1,68 @@
-.btn-f {
-    transform: rotate(-90deg);
-    margin-left: -27px;
-    background: #31B0D5;
-    position: fixed;
-    padding-bottom: 0;
-    top: 325px;
-    font-size: 12px;
-}
+/*.btn-f {*/
+/*    transform: rotate(-90deg);*/
+/*    margin-left: -27px;*/
+/*    background: lightblue !important;*/
+/*    !*background: #31B0D5;*!*/
+/*    position: fixed;*/
+/*    padding-bottom: 0;*/
+/*    top: 325px;*/
+/*    font-size: 12px;*/
+/*}*/
 
-.btn-f-check {
-    text-align: left;
-}
+/*.btn-f-check {*/
+/*    text-align: left;*/
+/*}*/
 
-.btn-f-check:hover {
-    background-color: lightblue;
-}
+/*.btn-f-check:hover {*/
+/*    background-color: lightblue;*/
+/*}*/
 
-.navbar {
-    background-color: #4099c5 !important;
-}
+/*.navbar {*/
+/*    background-color: #4099c5 !important;*/
+/*}*/
 
-.navbar-text {
-    color: white;
-}
+/*.navbar-text {*/
+/*    color: white;*/
+/*}*/
 
-.nav-item {
-    margin-left: 15px;
-    background: #e6f0fc;
-    border-radius: 5px 5px 0 0;
-}
+/*.nav-item {*/
+/*    margin-left: 15px;*/
+/*    background: #e6f0fc;*/
+/*    border-radius: 5px 5px 0 0;*/
+/*}*/
 
-.nav-tabs {
-    background-color: #4099c5;
-    color: white;
-}
+/*.nav-tabs {*/
+/*    position: sticky;*/
+/*    top: 29px;*/
+/*    background-color: #4099c5;*/
+/*    color: white;*/
+/*}*/
 
-.tab-pane {
-    background-color: white;
-}
+/*.tab-pane {*/
+/*    background-color: white;*/
+/*}*/
 
-.table-group-divider {
-    height: 300px;
-	overflow-x: auto;
-	margin-top: 0;
-	margin-bottom: 20px;
-	border-bottom: 1px solid #eee;
-}
+/*.table-group-divider {*/
+/*    height: 300px;*/
+/*    overflow-x: auto;*/
+/*    margin-top: 0;*/
+/*    margin-bottom: 20px;*/
+/*    border-bottom: 1px solid #eee;*/
+/*}*/
 
-.hide-column {
-    display: none;
-}
+/*.hide-column {*/
+/*    display: none;*/
+/*}*/
+
+/*#myBtn {*/
+/*    background-color : lightblue;*/
+/*    color: white;*/
+/*    padding: 0 20px;*/
+/*    border-top-left-radius: 8px;*/
+/*    border-top-right-radius: 8px;*/
+/*    height: 35px; border-color: #46b8da;*/
+/*    position: fixed;*/
+/*    bottom: -4px;*/
+/*    right: 70px;*/
+/*    cursor: pointer;*/
+/*}*/
