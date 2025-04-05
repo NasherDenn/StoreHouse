@@ -1,24 +1,24 @@
 window.onload = FirstLoad;
 
 var tableBase = ''
-var trBase = ''
-var tableSend = ''
-var trSend = ''
-var tableEdit = ''
-var trEdit = ''
-var tableDelete = ''
-var trDelete = ''
+// var trBase = ''
+// var tableSend = ''
+// var trSend = ''
+// var tableEdit = ''
+// var trEdit = ''
+// var tableDelete = ''
+// var trDelete = ''
 
 function FirstLoad() {
     tableBase = document.getElementById("myTableBase");
     // console.log(tableBase.innerText)
-    trBase = tableBase.getElementsByTagName("tr");
-    tableSend = document.getElementById("myTableSend");
-    trSend = tableSend.getElementsByTagName("tr");
-    tableEdit = document.getElementById("myTableEdit");
-    trEdit = tableEdit.getElementsByTagName("tr");
-    tableDelete = document.getElementById("myTableDelete");
-    trDelete = tableDelete.getElementsByTagName("tr");
+    // trBase = tableBase.getElementsByTagName("tr");
+    // tableSend = document.getElementById("myTableSend");
+    // trSend = tableSend.getElementsByTagName("tr");
+    // tableEdit = document.getElementById("myTableEdit");
+    // trEdit = tableEdit.getElementsByTagName("tr");
+    // tableDelete = document.getElementById("myTableDelete");
+    // trDelete = tableDelete.getElementsByTagName("tr");
     // trTempTable = tableDelete.getElementById("tr");
 }
 
@@ -113,131 +113,131 @@ function HotSearchingBase() {
 }
 
 
-function HotSearchingSend() {
-    var i;
-    var input_method = document.getElementById("hot_searching_method_send");
-    var input_manufacture = document.getElementById("hot_searching_manufacture_send");
-    var input_type = document.getElementById("hot_searching_type_send");
-    var input_name = document.getElementById("hot_searching_name_send");
-    var input_serial = document.getElementById("hot_searching_serial_send");
-    var input_location = document.getElementById("hot_searching_location_send");
-    var filter_method = input_method.value.toUpperCase();
-    var filter_manufacture = input_manufacture.value.toUpperCase();
-    var filter_type = input_type.value.toUpperCase();
-    var filter_name = input_name.value.toUpperCase();
-    var filter_serial = input_serial.value.toUpperCase();
-    var filter_location = input_location.value.toUpperCase();
-    for (i = 0; i < trSend.length; i++) {
-        var td_method = trSend[i].getElementsByTagName("td")[1];
-        var td_manufacture = trSend[i].getElementsByTagName("td")[2];
-        var td_type = trSend[i].getElementsByTagName("td")[3];
-        var td_name = trSend[i].getElementsByTagName("td")[4];
-        var td_serial = trSend[i].getElementsByTagName("td")[5];
-        var td_location = trSend[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
-            var txtValue_method = td_method.textContent || td_method.innerText;
-            var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
-            var txtValue_type = td_type.textContent || td_type.innerText;
-            var txtValue_name = td_name.textContent || td_name.innerText;
-            var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_location.innerText;
-            if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
-                txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
-                txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
-                txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
-                txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
-                txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
-                trSend[i].style.display = "";
-            } else {
-                trSend[i].style.display = "none";
-            }
-        }
-    }
-}
-
-function HotSearchingEdit() {
-    var i;
-    var input_method = document.getElementById("hot_searching_method_edit");
-    var input_manufacture = document.getElementById("hot_searching_manufacture_edit");
-    var input_type = document.getElementById("hot_searching_type_edit");
-    var input_name = document.getElementById("hot_searching_name_edit");
-    var input_serial = document.getElementById("hot_searching_serial_edit");
-    var input_location = document.getElementById("hot_searching_location_edit");
-    var filter_method = input_method.value.toUpperCase();
-    var filter_manufacture = input_manufacture.value.toUpperCase();
-    var filter_type = input_type.value.toUpperCase();
-    var filter_name = input_name.value.toUpperCase();
-    var filter_serial = input_serial.value.toUpperCase();
-    var filter_location = input_location.value.toUpperCase();
-    for (i = 0; i < trEdit.length; i++) {
-        var td_method = trEdit[i].getElementsByTagName("td")[1];
-        var td_manufacture = trEdit[i].getElementsByTagName("td")[2];
-        var td_type = trEdit[i].getElementsByTagName("td")[3];
-        var td_name = trEdit[i].getElementsByTagName("td")[4];
-        var td_serial = trEdit[i].getElementsByTagName("td")[5];
-        var td_location = trEdit[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
-            var txtValue_method = td_method.textContent || td_method.innerText;
-            var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
-            var txtValue_type = td_type.textContent || td_type.innerText;
-            var txtValue_name = td_name.textContent || td_name.innerText;
-            var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_location.innerText;
-            if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
-                txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
-                txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
-                txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
-                txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
-                txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
-                trEdit[i].style.display = "";
-            } else {
-                trEdit[i].style.display = "none";
-            }
-        }
-    }
-}
-
-function HotSearchingDelete() {
-    var i;
-    var input_method = document.getElementById("hot_searching_method_delete");
-    var input_manufacture = document.getElementById("hot_searching_manufacture_delete");
-    var input_type = document.getElementById("hot_searching_type_delete");
-    var input_name = document.getElementById("hot_searching_name_delete");
-    var input_serial = document.getElementById("hot_searching_serial_delete");
-    var input_location = document.getElementById("hot_searching_location_delete");
-    var filter_method = input_method.value.toUpperCase();
-    var filter_manufacture = input_manufacture.value.toUpperCase();
-    var filter_type = input_type.value.toUpperCase();
-    var filter_name = input_name.value.toUpperCase();
-    var filter_serial = input_serial.value.toUpperCase();
-    var filter_location = input_location.value.toUpperCase();
-    for (i = 0; i < trDelete.length; i++) {
-        var td_method = trDelete[i].getElementsByTagName("td")[1];
-        var td_manufacture = trDelete[i].getElementsByTagName("td")[2];
-        var td_type = trDelete[i].getElementsByTagName("td")[3];
-        var td_name = trDelete[i].getElementsByTagName("td")[4];
-        var td_serial = trDelete[i].getElementsByTagName("td")[5];
-        var td_location = trDelete[i].getElementsByTagName("td")[7];
-        if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
-            var txtValue_method = td_method.textContent || td_method.innerText;
-            var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
-            var txtValue_type = td_type.textContent || td_type.innerText;
-            var txtValue_name = td_name.textContent || td_name.innerText;
-            var txtValue_serial = td_serial.textContent || td_serial.innerText;
-            var txtValue_location = td_location.textContent || td_location.innerText;
-            if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
-                txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
-                txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
-                txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
-                txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
-                txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
-                trDelete[i].style.display = "";
-            } else {
-                trDelete[i].style.display = "none";
-            }
-        }
-    }
-}
+// function HotSearchingSend() {
+//     var i;
+//     var input_method = document.getElementById("hot_searching_method_send");
+//     var input_manufacture = document.getElementById("hot_searching_manufacture_send");
+//     var input_type = document.getElementById("hot_searching_type_send");
+//     var input_name = document.getElementById("hot_searching_name_send");
+//     var input_serial = document.getElementById("hot_searching_serial_send");
+//     var input_location = document.getElementById("hot_searching_location_send");
+//     var filter_method = input_method.value.toUpperCase();
+//     var filter_manufacture = input_manufacture.value.toUpperCase();
+//     var filter_type = input_type.value.toUpperCase();
+//     var filter_name = input_name.value.toUpperCase();
+//     var filter_serial = input_serial.value.toUpperCase();
+//     var filter_location = input_location.value.toUpperCase();
+//     for (i = 0; i < trSend.length; i++) {
+//         var td_method = trSend[i].getElementsByTagName("td")[1];
+//         var td_manufacture = trSend[i].getElementsByTagName("td")[2];
+//         var td_type = trSend[i].getElementsByTagName("td")[3];
+//         var td_name = trSend[i].getElementsByTagName("td")[4];
+//         var td_serial = trSend[i].getElementsByTagName("td")[5];
+//         var td_location = trSend[i].getElementsByTagName("td")[7];
+//         if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
+//             var txtValue_method = td_method.textContent || td_method.innerText;
+//             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
+//             var txtValue_type = td_type.textContent || td_type.innerText;
+//             var txtValue_name = td_name.textContent || td_name.innerText;
+//             var txtValue_serial = td_serial.textContent || td_serial.innerText;
+//             var txtValue_location = td_location.textContent || td_location.innerText;
+//             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
+//                 txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
+//                 txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
+//                 txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
+//                 txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
+//                 txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
+//                 trSend[i].style.display = "";
+//             } else {
+//                 trSend[i].style.display = "none";
+//             }
+//         }
+//     }
+// }
+//
+// function HotSearchingEdit() {
+//     var i;
+//     var input_method = document.getElementById("hot_searching_method_edit");
+//     var input_manufacture = document.getElementById("hot_searching_manufacture_edit");
+//     var input_type = document.getElementById("hot_searching_type_edit");
+//     var input_name = document.getElementById("hot_searching_name_edit");
+//     var input_serial = document.getElementById("hot_searching_serial_edit");
+//     var input_location = document.getElementById("hot_searching_location_edit");
+//     var filter_method = input_method.value.toUpperCase();
+//     var filter_manufacture = input_manufacture.value.toUpperCase();
+//     var filter_type = input_type.value.toUpperCase();
+//     var filter_name = input_name.value.toUpperCase();
+//     var filter_serial = input_serial.value.toUpperCase();
+//     var filter_location = input_location.value.toUpperCase();
+//     for (i = 0; i < trEdit.length; i++) {
+//         var td_method = trEdit[i].getElementsByTagName("td")[1];
+//         var td_manufacture = trEdit[i].getElementsByTagName("td")[2];
+//         var td_type = trEdit[i].getElementsByTagName("td")[3];
+//         var td_name = trEdit[i].getElementsByTagName("td")[4];
+//         var td_serial = trEdit[i].getElementsByTagName("td")[5];
+//         var td_location = trEdit[i].getElementsByTagName("td")[7];
+//         if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
+//             var txtValue_method = td_method.textContent || td_method.innerText;
+//             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
+//             var txtValue_type = td_type.textContent || td_type.innerText;
+//             var txtValue_name = td_name.textContent || td_name.innerText;
+//             var txtValue_serial = td_serial.textContent || td_serial.innerText;
+//             var txtValue_location = td_location.textContent || td_location.innerText;
+//             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
+//                 txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
+//                 txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
+//                 txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
+//                 txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
+//                 txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
+//                 trEdit[i].style.display = "";
+//             } else {
+//                 trEdit[i].style.display = "none";
+//             }
+//         }
+//     }
+// }
+//
+// function HotSearchingDelete() {
+//     var i;
+//     var input_method = document.getElementById("hot_searching_method_delete");
+//     var input_manufacture = document.getElementById("hot_searching_manufacture_delete");
+//     var input_type = document.getElementById("hot_searching_type_delete");
+//     var input_name = document.getElementById("hot_searching_name_delete");
+//     var input_serial = document.getElementById("hot_searching_serial_delete");
+//     var input_location = document.getElementById("hot_searching_location_delete");
+//     var filter_method = input_method.value.toUpperCase();
+//     var filter_manufacture = input_manufacture.value.toUpperCase();
+//     var filter_type = input_type.value.toUpperCase();
+//     var filter_name = input_name.value.toUpperCase();
+//     var filter_serial = input_serial.value.toUpperCase();
+//     var filter_location = input_location.value.toUpperCase();
+//     for (i = 0; i < trDelete.length; i++) {
+//         var td_method = trDelete[i].getElementsByTagName("td")[1];
+//         var td_manufacture = trDelete[i].getElementsByTagName("td")[2];
+//         var td_type = trDelete[i].getElementsByTagName("td")[3];
+//         var td_name = trDelete[i].getElementsByTagName("td")[4];
+//         var td_serial = trDelete[i].getElementsByTagName("td")[5];
+//         var td_location = trDelete[i].getElementsByTagName("td")[7];
+//         if (td_method || td_manufacture || td_type || td_name || td_serial || td_location) {
+//             var txtValue_method = td_method.textContent || td_method.innerText;
+//             var txtValue_manufacture = td_manufacture.textContent || td_manufacture.innerText;
+//             var txtValue_type = td_type.textContent || td_type.innerText;
+//             var txtValue_name = td_name.textContent || td_name.innerText;
+//             var txtValue_serial = td_serial.textContent || td_serial.innerText;
+//             var txtValue_location = td_location.textContent || td_location.innerText;
+//             if (txtValue_method.toUpperCase().indexOf(filter_method) > -1 &&
+//                 txtValue_manufacture.toUpperCase().indexOf(filter_manufacture) > -1 &&
+//                 txtValue_type.toUpperCase().indexOf(filter_type) > -1 &&
+//                 txtValue_name.toUpperCase().indexOf(filter_name) > -1 &&
+//                 txtValue_serial.toUpperCase().indexOf(filter_serial) > -1 &&
+//                 txtValue_location.toUpperCase().indexOf(filter_location) > -1) {
+//                 trDelete[i].style.display = "";
+//             } else {
+//                 trDelete[i].style.display = "none";
+//             }
+//         }
+//     }
+// }
 
 // function getFilter() {
 //     var checkboxesChecked = {};
@@ -601,7 +601,7 @@ function check_send_all() {
         for (var i = 0; i < check_all_equipment.length; i++) {
             check_all_equipment[i].checked = true
             index_check_send++
-            equipment_send.push(document.getElementById("myTableSend").rows[i + 1].cells[10].innerText)
+            equipment_send.push(document.getElementById("myTableBase").rows[i + 1].cells[10].innerText)
         }
     } else {
         for (var i = 0; i < check_all_equipment.length; i++) {
@@ -631,7 +631,7 @@ function check_send_all_active() {
     for (var i = 0; i < choose_check_box_send.length; i++) {
         if (choose_check_box_send[i].checked == true) {
             index_check_send++
-            equipment_send.push(document.getElementById("myTableSend").rows[i + 1].cells[10].innerText)
+            equipment_send.push(document.getElementById("myTableBase").rows[i + 1].cells[10].innerText)
         }
         if (index_check_send == 0) {
             check_box_send_all[0].checked = false
@@ -676,37 +676,40 @@ function topFunction() {
 }
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Получаем фрагмент URL (например, "#delete-tab-pane")
-    const hash = window.location.hash;
 
-    if (hash) {
-        // Находим кнопку вкладки, соответствующую фрагменту
-        const tabButton = document.querySelector(`[data-bs-target="${hash}"]`);
 
-        if (tabButton) {
-            // Открываем вкладку с помощью Bootstrap Tab API
-            const tab = new bootstrap.Tab(tabButton);
-            tab.show();
 
-            // Очищаем фрагмент URL после открытия вкладки
-            history.replaceState(null, null, ' '); // Убираем фрагмент из URL
-        }
-    }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const hash = window.location.hash;
-
-    if (hash && hash.includes("-tab-pane")) { // Проверяем, что фрагмент относится к вкладкам
-        const tabButton = document.querySelector(`[data-bs-target="${hash}"]`);
-
-        if (tabButton) {
-            const tab = new bootstrap.Tab(tabButton);
-            tab.show();
-
-            // Очищаем фрагмент URL
-            history.replaceState(null, null, ' ');
-        }
-    }
-});
+// document.addEventListener("DOMContentLoaded", function () {
+//     // Получаем фрагмент URL (например, "#delete-tab-pane")
+//     const hash = window.location.hash;
+//
+//     if (hash) {
+//         // Находим кнопку вкладки, соответствующую фрагменту
+//         const tabButton = document.querySelector(`[data-bs-target="${hash}"]`);
+//
+//         if (tabButton) {
+//             // Открываем вкладку с помощью Bootstrap Tab API
+//             const tab = new bootstrap.Tab(tabButton);
+//             tab.show();
+//
+//             // Очищаем фрагмент URL после открытия вкладки
+//             history.replaceState(null, null, ' '); // Убираем фрагмент из URL
+//         }
+//     }
+// });
+//
+// document.addEventListener("DOMContentLoaded", function () {
+//     const hash = window.location.hash;
+//
+//     if (hash && hash.includes("-tab-pane")) { // Проверяем, что фрагмент относится к вкладкам
+//         const tabButton = document.querySelector(`[data-bs-target="${hash}"]`);
+//
+//         if (tabButton) {
+//             const tab = new bootstrap.Tab(tabButton);
+//             tab.show();
+//
+//             // Очищаем фрагмент URL
+//             history.replaceState(null, null, ' ');
+//         }
+//     }
+// });

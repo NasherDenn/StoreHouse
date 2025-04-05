@@ -16,8 +16,7 @@
 
     <!-- Подключение кастомных стилей и скриптов -->
     {% load static %}
-<!--    <script type="text/javascript" src="{% static 'functions/functionsBase.js' %}"></script>-->
-
+    <script type="text/javascript" src="{% static 'functions/functionsBase.js' %}"></script>
     <style>
         body {
             background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
@@ -64,18 +63,18 @@
         .nav-tabs {
             background-color: white;
             border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            /*margin-bottom: 1rem;*/
             position: sticky;
             top: 40px;
-            /*background-color: #4099c5;*/
-            /*color: white;*/
+            z-index: 900;
         }
 
         .nav-item {
             margin-left: 15px;
             background: #e6f0fc;
             border-radius: 5px 5px 0 0;
+            position: sticky;
+            top: 70px;
+            z-index: 500;
         }
 
         .nav-link {
@@ -98,6 +97,14 @@
             vertical-align: middle;
         }
 
+        .table thead {
+            position: sticky;
+            top: 79px; /* Прилипание к верху экрана */
+            background-color: white; /* Фон для предотвращения прозрачности */
+            z-index: 100; /* Убедитесь, что заголовки выше других элементов */
+            text-align: center;
+        }
+
         .table-group-divider {
             height: 300px;
             overflow-x: auto;
@@ -105,7 +112,6 @@
             margin-bottom: 20px;
             border-bottom: 1px solid #eee;
         }
-
 
         .btn-primary {
             background-color: #4099c5;
@@ -120,10 +126,6 @@
         .offcanvas {
             background-color: #f8f9fa;
         }
-
-        /*.offcanvas-header {*/
-        /*    border-bottom: 1px solid #ddd;*/
-        /*}*/
 
         .offcanvas-body {
             padding: 1rem;
@@ -143,13 +145,8 @@
             bottom: 0;
             width: 100%;
             text-align: center;
-            /*background-color: #4099c5;*/
             color: white;
             padding: 0.5rem 0;
-        }
-
-        .hide-column {
-            display: none;
         }
 
         #myBtn {
@@ -166,25 +163,35 @@
             cursor: pointer;
         }
 
+        td {
+            position: relative; /* Родительский контейнер для абсолютного позиционирования */
+            padding-right: 40px; /* Отступ справа для размещения иконок */
+        }
 
-        .actions-column {
-              white-space: nowrap;
-            }
+        .text-content {
+            display: inline-block; /* Текст как блок */
+            vertical-align: middle; /* Выравнивание текста по центру вертикали */
+            max-width: calc(100% - 60px); /* Ограничение ширины текста, чтобы он не наезжал на иконки */
+            word-wrap: break-word; /* Перенос длинных слов */
+        }
 
-            .actions-column button,
-            .actions-column input {
-              display: none;
-              margin: 0 2px;
-            }
+        .action-cell {
+            position: absolute; /* Абсолютное позиционирование для контейнера с иконками */
+            top: 50%; /* Позиционирование по вертикали */
+            right: 0; /* Прижатие к правому краю */
+            transform: translateY(-50%); /* Центрирование по вертикали */
+            display: flex; /* Размещение иконок горизонтально */
+            gap: 5px; /* Отступ между иконками */
+            align-items: center; /* Выравнивание иконок по центру вертикали */
+        }
 
-            /* Показываем кнопки только в активном режиме */
-            body[data-active-mode="home"] .btn-history,
-            body[data-active-mode="send"] .btn-send,
-            body[data-active-mode="edit"] .btn-edit,
-            body[data-active-mode="delete"] .btn-delete {
-              display: inline-block !important;
-            }
+        .action-link {
+            display: inline-block; /* Каждая иконка как отдельный блок */
+        }
 
+        .hide-column {
+            display: none;
+        }
 
     </style>
 </head>
@@ -197,39 +204,28 @@
     <a href="/logout" style="color: white; margin-left: 20px; text-decoration: none"><i>Выход</i></a>
 </ul>
 
-<!-- Вкладки -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"
-                role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная
-        </button>
+        <button class="nav-link active" data-bs-toggle="tab" data-action="history" type="button">Главная</button>
     </li>
     {% if perms.catalog.can_send_task %}
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="send-tab" data-bs-toggle="tab" data-bs-target="#send-tab-pane" type="button"
-                role="tab" aria-controls="send-tab-pane" aria-selected="false">Отправить
-        </button>
+        <button class="nav-link" data-bs-toggle="tab" data-action="send" type="button">Отправить</button>
     </li>
     {% endif %}
     {% if perms.catalog.can_create_task %}
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="add-tab" data-bs-toggle="tab" data-bs-target="#add-tab-pane" type="button"
-                role="tab" aria-controls="add-tab-pane" aria-selected="false">Добавить
-        </button>
+        <button class="nav-link" data-bs-toggle="tab" data-action="create" type="button">Добавить</button>
     </li>
     {% endif %}
     {% if perms.catalog.can_edit_task %}
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-tab-pane" type="button"
-                role="tab" aria-controls="edit-tab-pane" aria-selected="false">Редактировать
-        </button>
+        <button class="nav-link" data-bs-toggle="tab" data-action="edit" type="button">Редактировать</button>
     </li>
     {% endif %}
     {% if perms.catalog.can_delete_task %}
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-tab-pane" type="button"
-                role="tab" aria-controls="delete-tab-pane" aria-selected="false">Удалить
-        </button>
+        <button class="nav-link" data-bs-toggle="tab" data-action="delete" type="button">Удалить</button>
     </li>
     {% endif %}
     {% if perms.catalog.can_send_task %}
@@ -240,6 +236,287 @@
     </li>
     {% endif %}
 </ul>
+
+<!-- Контент вкладок -->
+<div class="tab-content" id="myTabContent" style="width: 100%; padding-left: 1%; padding-right: 1%; top: 79px">
+    <!-- Заголовки столбцов -->
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+        <table class="table table-striped table-sm align-middle" id="myTableBase">
+            <thead class="align-middle">
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">
+                    Метод
+                    <br>
+                    <input type="text" id="hot_searching_method_base" onkeyup="HotSearchingBase()"
+                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
+                           title="Введите название метода контроля">
+                </th>
+                <th scope="col">
+                    Производитель
+                    <br>
+                    <input type="text" id="hot_searching_manufacture_base" onkeyup="HotSearchingBase()"
+                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
+                           title="Введите название производителя">
+                </th>
+                <th scope="col">
+                    Тип
+                    <br>
+                    <input type="text" id="hot_searching_type_base" onkeyup="HotSearchingBase()"
+                           style="width: 120px; font-size: 14px;" placeholder="Тип..."
+                           title="Введите тип оборудования">
+                </th>
+                <th scope="col" style="position: relative;">
+                    Название
+                    <br>
+                    <div>
+                    <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"
+                           style="width: 250px; font-size: 14px;" placeholder="Название..."
+                           title="Введите название оборудования">
+                    <input type="checkbox" class="form-check-input action-cell send-action" id="CheckSendAll" name="CheckSendAll"
+                           onclick="check_send_all()">
+                    </div>
+                </th>
+                <th scope="col" class="text-nowrap">
+                    Серийный номер
+                    <br>
+                    <input type="text" id="hot_searching_serial_base" onkeyup="HotSearchingBase()"
+                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
+                           title="Введите серийный номер оборудования">
+                </th>
+                <th scope="col" class="text-break" style="width: 200px">Количество</th>
+                <th scope="col" class="text-break">
+                    Нахождение
+                    <br>
+                    <input type="text" id="hot_searching_location_base" onkeyup="HotSearchingBase()"
+                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
+                           title="Введите месторасположение оборудования">
+                </th>
+                <th scope="col">Статус</th>
+                <th scope="col">Примечание</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider" style="text-align: center">
+            {% for unit in unit_list %}
+            <tr data-id="{{ unit.id }}" data-first-id="{{ unit.first_id }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ unit.method }}</td>
+                <td>{{ unit.manufacturer }}</td>
+                <td>{{ unit.type }}</td>
+                <td>
+                    <div class="text-content">{{ unit.equipment_name }}</div>
+                    <div class="action-cell">
+                        <!-- Вкладка "Главная" -->
+                        <a href="{% url 'unit_history' unit.first_id %}" class="action-link history-action"
+                           target="_blank">
+                            <img src="{% static 'images/see.png' %}" alt="see" width="25"
+                                 height="25">
+                        </a>
+                        <!-- Вкладка "Отправить" -->
+                        <input type="checkbox" class="send-action" id="CheckSend" name="CheckSend"
+                               style="float: right; display: none" onclick="check_send_all_active()">
+                        <!-- Вкладка "Редактировать" -->
+                        <a href="{% url 'unit_edit' unit.id %}" class="action-link edit-action"
+                           style="display: none;">
+                            <img src="{% static 'images/edit.png' %}" alt="edit" width="25"
+                                 height="25">
+                        </a>
+                        <!-- Вкладка "Удалить" -->
+                        <a href="{% url 'unit_delete' unit.id %}" class="action-link delete-action"
+                           style="display: none;">
+                            <img src="{% static 'images/trash.png' %}" alt="delete" width="25"
+                                 height="25">
+                        </a>
+                    </div>
+                </td>
+                <td>{{ unit.equipment_serial_number }}</td>
+                <td>{{ unit.total }}</td>
+                <td>{{ unit.location }}</td>
+                <td>{{ unit.status }}</td>
+                <td>{{ unit.notes }}</td>
+                <td class="hide-column">{{ unit.id }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="add-tab-pane" role="tabpanel" aria-labelledby="add-tab" tabindex="0">
+        {% load crispy_forms_tags %}
+        <div class="container-fluid">
+            <div class="row justify-content-md-center">
+                <div class="col-md-6">
+                    <form method="POST" action="/create/" style="margin-top: 10px">
+                        {{ form_add|crispy }}
+                        {% csrf_token %}
+                        <div class="col-md-2 justify-content-md-center">
+                            <input class="btn btn-primary w-100 py-2"
+                                   style="margin-bottom: 20px;"
+                                   type="submit" value="Добавить">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const actionUrls = {
+            'history': '{% url "unit_history" 0 %}',
+            // 'send': '{% url "unit_edit" 0 %}',
+            'edit': '{% url "unit_edit" 0 %}',
+            'delete': '{% url "unit_delete" 0 %}'
+        };
+
+        // Обработчик клика по вкладке
+        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+            tab.addEventListener('click', function () {
+                const action = this.getAttribute('data-action');
+                document.querySelectorAll('.action-link').forEach(link => {
+                    const firstId = link.closest('tr').getAttribute('data-first-id');
+                    link.setAttribute('href', actionUrls[action].replace('0', firstId));
+                    link.setAttribute('data-action', action);
+                });
+            });
+        });
+
+        // Инициализация первых ссылок
+        document.querySelectorAll('.action-link[data-action="history"]').forEach(link => {
+            const firstId = link.closest('tr').getAttribute('data-first-id');
+            link.setAttribute('href', actionUrls.history.replace('0', firstId));
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabEls = document.querySelectorAll('#myTab button[data-bs-toggle="tab"]');
+
+        tabEls.forEach(tabEl => {
+            tabEl.addEventListener('shown.bs.tab', function (event) {
+                const action = event.target.getAttribute('data-action');
+
+                // Скрываем все вкладки
+                document.querySelectorAll('.tab-pane').forEach(el => {
+                    el.style.display = 'none';
+                    el.classList.remove('show', 'active');
+                });
+
+                // Скрываем все элементы действий
+                document.querySelectorAll('.action-cell > *').forEach(el => {
+                    el.style.display = 'none';
+                });
+
+                // Показываем только активную вкладку
+                switch (action) {
+                    case 'history':
+                        document.getElementById('home-tab-pane').style.display = 'block';
+                        document.getElementById('home-tab-pane').classList.add('show', 'active');
+                        document.querySelectorAll('.history-action').forEach(el => {
+                            el.style.display = 'inline-block';
+                            // Обновляем ссылку и изображение
+                            const firstId = el.closest('tr').getAttribute('data-first-id');
+                            el.setAttribute('href', `/unit_history/${firstId}`);
+                            el.querySelector('img').setAttribute('src', '/static/images/see.png');
+                        });
+                        break;
+
+                    case 'send':
+                        document.getElementById('home-tab-pane').style.display = 'block';
+                        document.getElementById('home-tab-pane').classList.add('show', 'active');
+                        document.querySelectorAll('.send-action').forEach(el => {
+                            el.style.display = 'block';
+                        });
+                        break;
+
+                    case 'create':
+                        document.getElementById('add-tab-pane').style.display = 'block';
+                        document.getElementById('add-tab-pane').classList.add('show', 'active');
+                        break;
+
+                    case 'edit':
+                        document.getElementById('home-tab-pane').style.display = 'block';
+                        document.getElementById('home-tab-pane').classList.add('show', 'active');
+                        document.querySelectorAll('.edit-action').forEach(el => {
+                            el.style.display = 'inline-block';
+                            // Обновляем ссылку и изображение
+                            const unitId = el.closest('tr').getAttribute('data-id');
+                            el.setAttribute('href', `/unit_edit/${unitId}`);
+                            el.querySelector('img').setAttribute('src', '/static/images/edit.png');
+                        });
+                        break;
+
+                    case 'delete':
+                        document.getElementById('home-tab-pane').style.display = 'block';
+                        document.getElementById('home-tab-pane').classList.add('show', 'active');
+                        document.querySelectorAll('.delete-action').forEach(el => {
+                            el.style.display = 'inline-block';
+                            // Обновляем ссылку и изображение
+                            const unitId = el.closest('tr').getAttribute('data-id');
+                            el.setAttribute('href', `/unit_delete/${unitId}`);
+                            el.querySelector('img').setAttribute('src', '/static/images/trash.png');
+                        });
+                        break;
+                }
+            });
+        });
+
+        // Инициализация при загрузке (показываем history-action по умолчанию)
+        document.getElementById('home-tab-pane').style.display = 'block';
+        document.getElementById('home-tab-pane').classList.add('show', 'active');
+        document.querySelectorAll('.history-action').forEach(el => {
+            el.style.display = 'inline-block';
+            // Обновляем ссылку и изображение для первой загрузки
+            const firstId = el.closest('tr').getAttribute('data-first-id');
+            el.setAttribute('href', `/unit_history/${firstId}`);
+            el.querySelector('img').setAttribute('src', '/static/images/see.png');
+        });
+    });
+</script>
+
+
+<!-- Вкладки -->
+<!--<ul class="nav nav-tabs" id="myTab" role="tablist">-->
+<!--    <li class="nav-item" role="presentation">-->
+<!--        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"-->
+<!--                role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная-->
+<!--        </button>-->
+<!--    </li>-->
+<!--    {% if perms.catalog.can_send_task %}-->
+<!--    <li class="nav-item" role="presentation">-->
+<!--        <button class="nav-link" id="send-tab" data-bs-toggle="tab" data-bs-target="#send-tab-pane" type="button"-->
+<!--                role="tab" aria-controls="send-tab-pane" aria-selected="false">Отправить-->
+<!--        </button>-->
+<!--    </li>-->
+<!--    {% endif %}-->
+<!--    {% if perms.catalog.can_create_task %}-->
+<!--    <li class="nav-item" role="presentation">-->
+<!--        <button class="nav-link" id="add-tab" data-bs-toggle="tab" data-bs-target="#add-tab-pane" type="button"-->
+<!--                role="tab" aria-controls="add-tab-pane" aria-selected="false">Добавить-->
+<!--        </button>-->
+<!--    </li>-->
+<!--    {% endif %}-->
+<!--    {% if perms.catalog.can_edit_task %}-->
+<!--    <li class="nav-item" role="presentation">-->
+<!--        <button class="nav-link" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-tab-pane" type="button"-->
+<!--                role="tab" aria-controls="edit-tab-pane" aria-selected="false">Редактировать-->
+<!--        </button>-->
+<!--    </li>-->
+<!--    {% endif %}-->
+<!--    {% if perms.catalog.can_delete_task %}-->
+<!--    <li class="nav-item" role="presentation">-->
+<!--        <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-tab-pane" type="button"-->
+<!--                role="tab" aria-controls="delete-tab-pane" aria-selected="false">Удалить-->
+<!--        </button>-->
+<!--    </li>-->
+<!--    {% endif %}-->
+<!--    {% if perms.catalog.can_send_task %}-->
+<!--    <li class="nav-item" role="presentation">-->
+<!--        <button class="nav-link flex-sm-fill btn-primary" id="button-send" disabled="disabled" onclick="do_form_send()">-->
+<!--            <i class="bi bi-truck"></i>-->
+<!--        </button>-->
+<!--    </li>-->
+<!--    {% endif %}-->
+<!--</ul>-->
 
 <!-- Кнопка фильтров -->
 <button type="button" class="btn btn-sm btn-primary" id="button-filter" data-bs-toggle="offcanvas"
@@ -264,7 +541,8 @@
             <div class="row gy-5">
                 <div class="col-4">
                     <button type="button" class="btn active btn-f-check" aria-pressed="true"
-                            data-bs-toggle="button" onclick="check_method()" id="button_method">Метод контроля
+                            data-bs-toggle="button" onclick="check_method()" id="button_method">Метод
+                        контроля
                     </button>
                     {% for method_ndt in context_filter_method %}
                     <div class="custom-control custom-checkbox">
@@ -277,7 +555,8 @@
                 </div>
                 <div class="col-8">
                     <div class="row">
-                        <button type="button" class="btn active col-6 text-break btn-f-check" style="text-align:left"
+                        <button type="button" class="btn active col-6 text-break btn-f-check"
+                                style="text-align:left"
                                 aria-pressed="true" data-bs-toggle="button" onclick="check_location()"
                                 id="button_location">Месторасположение:
                         </button>
@@ -308,367 +587,350 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-primary" style="margin-top: 10px" type="submit" onclick="getFilter()">Применить</button>
+        <button class="btn btn-primary" style="margin-top: 10px" type="submit" onclick="getFilter()">
+            Применить
+        </button>
     </div>
 </div>
 
 <!-- Контент вкладок -->
-<div class="tab-content" id="myTabContent" style="width: 100%; padding-left: 1%; padding-right: 1%; top: 79px">
-    <!-- Вкладка "Главная" -->
-    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" id="myTableBase">
-            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">
-                    Метод
-                    <br>
-                    <input type="text" id="hot_searching_method_base" onkeyup="HotSearchingBase()"
-                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
-                           title="Введите название метода контроля">
-                </th>
-                <th scope="col">
-                    Производитель
-                    <br>
-                    <input type="text" id="hot_searching_manufacture_base" onkeyup="HotSearchingBase()"
-                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
-                           title="Введите название производителя">
-                </th>
-                <th scope="col">
-                    Тип
-                    <br>
-                    <input type="text" id="hot_searching_type_base" onkeyup="HotSearchingBase()"
-                           style="width: 120px; font-size: 14px;" placeholder="Тип..."
-                           title="Введите тип оборудования">
-                </th>
-                <th scope="col">
-                    Название
-                    <br>
-                    <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"
-                           style="width: 250px; font-size: 14px;" placeholder="Название..."
-                           title="Введите название оборудования">
-                </th>
-                <th scope="col" class="text-nowrap">
-                    Серийный номер
-                    <br>
-                    <input type="text" id="hot_searching_serial_base" onkeyup="HotSearchingBase()"
-                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
-                           title="Введите серийный номер оборудования">
-                </th>
-                <th scope="col" class="text-break">Количество</th>
-                <th scope="col" class="text-break">
-                    Нахождение
-                    <br>
-                    <input type="text" id="hot_searching_location_base" onkeyup="HotSearchingBase()"
-                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
-                           title="Введите месторасположение оборудования">
-                </th>
-                <th scope="col">Статус</th>
-                <th scope="col">Примечание</th>
-
-                <th class="actions-column">Действия</th>
-
-            </tr>
-            </thead>
-            <tbody class="table-group-divider" style="text-align: center">
-            {% for unit in unit_list %}
+<!--<div class="tab-content" id="myTabContent" style="width: 100%; padding-left: 1%; padding-right: 1%; top: 79px">-->
+<!--    &lt;!&ndash; Вкладка "Главная" &ndash;&gt;-->
+<!--    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">-->
+<!--        <table class="table table-striped table-sm align-middle" id="myTableBase">-->
+<!--            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">-->
 <!--            <tr>-->
-            <tr data-id="{{ unit.id }}" data-first-id="{{ unit.first_id }}">
-                <td>{{ forloop.counter }}</td>
-                <td>{{ unit.method }}</td>
-                <td>{{ unit.manufacturer }}</td>
-                <td>{{ unit.type }}</td>
-                <td>{{ unit.equipment_name }}
-                    <a href="{% url 'unit_history' unit.first_id %}"
-                       target="_blank"
-                       style="float: right; text-decoration: none; color: tomato">
-                        <img src="{% static 'images/see.png' %}" alt="see" width="25" height="25">
-                    </a>
-                </td>
-                <td>{{ unit.equipment_serial_number }}</td>
-                <td>{{ unit.total }}</td>
-                <td>{{ unit.location }}</td>
-                <td>{{ unit.status }}</td>
-                <td>{{ unit.notes }}</td>
+<!--                <th scope="col">№</th>-->
+<!--                <th scope="col">-->
+<!--                    Метод-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_method_base" onkeyup="HotSearchingBase()"-->
+<!--                           style="width: 60px; font-size: 14px;" placeholder="Метод..."-->
+<!--                           title="Введите название метода контроля">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Производитель-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_manufacture_base" onkeyup="HotSearchingBase()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."-->
+<!--                           title="Введите название производителя">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Тип-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_type_base" onkeyup="HotSearchingBase()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Тип..."-->
+<!--                           title="Введите тип оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Название-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"-->
+<!--                           style="width: 250px; font-size: 14px;" placeholder="Название..."-->
+<!--                           title="Введите название оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-nowrap">-->
+<!--                    Серийный номер-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_serial_base" onkeyup="HotSearchingBase()"-->
+<!--                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."-->
+<!--                           title="Введите серийный номер оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-break">Количество</th>-->
+<!--                <th scope="col" class="text-break">-->
+<!--                    Нахождение-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_location_base" onkeyup="HotSearchingBase()"-->
+<!--                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."-->
+<!--                           title="Введите месторасположение оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">Статус</th>-->
+<!--                <th scope="col">Примечание</th>-->
 
-                <td class="actions-column">
-                    <!-- Все кнопки сразу, но показываются в зависимости от вкладки -->
-                    <button class="btn btn-history" title="История">
-                      <i class="bi bi-clock-history"></i>
-                    </button>
-                    <button class="btn btn-edit" title="Редактировать">
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-delete" title="Удалить">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                    <input type="checkbox" class="btn-send" title="Выбрать для отправки">
-                  </td>
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody class="table-group-divider" style="text-align: center">-->
+<!--            {% for unit in unit_list %}-->
+<!--            <tr data-id="{{ unit.id }}" data-first-id="{{ unit.first_id }}">-->
+<!--                <td>{{ forloop.counter }}</td>-->
+<!--                <td>{{ unit.method }}</td>-->
+<!--                <td>{{ unit.manufacturer }}</td>-->
+<!--                <td>{{ unit.type }}</td>-->
+<!--                <td>{{ unit.equipment_name }}-->
+<!--                    <a href="{% url 'unit_history' unit.first_id %}"-->
+<!--                       target="_blank"-->
+<!--                       style="float: right; text-decoration: none; color: tomato">-->
+<!--                        <img src="{% static 'images/see.png' %}" alt="see" width="25" height="25">-->
+<!--                    </a>-->
+<!--                </td>-->
+<!--                <td>{{ unit.equipment_serial_number }}</td>-->
+<!--                <td>{{ unit.total }}</td>-->
+<!--                <td>{{ unit.location }}</td>-->
+<!--                <td>{{ unit.status }}</td>-->
+<!--                <td>{{ unit.notes }}</td>-->
+<!--            </tr>-->
+<!--            {% endfor %}-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
 
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<!--    &lt;!&ndash; Вкладка "Отправить" &ndash;&gt;-->
+<!--    <div class="tab-pane fade" id="send-tab-pane" role="tabpanel" aria-labelledby="send-tab" tabindex="0">-->
+<!--        <table class="table table-striped table-sm align-middle" id="myTableSend">-->
+<!--            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">-->
+<!--            <tr>-->
+<!--                <th scope="col">№</th>-->
+<!--                <th scope="col">-->
+<!--                    Метод-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_method_send" onkeyup="HotSearchingSend()"-->
+<!--                           style="width: 60px; font-size: 14px;" placeholder="Метод..."-->
+<!--                           title="Введите название метода контроля">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Производитель-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_manufacture_send" onkeyup="HotSearchingSend()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."-->
+<!--                           title="Введите название производителя">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Тип-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_type_send" onkeyup="HotSearchingSend()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Тип..."-->
+<!--                           title="Введите тип оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Название-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_name_send" onkeyup="HotSearchingSend()"-->
+<!--                           style="width: 250px; font-size: 14px;" placeholder="Название..."-->
+<!--                           title="Введите название оборудования">-->
+<!--                    <input type="checkbox" class="form-check-input" id="CheckSendAll" name="CheckSendAll"-->
+<!--                           style="float: right" onclick="check_send_all()">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-nowrap">-->
+<!--                    Серийный номер-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_serial_send" onkeyup="HotSearchingSend()"-->
+<!--                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."-->
+<!--                           title="Введите серийный номер оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-break">Количество</th>-->
+<!--                <th scope="col" class="text-break">-->
+<!--                    Нахождение-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_location_send" onkeyup="HotSearchingSend()"-->
+<!--                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."-->
+<!--                           title="Введите месторасположение оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">Статус</th>-->
+<!--                <th scope="col">Примечание</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody class="table-group-divider" style="text-align: center">-->
+<!--            {% for unit in unit_list %}-->
+<!--            <tr>-->
+<!--                <td>{{ forloop.counter }}</td>-->
+<!--                <td>{{ unit.method }}</td>-->
+<!--                <td>{{ unit.manufacturer }}</td>-->
+<!--                <td>{{ unit.type }}</td>-->
+<!--                <td>-->
+<!--                    {{ unit.equipment_name }}-->
+<!--                    <input type="checkbox" class="form-check-input" id="CheckSend" name="CheckSend"-->
+<!--                           style="float: right" onclick="check_send_all_active()">-->
+<!--                </td>-->
+<!--                <td>{{ unit.equipment_serial_number }}</td>-->
+<!--                <td>{{ unit.total }}</td>-->
+<!--                <td>{{ unit.location }}</td>-->
+<!--                <td>{{ unit.status }}</td>-->
+<!--                <td>{{ unit.notes }}</td>-->
+<!--                <td class="hide-column">{{ unit.id }}</td>-->
+<!--            </tr>-->
+<!--            {% endfor %}-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
 
-    <!-- Вкладка "Отправить" -->
-    <div class="tab-pane fade" id="send-tab-pane" role="tabpanel" aria-labelledby="send-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" id="myTableSend">
-            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">
-                    Метод
-                    <br>
-                    <input type="text" id="hot_searching_method_send" onkeyup="HotSearchingSend()"
-                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
-                           title="Введите название метода контроля">
-                </th>
-                <th scope="col">
-                    Производитель
-                    <br>
-                    <input type="text" id="hot_searching_manufacture_send" onkeyup="HotSearchingSend()"
-                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
-                           title="Введите название производителя">
-                </th>
-                <th scope="col">
-                    Тип
-                    <br>
-                    <input type="text" id="hot_searching_type_send" onkeyup="HotSearchingSend()"
-                           style="width: 120px; font-size: 14px;" placeholder="Тип..."
-                           title="Введите тип оборудования">
-                </th>
-                <th scope="col">
-                    Название
-                    <br>
-                    <input type="text" id="hot_searching_name_send" onkeyup="HotSearchingSend()"
-                           style="width: 250px; font-size: 14px;" placeholder="Название..."
-                           title="Введите название оборудования">
-                    <input type="checkbox" class="form-check-input" id="CheckSendAll" name="CheckSendAll"
-                           style="float: right" onclick="check_send_all()">
-                </th>
-                <th scope="col" class="text-nowrap">
-                    Серийный номер
-                    <br>
-                    <input type="text" id="hot_searching_serial_send" onkeyup="HotSearchingSend()"
-                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
-                           title="Введите серийный номер оборудования">
-                </th>
-                <th scope="col" class="text-break">Количество</th>
-                <th scope="col" class="text-break">
-                    Нахождение
-                    <br>
-                    <input type="text" id="hot_searching_location_send" onkeyup="HotSearchingSend()"
-                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
-                           title="Введите месторасположение оборудования">
-                </th>
-                <th scope="col">Статус</th>
-                <th scope="col">Примечание</th>
-            </tr>
-            </thead>
-            <tbody class="table-group-divider" style="text-align: center">
-            {% for unit in unit_list %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ unit.method }}</td>
-                <td>{{ unit.manufacturer }}</td>
-                <td>{{ unit.type }}</td>
-                <td>
-                    {{ unit.equipment_name }}
-                    <input type="checkbox" class="form-check-input" id="CheckSend" name="CheckSend"
-                           style="float: right" onclick="check_send_all_active()">
-                </td>
-                <td>{{ unit.equipment_serial_number }}</td>
-                <td>{{ unit.total }}</td>
-                <td>{{ unit.location }}</td>
-                <td>{{ unit.status }}</td>
-                <td>{{ unit.notes }}</td>
-                <td class="hide-column">{{ unit.id }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<!--    &lt;!&ndash; Вкладка "Добавить" &ndash;&gt;-->
+<!--    <div class="tab-pane fade" id="add-tab-pane" role="tabpanel" aria-labelledby="add-tab" tabindex="0">-->
+<!--        {% load crispy_forms_tags %}-->
+<!--        <div class="container-fluid">-->
+<!--            <div class="row justify-content-md-center">-->
+<!--                <div class="col-md-6">-->
+<!--                    <form method="POST" action="/create/" style="margin-top: 10px">-->
+<!--                        {{ form_add|crispy }}-->
+<!--                        {% csrf_token %}-->
+<!--                        <div class="col-md-2 justify-content-md-center">-->
+<!--                            <input class="btn btn-primary w-100 py-2" style="margin-bottom: 20px; width: 10px"-->
+<!--                                   type="submit" value="Добавить">-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
-    <!-- Вкладка "Добавить" -->
-    <div class="tab-pane fade" id="add-tab-pane" role="tabpanel" aria-labelledby="add-tab" tabindex="0">
-        {% load crispy_forms_tags %}
-        <div class="container-fluid">
-            <div class="row justify-content-md-center">
-                <div class="col-md-6">
-                    <form method="POST" action="/create/" style="margin-top: 10px">
-                        {{ form_add|crispy }}
-                        {% csrf_token %}
-                        <div class="col-md-2 justify-content-md-center">
-                            <input class="btn btn-primary w-100 py-2" style="margin-bottom: 20px; width: 10px"
-                                   type="submit" value="Добавить">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+<!--    &lt;!&ndash; Вкладка "Редактировать" &ndash;&gt;-->
+<!--    <div class="tab-pane fade" id="edit-tab-pane" role="tabpanel" aria-labelledby="edit-tab" tabindex="0">-->
+<!--        <table class="table table-striped table-sm align-middle" id="myTableEdit">-->
+<!--            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">-->
+<!--            <tr>-->
+<!--                <th scope="col">№</th>-->
+<!--                <th scope="col">-->
+<!--                    Метод-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_method_edit" onkeyup="HotSearchingEdit()"-->
+<!--                           style="width: 60px; font-size: 14px;" placeholder="Метод..."-->
+<!--                           title="Введите название метода контроля">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Производитель-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_manufacture_edit" onkeyup="HotSearchingEdit()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."-->
+<!--                           title="Введите название производителя">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Тип-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_type_edit" onkeyup="HotSearchingEdit()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Тип..."-->
+<!--                           title="Введите тип оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Название-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_name_edit" onkeyup="HotSearchingEdit()"-->
+<!--                           style="width: 250px; font-size: 14px;" placeholder="Название..."-->
+<!--                           title="Введите название оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-nowrap">-->
+<!--                    Серийный номер-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_serial_edit" onkeyup="HotSearchingEdit()"-->
+<!--                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."-->
+<!--                           title="Введите серийный номер оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-break">Количество</th>-->
+<!--                <th scope="col" class="text-break">-->
+<!--                    Нахождение-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_location_edit" onkeyup="HotSearchingEdit()"-->
+<!--                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."-->
+<!--                           title="Введите месторасположение оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">Статус</th>-->
+<!--                <th scope="col">Примечание</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody class="table-group-divider" style="text-align: center">-->
+<!--            {% for unit in unit_list %}-->
+<!--            <tr>-->
+<!--                <td>{{ forloop.counter }}</td>-->
+<!--                <td>{{ unit.method }}</td>-->
+<!--                <td>{{ unit.manufacturer }}</td>-->
+<!--                <td>{{ unit.type }}</td>-->
+<!--                <td>-->
+<!--                    {{ unit.equipment_name }}-->
+<!--                    <a href="{% url 'unit_edit' unit.id %}" style="float: right; text-decoration: none; color: #0056b3">-->
+<!--                        <img src="{% static 'images/edit.png' %}" alt="edit" width="25" height="25">-->
+<!--                    </a>-->
+<!--                </td>-->
+<!--                <td>{{ unit.equipment_serial_number }}</td>-->
+<!--                <td>{{ unit.total }}</td>-->
+<!--                <td>{{ unit.location }}</td>-->
+<!--                <td>{{ unit.status }}</td>-->
+<!--                <td>{{ unit.notes }}</td>-->
+<!--            </tr>-->
+<!--            {% endfor %}-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
 
-    <!-- Вкладка "Редактировать" -->
-    <div class="tab-pane fade" id="edit-tab-pane" role="tabpanel" aria-labelledby="edit-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" id="myTableEdit">
-            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">
-                    Метод
-                    <br>
-                    <input type="text" id="hot_searching_method_edit" onkeyup="HotSearchingEdit()"
-                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
-                           title="Введите название метода контроля">
-                </th>
-                <th scope="col">
-                    Производитель
-                    <br>
-                    <input type="text" id="hot_searching_manufacture_edit" onkeyup="HotSearchingEdit()"
-                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
-                           title="Введите название производителя">
-                </th>
-                <th scope="col">
-                    Тип
-                    <br>
-                    <input type="text" id="hot_searching_type_edit" onkeyup="HotSearchingEdit()"
-                           style="width: 120px; font-size: 14px;" placeholder="Тип..."
-                           title="Введите тип оборудования">
-                </th>
-                <th scope="col">
-                    Название
-                    <br>
-                    <input type="text" id="hot_searching_name_edit" onkeyup="HotSearchingEdit()"
-                           style="width: 250px; font-size: 14px;" placeholder="Название..."
-                           title="Введите название оборудования">
-                </th>
-                <th scope="col" class="text-nowrap">
-                    Серийный номер
-                    <br>
-                    <input type="text" id="hot_searching_serial_edit" onkeyup="HotSearchingEdit()"
-                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
-                           title="Введите серийный номер оборудования">
-                </th>
-                <th scope="col" class="text-break">Количество</th>
-                <th scope="col" class="text-break">
-                    Нахождение
-                    <br>
-                    <input type="text" id="hot_searching_location_edit" onkeyup="HotSearchingEdit()"
-                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
-                           title="Введите месторасположение оборудования">
-                </th>
-                <th scope="col">Статус</th>
-                <th scope="col">Примечание</th>
-            </tr>
-            </thead>
-            <tbody class="table-group-divider" style="text-align: center">
-            {% for unit in unit_list %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ unit.method }}</td>
-                <td>{{ unit.manufacturer }}</td>
-                <td>{{ unit.type }}</td>
-                <td>
-                    {{ unit.equipment_name }}
-                    <a href="{% url 'unit_edit' unit.id %}" style="float: right; text-decoration: none; color: #0056b3">
-                        <img src="{% static 'images/edit.png' %}" alt="edit" width="25" height="25">
-                    </a>
-                </td>
-                <td>{{ unit.equipment_serial_number }}</td>
-                <td>{{ unit.total }}</td>
-                <td>{{ unit.location }}</td>
-                <td>{{ unit.status }}</td>
-                <td>{{ unit.notes }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Вкладка "Удалить" -->
-    <div class="tab-pane fade" id="delete-tab-pane" role="tabpanel" aria-labelledby="delete-tab" tabindex="0">
-        <table class="table table-striped table-sm align-middle" id="myTableDelete">
-            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">
-                    Метод
-                    <br>
-                    <input type="text" id="hot_searching_method_delete" onkeyup="HotSearchingDelete()"
-                           style="width: 60px; font-size: 14px;" placeholder="Метод..."
-                           title="Введите название метода контроля">
-                </th>
-                <th scope="col">
-                    Производитель
-                    <br>
-                    <input type="text" id="hot_searching_manufacture_delete" onkeyup="HotSearchingDelete()"
-                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."
-                           title="Введите название производителя">
-                </th>
-                <th scope="col">
-                    Тип
-                    <br>
-                    <input type="text" id="hot_searching_type_delete" onkeyup="HotSearchingDelete()"
-                           style="width: 120px; font-size: 14px;" placeholder="Тип..."
-                           title="Введите тип оборудования">
-                </th>
-                <th scope="col">
-                    Название
-                    <br>
-                    <input type="text" id="hot_searching_name_delete" onkeyup="HotSearchingDelete()"
-                           style="width: 250px; font-size: 14px;" placeholder="Название..."
-                           title="Введите название оборудования">
-                </th>
-                <th scope="col" class="text-nowrap">
-                    Серийный номер
-                    <br>
-                    <input type="text" id="hot_searching_serial_delete" onkeyup="HotSearchingDelete()"
-                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."
-                           title="Введите серийный номер оборудования">
-                </th>
-                <th scope="col" class="text-break">Количество</th>
-                <th scope="col" class="text-break">
-                    Нахождение
-                    <br>
-                    <input type="text" id="hot_searching_location_delete" onkeyup="HotSearchingDelete()"
-                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."
-                           title="Введите месторасположение оборудования">
-                </th>
-                <th scope="col">Статус</th>
-                <th scope="col">Примечание</th>
-            </tr>
-            </thead>
-            <tbody class="table-group-divider" style="text-align: center">
-            {% for unit in unit_list %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ unit.method }}</td>
-                <td>{{ unit.manufacturer }}</td>
-                <td>{{ unit.type }}</td>
-                <td>
-                    {{ unit.equipment_name }}
-                    <a href="{% url 'unit_delete' unit.id %}"
-                       style="float: right; text-decoration: none; color: tomato">
-                        <img src="{% static 'images/trash.png' %}" alt="delete" width="25" height="25">
-                    </a>
-                </td>
-                <td>{{ unit.equipment_serial_number }}</td>
-                <td>{{ unit.total }}</td>
-                <td>{{ unit.location }}</td>
-                <td>{{ unit.status }}</td>
-                <td>{{ unit.notes }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<!--    &lt;!&ndash; Вкладка "Удалить" &ndash;&gt;-->
+<!--    <div class="tab-pane fade" id="delete-tab-pane" role="tabpanel" aria-labelledby="delete-tab" tabindex="0">-->
+<!--        <table class="table table-striped table-sm align-middle" id="myTableDelete">-->
+<!--            <thead style="position: sticky; top: 79px; text-align: center" class="align-middle">-->
+<!--            <tr>-->
+<!--                <th scope="col">№</th>-->
+<!--                <th scope="col">-->
+<!--                    Метод-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_method_delete" onkeyup="HotSearchingDelete()"-->
+<!--                           style="width: 60px; font-size: 14px;" placeholder="Метод..."-->
+<!--                           title="Введите название метода контроля">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Производитель-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_manufacture_delete" onkeyup="HotSearchingDelete()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Производитель..."-->
+<!--                           title="Введите название производителя">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Тип-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_type_delete" onkeyup="HotSearchingDelete()"-->
+<!--                           style="width: 120px; font-size: 14px;" placeholder="Тип..."-->
+<!--                           title="Введите тип оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">-->
+<!--                    Название-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_name_delete" onkeyup="HotSearchingDelete()"-->
+<!--                           style="width: 250px; font-size: 14px;" placeholder="Название..."-->
+<!--                           title="Введите название оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-nowrap">-->
+<!--                    Серийный номер-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_serial_delete" onkeyup="HotSearchingDelete()"-->
+<!--                           style="width: 130px; font-size: 14px;" placeholder="Серийный номер..."-->
+<!--                           title="Введите серийный номер оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col" class="text-break">Количество</th>-->
+<!--                <th scope="col" class="text-break">-->
+<!--                    Нахождение-->
+<!--                    <br>-->
+<!--                    <input type="text" id="hot_searching_location_delete" onkeyup="HotSearchingDelete()"-->
+<!--                           style="width: 100px; font-size: 14px;" placeholder="Нахождение..."-->
+<!--                           title="Введите месторасположение оборудования">-->
+<!--                </th>-->
+<!--                <th scope="col">Статус</th>-->
+<!--                <th scope="col">Примечание</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody class="table-group-divider" style="text-align: center">-->
+<!--            {% for unit in unit_list %}-->
+<!--            <tr>-->
+<!--                <td>{{ forloop.counter }}</td>-->
+<!--                <td>{{ unit.method }}</td>-->
+<!--                <td>{{ unit.manufacturer }}</td>-->
+<!--                <td>{{ unit.type }}</td>-->
+<!--                <td>-->
+<!--                    {{ unit.equipment_name }}-->
+<!--                    <a href="{% url 'unit_delete' unit.id %}"-->
+<!--                       style="float: right; text-decoration: none; color: tomato">-->
+<!--                        <img src="{% static 'images/trash.png' %}" alt="delete" width="25" height="25">-->
+<!--                    </a>-->
+<!--                </td>-->
+<!--                <td>{{ unit.equipment_serial_number }}</td>-->
+<!--                <td>{{ unit.total }}</td>-->
+<!--                <td>{{ unit.location }}</td>-->
+<!--                <td>{{ unit.status }}</td>-->
+<!--                <td>{{ unit.notes }}</td>-->
+<!--            </tr>-->
+<!--            {% endfor %}-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--</div>-->
 
 <!-- Футер -->
 <footer class="footer">
     <div onclick="topFunction()" id="myBtn" title="Go to top">Top</div>
 </footer>
-<script type="text/javascript" src="{% static 'functions/functionsBase.js' %}"></script>
 </body>
 </html>

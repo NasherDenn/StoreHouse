@@ -721,6 +721,7 @@ def send_excel(request):
             # вставка изображение и адрес в зависимости от выбранного департамента
             if table_data[-1]['departament'] == 'YKR':
                 img = Image(os.path.join(settings.BASE_DIR, 'catalog', 'static', 'images', 'Rutledge.png'))
+                # img = Image(os.path.join(settings.BASE_DIR, 'staticfiles', 'images', 'Rutledge.png')) продакшн
                 ws.add_image(img, 'C3')
                 ws['E3'] = '      Yeskert Kyzmet Rutledge LLP,'
                 ws['E3'].font = Font(name='Times New Roman', size=9)
@@ -1052,9 +1053,3 @@ def unit_history(request, first_id):
     # logging.error(f'3 row_list {row_list}')
     # Передаем данные в шаблон
     return render(request, 'catalog/unit_history.html', {"row_list": row_list})
-
-
-# ToDo: Загрузить все данные (таблицы из Excel) в БД
-# ToDo: Убрать все HotSearching со страницы истории БД
-
-# ToDo: сделать уведомление всех пользователей у которых открыта страница об изменении в базе данных
