@@ -151,6 +151,38 @@
             border-color: #4099c5;
         }
 
+        .form-check-input-offcanvas {
+            width: 1em; /* Ширина */
+            height: 1em; /* Высота */
+            margin-top: 0.25em; /* Отступ сверху */
+            vertical-align: top; /* Выравнивание */
+            background-color: #fff; /* Белый фон */
+            border: 1px solid rgba(0, 0, 0, 0.25); /* Граница */
+            border-radius: 0.25em; /* Скругление углов */
+            appearance: none; /* Убирает стандартный вид браузера */
+        }
+
+        .form-check-input-offcanvas:checked {
+            background-color: #4099c5;
+            border-color: #4099c5;
+            position: relative;
+        }
+
+        .form-check-input-offcanvas:checked::after {
+            content: "✔"; /* Иконка галочки */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem;
+            color: white; /* Цвет галочки */
+            font-weight: bold;
+        }
+
+        .form-check-input-offcanvas:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Тень при фокусе */
+        }
+
         .form-check-label {
             margin-left: 0.5rem;
         }
@@ -576,7 +608,7 @@
                     </button>
                     {% for method_ndt in context_filter_method %}
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="form-check-input" id="CheckMethod" checked
+                        <input type="checkbox" class="form-check-input-offcanvas" id="CheckMethod" checked
                                name="CheckMethod">
                         <label class="form-check-label" for="CheckMethod"
                                name="label_method">{{ method_ndt }}</label>
@@ -592,7 +624,7 @@
                         </button>
                         {% for location in context_filter_location %}
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="form-check-input" id="CheckLocation" checked
+                            <input type="checkbox" class="form-check-input-offcanvas" id="CheckLocation" checked
                                    name="CheckLocation">
                             <label class="form-check-label" for="CheckLocation"
                                    name="label_location">{{ location }}</label>
@@ -607,7 +639,7 @@
                         </button>
                         {% for status in context_filter_status %}
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="form-check-input" id="CheckStatus" checked
+                            <input type="checkbox" class="form-check-input-offcanvas" id="CheckStatus" checked
                                    name="CheckStatus">
                             <label class="form-check-label" for="CheckStatus"
                                    name="label_status">{{ status }}</label>
