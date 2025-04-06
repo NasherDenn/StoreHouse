@@ -1044,12 +1044,23 @@ def unit_history(request, first_id):
                serial_number_write, status_write, notes_write, location_write, total_write, type_write, manufacturer_write
         FROM catalog_writehistory
         WHERE id_write = %s
-        ORDER BY date_write, time_write DESC
+        ORDER BY datetime(COALESCE(date_write, '1970-01-01') || ' ' || COALESCE(time_write, '00:00:00')) DESC;
     """
-
     # Получаем данные из таблицы в виде списка словарей
     row_list = get_rows_as_dicts(query, [first_id])
     # logging.error(f'2 first_id {first_id}')
     # logging.error(f'3 row_list {row_list}')
     # Передаем данные в шаблон
+    return render(request, 'catalog/unit_history.html', {"row_list": row_list})
+
+
+# вся история оборудования
+def all_history(request):
+    query = """
+           SELECT *
+           FROM catalog_writehistory
+           ORDER BY datetime(COALESCE(date_write, '1970-01-01') || ' ' || COALESCE(time_write, '00:00:00')) DESC;
+       """
+    # Получаем данные из таблицы в виде списка словарей
+    row_list = get_rows_as_dicts(query)
     return render(request, 'catalog/unit_history.html', {"row_list": row_list})

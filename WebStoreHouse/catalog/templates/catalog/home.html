@@ -131,6 +131,21 @@
             padding: 1rem;
         }
 
+        #CheckSendAll {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translateX(-50%);
+        }
+
+        .form-check-input {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transform: translateX(-50%);
+        }
+
         .form-check-input:checked {
             background-color: #4099c5;
             border-color: #4099c5;
@@ -228,6 +243,11 @@
         <button class="nav-link" data-bs-toggle="tab" data-action="delete" type="button">Удалить</button>
     </li>
     {% endif %}
+    {% if perms.catalog.can_all_history_task %}
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" href="{% url 'all_history' %}" target="_blank" role="button">История</a>
+    </li>
+    {% endif %}
     {% if perms.catalog.can_send_task %}
     <li class="nav-item" role="presentation">
         <button class="nav-link flex-sm-fill btn-primary" id="button-send" disabled="disabled" onclick="do_form_send()">
@@ -270,14 +290,17 @@
                     Название
                     <br>
                     <div>
-                    <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"
-                           style="width: 250px; font-size: 14px;" placeholder="Название..."
-                           title="Введите название оборудования">
-                    <input type="checkbox" class="form-check-input action-cell send-action" id="CheckSendAll" name="CheckSendAll"
-                           onclick="check_send_all()">
+                        <input type="text" id="hot_searching_name_base" onkeyup="HotSearchingBase()"
+                               style="width: 250px; font-size: 14px;" placeholder="Название..."
+                               title="Введите название оборудования">
+                    </div>
+                    <div class="action-cell">
+                        <input type="checkbox" class="send-action form-check-input" id="CheckSendAll"
+                               name="CheckSendAll"
+                               onclick="check_send_all()">
                     </div>
                 </th>
-                <th scope="col" class="text-nowrap">
+                <th scope=" col" class="text-nowrap">
                     Серийный номер
                     <br>
                     <input type="text" id="hot_searching_serial_base" onkeyup="HotSearchingBase()"
@@ -313,7 +336,7 @@
                                  height="25">
                         </a>
                         <!-- Вкладка "Отправить" -->
-                        <input type="checkbox" class="send-action" id="CheckSend" name="CheckSend"
+                        <input type="checkbox" class="send-action form-check-input" id="CheckSend" name="CheckSend"
                                style="float: right; display: none" onclick="check_send_all_active()">
                         <!-- Вкладка "Редактировать" -->
                         <a href="{% url 'unit_edit' unit.id %}" class="action-link edit-action"
@@ -364,7 +387,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const actionUrls = {
             'history': '{% url "unit_history" 0 %}',
-            // 'send': '{% url "unit_edit" 0 %}',
+            'send': '{% url "unit_edit" 0 %}',
             'edit': '{% url "unit_edit" 0 %}',
             'delete': '{% url "unit_delete" 0 %}'
         };
@@ -426,6 +449,7 @@
                         document.querySelectorAll('.send-action').forEach(el => {
                             el.style.display = 'block';
                         });
+                        document.getElementById('CheckSendAll').style.display = 'block';
                         break;
 
                     case 'create':
@@ -456,6 +480,10 @@
                             el.querySelector('img').setAttribute('src', '/static/images/trash.png');
                         });
                         break;
+                    default:
+                        // Скрываем checkbox выделения всего оборудования
+                        document.getElementById('CheckSendAll').style.display = 'none';
+                        break;
                 }
             });
         });
@@ -470,6 +498,8 @@
             el.setAttribute('href', `/unit_history/${firstId}`);
             el.querySelector('img').setAttribute('src', '/static/images/see.png');
         });
+        // Скрываем checkbox выделения всего оборудования
+        document.getElementById('CheckSendAll').style.display = 'none';
     });
 </script>
 

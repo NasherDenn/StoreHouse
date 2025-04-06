@@ -24,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_ir_=yvt^qq=24k929pyz3e%ffh-0+p!m$_k#sy9@-__u%x!&8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# поменять на False
+DEBUG = True
 
 ALLOWED_HOSTS = ['nasher.pythonanywhere.com', '127.0.0.1']
 
@@ -134,13 +135,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# STATIC_URL = 'static/'
-STATIC_URL = os.path.join(BASE_DIR, '/static/css/')
+STATIC_URL = 'static/'
+# STATIC_URL = os.path.join(BASE_DIR, '/static/')
 
-STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, '/static/'),
+#     os.path.join(BASE_DIR, 'static/'),
 # ]
 
 # Default primary key field type
@@ -150,23 +151,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = ''
 
-# SERIALIZATION_MODULES = {
-#     'json': 'wadofstuff.django.serializers.json'
-# }
-
 CORS_ORIGIN_ALLOW_ALL = True
-
-# import os
-#
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, '/static/media/')
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"  # Для тестирования
-#         # "BACKEND": "channels_redis.core.RedisChannelLayer"  # Для продакшена
-#         # "CONFIG": {"hosts": [("127.0.0.1", 6379)]},
-#     },
-# }
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y']

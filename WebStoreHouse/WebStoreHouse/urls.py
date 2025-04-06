@@ -15,6 +15,7 @@ urlpatterns = [
     path('unit_history/<int:first_id>/', views.unit_history, name='unit_history'),
     path('forms_send/', views.forms_send, name='forms_send'),
     path('send_excel/', views.send_excel, name='send_excel'),
+    path('all_history/', views.all_history, name='all_history'),
     path('admin/', admin.site.urls),
     path('logout/', views.login, name='logout'),
 ]
