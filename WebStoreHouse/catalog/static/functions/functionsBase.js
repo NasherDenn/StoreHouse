@@ -67,7 +67,7 @@ function FirstLoad() {
 
 
 // Оптимизированная версия HotSearching
-function HotSearching(tableId, methodId, manufactureId, typeId, nameId, serialId, locationId) {
+function HotSearching(tableId, methodId, manufactureId, typeId, nameId, serialId, locationId, statusId) {
     const table = document.getElementById(tableId);
     if (!table) return;
 
@@ -80,7 +80,8 @@ function HotSearching(tableId, methodId, manufactureId, typeId, nameId, serialId
         type: document.getElementById(typeId).value.toUpperCase(),
         name: document.getElementById(nameId).value.toUpperCase(),
         serial: document.getElementById(serialId).value.toUpperCase(),
-        location: document.getElementById(locationId).value.toUpperCase()
+        location: document.getElementById(locationId).value.toUpperCase(),
+        status: document.getElementById(statusId).value.toUpperCase()
     };
 
     rows.forEach(row => {
@@ -93,9 +94,10 @@ function HotSearching(tableId, methodId, manufactureId, typeId, nameId, serialId
         const nameMatch = !filters.name || cells[4].textContent.toUpperCase().includes(filters.name);
         const serialMatch = !filters.serial || cells[5].textContent.toUpperCase().includes(filters.serial);
         const locationMatch = !filters.location || cells[7].textContent.toUpperCase().includes(filters.location);
+        const statusMatch = !filters.status || cells[8].textContent.toUpperCase().includes(filters.status);
 
         row.style.display = methodMatch && manufactureMatch && typeMatch &&
-                          nameMatch && serialMatch && locationMatch ? "" : "none";
+                          nameMatch && serialMatch && locationMatch && statusMatch ? "" : "none";
     });
 }
 
@@ -108,7 +110,8 @@ function HotSearchingBase() {
         "hot_searching_type_base",
         "hot_searching_name_base",
         "hot_searching_serial_base",
-        "hot_searching_location_base"
+        "hot_searching_location_base",
+        "hot_searching_status_base"
     );
 }
 
@@ -394,8 +397,8 @@ function cacheTableData() {
                 return {
                     element: row,
                     method: cells[1]?.textContent,
-                    location: cells[7]?.textContent,
-                    status: cells[8]?.textContent
+                    location: cells[7]?.textContent
+                    // status: cells[8]?.textContent
                 };
             });
             tables[type.toLowerCase()] = rows;
@@ -413,9 +416,9 @@ function applyFilters(filters) {
         rows.forEach(rowData => {
             const methodMatch = !filters.method.length || filters.method.includes(rowData.method);
             const locationMatch = !filters.location.length || filters.location.includes(rowData.location);
-            const statusMatch = !filters.status.length || filters.status.includes(rowData.status);
+            // const statusMatch = !filters.status.length || filters.status.includes(rowData.status);
 
-            rowData.element.style.display = methodMatch && locationMatch && statusMatch ? "" : "none";
+            rowData.element.style.display = methodMatch && locationMatch ? "" : "none";
         });
     });
 }
@@ -433,7 +436,7 @@ function getFilter() {
     const filters = {
         method: getCheckedValues('Method'),
         location: getCheckedValues('Location'),
-        status: getCheckedValues('Status')
+        // status: getCheckedValues('Status')
     };
 
     applyFilters(filters);
@@ -454,21 +457,21 @@ function check() {
             checkLocation[ii].checked = true;
         }
     }
-    var checkStatus = document.getElementsByName('CheckStatus');
-    for (var iii = 0; iii < checkStatus.length; iii++) {
-        if (checkStatus[iii].type == 'checkbox') {
-            checkStatus[iii].checked = true;
-        }
-    }
+    // var checkStatus = document.getElementsByName('CheckStatus');
+    // for (var iii = 0; iii < checkStatus.length; iii++) {
+    //     if (checkStatus[iii].type == 'checkbox') {
+    //         checkStatus[iii].checked = true;
+    //     }
+    // }
     var btn_method = document.getElementById('button_method');
     var btn_location = document.getElementById('button_location');
-    var btn_status = document.getElementById('button_status');
+    // var btn_status = document.getElementById('button_status');
     btn_method.classList.add('active');
     btn_method.ariaPressed = 'true';
     btn_location.classList.add('active');
     btn_location.ariaPressed = 'true';
-    btn_status.classList.add('active');
-    btn_status.ariaPressed = 'true';
+    // btn_status.classList.add('active');
+    // btn_status.ariaPressed = 'true';
 }
 
 // убрать флажок всех checkbox в фильтрах и отжать кнопки фильтров (Метод контроля, Месторасположение и Статус)
@@ -485,21 +488,21 @@ function uncheck() {
             uncheckLocation[ii].checked = false;
         }
     }
-    var uncheckStatus = document.getElementsByName('CheckStatus');
-    for (var iii = 0; iii < uncheckStatus.length; iii++) {
-        if (uncheckStatus[iii].type == 'checkbox') {
-            uncheckStatus[iii].checked = false;
-        }
-    }
+    // var uncheckStatus = document.getElementsByName('CheckStatus');
+    // for (var iii = 0; iii < uncheckStatus.length; iii++) {
+    //     if (uncheckStatus[iii].type == 'checkbox') {
+    //         uncheckStatus[iii].checked = false;
+    //     }
+    // }
     var btn_method = document.getElementById('button_method');
     var btn_location = document.getElementById('button_location');
-    var btn_status = document.getElementById('button_status');
+    // var btn_status = document.getElementById('button_status');
     btn_method.classList.remove('active');
     btn_method.ariaPressed = 'false';
     btn_location.classList.remove('active');
     btn_location.ariaPressed = 'false';
-    btn_status.classList.remove('active');
-    btn_status.ariaPressed = 'false';
+    // btn_status.classList.remove('active');
+    // btn_status.ariaPressed = 'false';
 }
 
 // установить флажок всех checkbox фильтра "Метод контроля"
@@ -559,32 +562,32 @@ function check_location() {
 }
 
 // установить флажок всех checkbox фильтра "Статус"
-function check_status() {
-    var btn_status = document.getElementById('button_status');
-    if (btn_status.classList.contains('active')) {
-        var check = document.getElementsByTagName('input');
-        for (var i = 0; i < check.length; i++) {
-            if (check[i].type == 'checkbox') {
-                if (check[i].id == 'CheckStatus') {
-                    if (check[i].checked == false) {
-                        check[i].checked = true;
-                    }
-                }
-            }
-        }
-    } else {
-        var check = document.getElementsByTagName('input');
-        for (var i = 0; i < check.length; i++) {
-            if (check[i].type == 'checkbox') {
-                if (check[i].id == 'CheckStatus') {
-                    if (check[i].checked == true) {
-                        check[i].checked = false;
-                    }
-                }
-            }
-        }
-    }
-}
+// function check_status() {
+//     var btn_status = document.getElementById('button_status');
+//     if (btn_status.classList.contains('active')) {
+//         var check = document.getElementsByTagName('input');
+//         for (var i = 0; i < check.length; i++) {
+//             if (check[i].type == 'checkbox') {
+//                 if (check[i].id == 'CheckStatus') {
+//                     if (check[i].checked == false) {
+//                         check[i].checked = true;
+//                     }
+//                 }
+//             }
+//         }
+//     } else {
+//         var check = document.getElementsByTagName('input');
+//         for (var i = 0; i < check.length; i++) {
+//             if (check[i].type == 'checkbox') {
+//                 if (check[i].id == 'CheckStatus') {
+//                     if (check[i].checked == true) {
+//                         check[i].checked = false;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 
 var equipment_send = []

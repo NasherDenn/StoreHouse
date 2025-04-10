@@ -14,18 +14,18 @@ class MethodNdt(models.Model):
         return self.name
 
 
-class Status(models.Model):
-    name = models.CharField(
-        max_length=30,
-        help_text="Введите статус оборудования",
-        verbose_name="Статус оборудования",
-        null=True,
-        blank=True,
-        default=None
-    )
-
-    def __str__(self):
-        return self.name
+# class Status(models.Model):
+#     name = models.CharField(
+#         max_length=30,
+#         help_text="Введите статус оборудования",
+#         verbose_name="Статус оборудования",
+#         null=True,
+#         blank=True,
+#         default=None
+#     )
+#
+#     def __str__(self):
+#         return self.name
 
 
 class Location(models.Model):
@@ -62,13 +62,13 @@ class Unit(models.Model):
         blank=True
     )
 
-    status = models.ForeignKey(
-        'Status',
-        on_delete=models.CASCADE,
-        help_text='Выберите статус оборудования',
-        verbose_name='Статус',
-        related_name='status'
-    )
+    # status = models.ForeignKey(
+    #     'Status',
+    #     on_delete=models.CASCADE,
+    #     help_text='Выберите статус оборудования',
+    #     verbose_name='Статус',
+    #     related_name='status'
+    # )
 
     location = models.ForeignKey(
         'Location',
@@ -92,6 +92,14 @@ class Unit(models.Model):
 
     total = models.IntegerField(
         verbose_name="Количество"
+    )
+
+    status = models.CharField(
+        max_length=50,
+        verbose_name="Статус оборудования",
+        null=True,
+        blank=True,
+        default=''
     )
 
     notes = models.CharField(
@@ -118,6 +126,7 @@ class Unit(models.Model):
             ("can_delete_task", "Can delete task"),
             ("can_edit_task", "Can edit task"),
             ("can_send_task", "Can send task"),
+            ("can_all_history_task", "Can all-history task"),
         ]
 
 
@@ -127,7 +136,9 @@ class WriteHistory(models.Model):
         blank=True,
     )
 
-    time_write = models.TimeField(
+    time_write = models.CharField(
+    # time_write = models.TimeField(
+        max_length=12,
         null=True,
         blank=True,
     )
@@ -228,7 +239,7 @@ class WriteHistory(models.Model):
     )
 
     status_write = models.CharField(
-        max_length=20,
+        max_length=50,
         verbose_name="Статус",
         null=True,
         blank=True,

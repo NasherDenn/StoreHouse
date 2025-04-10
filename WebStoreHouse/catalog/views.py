@@ -1,25 +1,25 @@
-import json
-import time
+# import json
+# import time
 
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
-from django.urls import reverse_lazy
-from django.views.generic import UpdateView
-from django.core.serializers import serialize
-from django.http import JsonResponse
-from .models import *
+# from django.urls import reverse_lazy
+# from django.views.generic import UpdateView
+# from django.core.serializers import serialize
+# from django.http import JsonResponse
+# from .models import *
 from django.views import generic
 from .forms import *
 # import wadofstuff
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-
-from openpyxl import Workbook
-
-from django.core.serializers.json import DjangoJSONEncoder
+# from django.views.decorators.csrf import csrf_exempt
+# from django.views.decorators.http import require_http_methods
+#
+# from openpyxl import Workbook
+#
+# from django.core.serializers.json import DjangoJSONEncoder
 
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -27,12 +27,12 @@ import json
 from openpyxl.drawing.image import Image
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, Border, Side, numbers
-from openpyxl.worksheet.page import PageMargins
+# from openpyxl.worksheet.page import PageMargins
 import io
 import os
 import datetime
 from django.conf import settings
-import warnings
+# import warnings
 
 import logging
 
@@ -71,14 +71,14 @@ def login(request):
 def home(request):
     context_filter_method = MethodNdt.objects.all()
     context_filter_location = Location.objects.all()
-    context_filter_status = Status.objects.all()
+    # context_filter_status = Status.objects.all()
     # данные об оборудовании из БД
     unit_list = Unit.objects.all()
     unit_form = UnitForm()
     return render(request, 'catalog/home.html', {
         'context_filter_method': context_filter_method,
         'context_filter_location': context_filter_location,
-        'context_filter_status': context_filter_status,
+        # 'context_filter_status': context_filter_status,
         'unit_list': unit_list,
         'form_add': unit_form,
     })
@@ -97,15 +97,15 @@ def create(request):
         unit.total = request.POST.get("total")
         location = Location.objects.get(id=request.POST.get("location"))
         unit.location = location
-        status = Status.objects.get(id=request.POST.get("status"))
-        unit.status = status
+        # status = Status.objects.get(id=request.POST.get("status"))
+        unit.status = request.POST.get("status")
         unit.notes = request.POST.get("notes")
         unit.save()
         unit.first_id = unit.id
         unit.save()
         # словарь со значениями для формирования истории в БД
         data_write = {'date_write': datetime.datetime.now().strftime('%Y-%m-%d'),
-                      'time_write': datetime.datetime.now().time().strftime('%H:%M:%S'),
+                      'time_write': datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4],
                       'crud_write': f'добавлено в БД',
                       'from_write': '-',
                       'who_write': request.user.username,
@@ -118,9 +118,11 @@ def create(request):
                       'serial_number_write': request.POST.get("serial"),
                       'total_write': request.POST.get("total"),
                       'location_write': location,
-                      'status_write': status,
+                      'status_write': request.POST.get("status"),
+                      # 'status_write': status,
                       'notes_write': request.POST.get("notes"),
                       'id_write': unit.id}
+        logging.error(data_write['time_write'])
         write_history(request, data_write)
         return home(request)
 
@@ -157,13 +159,14 @@ def unit_update(request):
         unit.total = request.POST.get("total")
         location = Location.objects.get(id=request.POST.get("location"))
         unit.location = location
-        status = Status.objects.get(id=request.POST.get("status"))
-        unit.status = status
+        # status = request.POST.get("status")
+        # status = Status.objects.get(id=request.POST.get("status"))
+        unit.status = request.POST.get("status")
         unit.notes = request.POST.get("notes")
         data_write = {}
         # словарь со значениями для формирования истории в БД
         data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
-        data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
+        data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4]
         data_write['crud_write'] = 'внесены изменения'
         data_write['from_write'] = '-'
         data_write['who_write'] = request.user.username
@@ -205,10 +208,10 @@ def unit_update(request):
         else:
             data_write['location_write'] = location
 
-        if status != Unit.objects.get(id=id).status:
-            data_write['status_write'] = f'{Unit.objects.get(id=id).status} &#x2192 {status}'
+        if request.POST.get("status") != Unit.objects.get(id=id).status:
+            data_write['status_write'] = f'{Unit.objects.get(id=id).status} &#x2192 {request.POST.get("status")}'
         else:
-            data_write['status_write'] = status
+            data_write['status_write'] = request.POST.get("status")
 
         if request.POST.get("notes") != Unit.objects.get(id=id).notes:
             data_write['notes_write'] = f'{Unit.objects.get(id=id).notes} &#x2192 {request.POST.get("notes")}'
@@ -259,8 +262,8 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
     if request.method == "POST":
         # обходим отправляемое оборудование по id
         for index, index_id in enumerate(list_id):
-            logging.error(f'index: {index}')
-            logging.error(f'index_id: {index_id}')
+            # logging.error(f'index: {index}')
+            # logging.error(f'index_id: {index_id}')
             # словарь со значениями для формирования истории в БД
             data_write = {}
             # количество оборудования в БД
@@ -309,62 +312,67 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                     if i.type == Unit.objects.get(id=int(index_id)).type:
                                         # если совпадают название оборудования на локации и перемещаемого оборудования
                                         if i.equipment_name == Unit.objects.get(id=int(index_id)).equipment_name:
-                                            # !!! передаваемое оборудование уже есть в месте назначения
-                                            # увеличиваем количество на локации
-                                            # logging.error('1')
-                                            # try:
-                                            #     logging.error(i.total)
-                                            #     logging.error(Unit.objects.get(id=int(index_id)).total)
-                                            # except Exception as e:
-                                            #     logging.error(f'ошибка {e}')
-                                            data_write[
-                                                'total_write_coming'] = f'{int(i.total)} &#x2192 {int(i.total) + int(Unit.objects.get(id=int(index_id)).total)}'
-                                            data_write[
-                                                'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
-                                            i.total = int(i.total) + int(Unit.objects.get(id=int(index_id)).total)
-                                            i.save()
-                                            # logging.error('2')
-                                            # предварительная запись откуда отправляется оборудование
-                                            data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
-                                            # logging.error('3')
-                                            data_write['location_write'] = recip
-                                            # logging.error('4')
-                                            # делаем запись истории в БД
-                                            try:
-                                                data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
-                                                # logging.error('5')
-                                                data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
-                                                # logging.error('6')
-                                                data_write['crud_write_coming'] = f'получено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
-                                                data_write['crud_write_expense'] = f'отправлено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
-                                                # logging.error('7')
-                                                data_write['who_write'] = request.user.username
-                                                # Предварительная запись откуда отправляется оборудование - см. выше
-                                                data_write['whom_write'] = recip_name
-                                                data_write['to_write'] = recip
-                                                data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
-                                                data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
-                                                data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
-                                                data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
-                                                data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
-                                                # Предварительная запись откуда &#x2192 куда - см. выше
-                                                data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
-                                                data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
-                                                # logging.error('8')
-                                                data_write['id_write'] = Unit.objects.get(id=int(index_id)).first_id
-                                                # logging.error('9')
-                                                # удаляем оборудование, которое отправляем
-                                                # logging.error(f'Удаляемое оборудование {Unit.objects.get(id=int(index_id))}')
-                                                Unit.objects.get(id=int(index_id)).delete()
-                                                # logging.error('10')
-                                                no_unit_location = False
-                                                break
-                                                # logging(f'1-1 {data_write}')
-                                            except Exception as e:
-                                                logging.error(f'1111 {e}')
-                                                logging(f'1-2 {data_write}')
+                                            # исключаем случай одинакового оборудования с разными серийными номерами, что бы записалось по отдельности
+                                            if i.equipment_serial_number == Unit.objects.get(id=int(index_id)).equipment_serial_number:
+                                                # logger.error(i.equipment_serial_number)
+                                                # logger.error(Unit.objects.get(id=int(index_id)).equipment_serial_number)
+                                                # !!! передаваемое оборудование уже есть в месте назначения
+                                                # увеличиваем количество на локации
+                                                logging.error('1')
+                                                # try:
+                                                #     logging.error(i.total)
+                                                #     logging.error(Unit.objects.get(id=int(index_id)).total)
+                                                # except Exception as e:
+                                                #     logging.error(f'ошибка {e}')
+                                                data_write[
+                                                    'total_write_coming'] = f'{int(i.total)} &#x2192 {int(i.total) + int(Unit.objects.get(id=int(index_id)).total)}'
+                                                data_write[
+                                                    'total_write_expense'] = f'{int(Unit.objects.get(id=int(index_id)).total)} &#x2192 {int(Unit.objects.get(id=int(index_id)).total) - int(count_unit_send)}'
+                                                i.total = int(i.total) + int(Unit.objects.get(id=int(index_id)).total)
+                                                i.save()
+                                                # logging.error('2')
+                                                # предварительная запись откуда отправляется оборудование
+                                                data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
+                                                # logging.error('3')
+                                                data_write['location_write'] = recip
+                                                # logging.error('4')
+                                                # делаем запись истории в БД
+                                                try:
+                                                    data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
+                                                    # logging.error('5')
+                                                    data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4]
+                                                    # logging.error('6')
+                                                    data_write['crud_write_coming'] = f'получено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
+                                                    data_write['crud_write_expense'] = f'отправлено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
+                                                    # logging.error('7')
+                                                    data_write['who_write'] = request.user.username
+                                                    # Предварительная запись откуда отправляется оборудование - см. выше
+                                                    data_write['whom_write'] = recip_name
+                                                    data_write['to_write'] = recip
+                                                    data_write['method_write'] = Unit.objects.get(id=int(index_id)).method
+                                                    data_write['manufacturer_write'] = Unit.objects.get(id=int(index_id)).manufacturer
+                                                    data_write['type_write'] = Unit.objects.get(id=int(index_id)).type
+                                                    data_write['name_write'] = Unit.objects.get(id=int(index_id)).equipment_name
+                                                    data_write['serial_number_write'] = Unit.objects.get(id=int(index_id)).equipment_serial_number
+                                                    # Предварительная запись откуда &#x2192 куда - см. выше
+                                                    data_write['status_write'] = Unit.objects.get(id=int(index_id)).status
+                                                    data_write['notes_write'] = Unit.objects.get(id=int(index_id)).notes
+                                                    # logging.error('8')
+                                                    data_write['id_write'] = Unit.objects.get(id=int(index_id)).first_id
+                                                    # logging.error('9')
+                                                    # удаляем оборудование, которое отправляем
+                                                    # logging.error(f'Удаляемое оборудование {Unit.objects.get(id=int(index_id))}')
+                                                    Unit.objects.get(id=int(index_id)).delete()
+                                                    # logging.error('10')
+                                                    no_unit_location = False
+                                                    break
+                                                    # logging(f'1-1 {data_write}')
+                                                except Exception as e:
+                                                    logging.error(f'1111 {e}')
+                                                    logging(f'1-2 {data_write}')
                     # !!! в месте назначения ещё нет такого оборудования
                     if no_unit_location:
+                        logging.error('2')
                         # предварительная запись откуда отправляется оборудование
                         data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
                         data_write['location_write'] = recip
@@ -381,7 +389,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         # делаем запись истории в БД
                         try:
                             data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
-                            data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
+                            data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4]
                             data_write['crud_write_coming'] = f'получено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
                             data_write['crud_write_expense'] = f'отправлено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
                             data_write['who_write'] = request.user.username
@@ -402,6 +410,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                             logging.error(f'2-2 {data_write}')
                 # !!! передаём всё оборудование на локацию, где ещё нет никакого оборудования
                 else:
+                    logging.error('3')
                     # предварительная запись откуда отправляется оборудование
                     data_write['from_write'] = Unit.objects.get(id=int(index_id)).location
                     data_write['location_write'] = recip
@@ -412,7 +421,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                     # делаем запись истории в БД
                     try:
                         data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
-                        data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
+                        data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4]
                         data_write['crud_write_coming'] = f'получено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
                         data_write['crud_write_expense'] = f'отправлено(-а): {Unit.objects.get(id=int(index_id)).total} шт.'
                         data_write['who_write'] = request.user.username
@@ -437,6 +446,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         logging.error(f'3-2 {data_write}')
             # !!! если количество отправляемого оборудования меньше чем количество оборудования в БД
             else:
+                logging.error('4')
                 # проверяем есть ли уже точно такое же оборудование (метод контроля, производитель, тип, название) в месте назначения
                 # всё оборудование на локации
                 all_unit_location = Unit.objects.filter(location=Location.objects.get(name=recip))
@@ -481,7 +491,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                             try:
                                                 data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
                                                 # logging.error('part 5')
-                                                data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
+                                                data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4]
                                                 # logging.error('part 6')
                                                 data_write['crud_write_coming'] = f'получено(-а): {int(count_unit_send)} шт.'
                                                 data_write['crud_write_expense'] = f'отправлено(-а): {int(count_unit_send)} шт.'
@@ -515,6 +525,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                                             logging.error(f'no_unit_location: {no_unit_location}')
                     # !!! в месте назначения ещё нет такого оборудования
                     if no_unit_location:
+                        logging.error('5')
                         # копируем сведения о перемещаемом оборудовании
                         method = Unit.objects.get(id=index_id).method
                         manufacturer = Unit.objects.get(id=index_id).manufacturer
@@ -551,7 +562,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                         try:
                             data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
                             # logging.error('part 15')
-                            data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
+                            data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4]
                             # logging.error('part 16')
                             data_write['crud_write_coming'] = f'получено(-а): {int(count_unit_send)} шт.'
                             data_write['crud_write_expense'] = f'отправлено(-а): {int(count_unit_send)} шт.'
@@ -576,6 +587,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                             logging.error(f'part 110 {data_write}')
                 # !!! передаём часть оборудования на локацию, где ещё нет никакого оборудования
                 else:
+                    logging.error('6')
                     # копируем сведения о перемещаемом оборудовании
                     method = Unit.objects.get(id=index_id).method
                     manufacturer = Unit.objects.get(id=index_id).manufacturer
@@ -612,7 +624,7 @@ def check_count_send_equipment(request, list_id: list, table_data: dict):
                     try:
                         data_write['date_write'] = datetime.datetime.now().strftime('%Y-%m-%d')
                         # logging.error('part 15')
-                        data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S')
+                        data_write['time_write'] = datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4]
                         # logging.error('part 16')
                         data_write['crud_write_coming'] = f'получено(-а): {int(count_unit_send)} шт.'
                         data_write['crud_write_expense'] = f'отправлено(-а): {int(count_unit_send)} шт.'
@@ -651,7 +663,7 @@ def unit_delete(request, id):
     unit = Unit.objects.get(id=id)
     # словарь со значениями для формирования истории в БД
     data_write = {'date_write': datetime.datetime.now().strftime('%Y-%m-%d'),
-                  'time_write': datetime.datetime.now().time().strftime('%H:%M:%S'),
+                  'time_write': datetime.datetime.now().time().strftime('%H:%M:%S.%f')[:-4],
                   'crud_write': f'удалено из БД',
                   'from_write': '-',
                   'who_write': request.user.username,
@@ -1044,8 +1056,13 @@ def unit_history(request, first_id):
                serial_number_write, status_write, notes_write, location_write, total_write, type_write, manufacturer_write
         FROM catalog_writehistory
         WHERE id_write = %s
-        ORDER BY datetime(COALESCE(date_write, '1970-01-01') || ' ' || COALESCE(time_write, '00:00:00')) DESC;
+        
+    ORDER BY 
+    date_write DESC,
+    time_write DESC;
+    
     """
+    # ORDER BY datetime(COALESCE(date_write, '1970-01-01') || ' ' || COALESCE(time_write, '00:00:00.00')) DESC;
     # Получаем данные из таблицы в виде списка словарей
     row_list = get_rows_as_dicts(query, [first_id])
     # logging.error(f'2 first_id {first_id}')
@@ -1059,8 +1076,13 @@ def all_history(request):
     query = """
            SELECT *
            FROM catalog_writehistory
-           ORDER BY datetime(COALESCE(date_write, '1970-01-01') || ' ' || COALESCE(time_write, '00:00:00')) DESC;
-       """
+        
+    ORDER BY 
+    date_write DESC,
+    time_write DESC;
+    
+    """
+    # ORDER BY datetime(COALESCE(date_write, '1970-01-01') || ' ' || COALESCE(time_write, '00:00:00.00')) DESC;
     # Получаем данные из таблицы в виде списка словарей
     row_list = get_rows_as_dicts(query)
     return render(request, 'catalog/unit_history.html', {"row_list": row_list})
