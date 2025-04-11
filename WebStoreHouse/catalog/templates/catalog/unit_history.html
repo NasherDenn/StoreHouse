@@ -16,7 +16,7 @@
 
     <!-- Подключение кастомных стилей и скриптов -->
     {% load static %}
-    <!--    <script type="text/javascript" src="{% static 'functions/functionsBase.js' %}"></script>-->
+    <script type="text/javascript" src="{% static 'functions/functionsHistory.js' %}"></script>
 
     <style>
         body {
@@ -31,24 +31,6 @@
         .text-break {
             font-size: 12px;
         }
-
-        /*.table {*/
-        /*    background-color: white;*/
-        /*    border-radius: 5px;*/
-        /*    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
-        /*}*/
-
-        /*.table th, .table td {*/
-        /*    vertical-align: middle;*/
-        /*}*/
-
-        /*.table-group-divider {*/
-        /*    height: 300px;*/
-        /*    overflow-x: auto;*/
-        /*    margin-top: 0;*/
-        /*    margin-bottom: 20px;*/
-        /*    border-bottom: 1px solid #eee;*/
-        /*}*/
 
         .footer {
             position: fixed;
@@ -86,37 +68,109 @@
 <body>
 {% csrf_token %}
 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-    <table class="table custom-table table-sm align-middle" id="myTableBase">
-        <thead style="position: sticky; text-align: center" class="align-middle">
+    <table class="table custom-table table-sm align-middle" id="myTableHistory">
+        <thead style="position: sticky; top: 0; text-align: center" class="align-middle">
         <tr>
             <th scope="col" class="text-nowrap">№</th>
-            <th scope="col" class="text-nowrap">Дата</th>
-            <th scope="col" class="text-nowrap">Время</th>
-            <th scope="col" class="text-break">Откуда отправили (из)</th>
-            <th scope="col" class="text-nowrap">Исполнитель</th>
-            <th scope="col" class="text-nowrap">Действие</th>
-            <th scope="col" class="text-break">Куда отправили (в)</th>
-            <th scope="col" class="text-nowrap">Получатель</th>
+            <th scope="col" class="text-nowrap">
+                Дата
+                <br>
+                <input type="text" id="hot_searching_date_history" onkeyup="HotSearchingHistory()"
+                       style="width: 60px; font-size: 12px;" placeholder="Дата..."
+                       title="Введите дату">
+            </th>
+            <th scope="col" class="text-nowrap">
+                Время
+                <br>
+                <input type="text" id="hot_searching_time_history" onkeyup="HotSearchingHistory()"
+                       style="width: 60px; font-size: 12px;" placeholder="Время..."
+                       title="Введите время">
+            </th>
+            <th scope="col" class="text-break">
+                Из
+                <br>
+                <input type="text" id="hot_searching_from_history" onkeyup="HotSearchingHistory()"
+                       style="width: 60px; font-size: 12px;" placeholder="Откуда..."
+                       title="Введите место отправления">
+            </th>
+            <th scope="col" class="text-nowrap">
+                Исполнитель
+                <br>
+                <input type="text" id="hot_searching_who_history" onkeyup="HotSearchingHistory()"
+                       style="width: 80px; font-size: 12px;" placeholder="Исполнитель..."
+                       title="Введите исполнителя">
+            </th>
+            <th scope="col" class="text-nowrap">
+                Действие
+                <br>
+                <input type="text" id="hot_searching_crud_history" onkeyup="HotSearchingHistory()"
+                       style="width: 70px; font-size: 12px;" placeholder="Действие..."
+                       title="Введите действие">
+            </th>
+            <th scope="col" class="text-break">
+                В
+                <br>
+                <input type="text" id="hot_searching_to_history" onkeyup="HotSearchingHistory()"
+                       style="width: 60px; font-size: 12px;" placeholder="Куда..."
+                       title="Введите место назначения">
+            </th>
+            <th scope="col" class="text-nowrap">
+                Получатель
+                <br>
+                <input type="text" id="hot_searching_whom_history" onkeyup="HotSearchingHistory()"
+                       style="width: 80px; font-size: 12px;" placeholder="Получатель..."
+                       title="Введите получателя">
+            </th>
             <th scope="col" class="text-nowrap">
                 Метод
+                <br>
+                <input type="text" id="hot_searching_method_history" onkeyup="HotSearchingHistory()"
+                       style="width: 60px; font-size: 12px;" placeholder="Метод..."
+                       title="Введите название метода контроля">
             </th>
             <th scope="col" class="text-nowrap">
                 Название
+                <br>
+                <input type="text" id="hot_searching_name_history" onkeyup="HotSearchingHistory()"
+                       style="width: 250px; font-size: 12px;" placeholder="Название..."
+                       title="Введите название оборудования">
             </th>
             <th scope="col" class="text-nowrap">
                 Серийный номер
+                <br>
+                <input type="text" id="hot_searching_serial_history" onkeyup="HotSearchingHistory()"
+                       style="width: 110px; font-size: 12px;" placeholder="Серийный номер..."
+                       title="Введите серийный номер оборудования">
             </th>
-            <th scope="col" class="text-nowrap">Статус</th>
+            <th scope="col" class="text-nowrap">
+                Статус
+                <br>
+                <input type="text" id="hot_searching_status_history" onkeyup="HotSearchingHistory()"
+                       style="width: 100px; font-size: 12px;" placeholder="Статус..."
+                       title="Введите статус оборудования">
+            </th>
             <th scope="col" class="text-nowrap">Примечание</th>
             <th scope="col" class="text-break">
                 Нахождение
+                <br>
+                <input type="text" id="hot_searching_location_history" onkeyup="HotSearchingHistory()"
+                       style="width: 80px; font-size: 12px;" placeholder="Нахождение..."
+                       title="Введите месторасположение оборудования">
             </th>
-            <th scope="col" class="text-break">Количество</th>
+            <th scope="col" class="text-break" style="width: 50px">Количество</th>
             <th scope="col" class="text-nowrap">
                 Тип
+                <br>
+                <input type="text" id="hot_searching_type_history" onkeyup="HotSearchingHistory()"
+                       style="width: 60px; font-size: 12px;" placeholder="Тип..."
+                       title="Введите тип оборудования">
             </th>
             <th scope="col" class="text-nowrap">
                 Производитель
+                <br>
+                <input type="text" id="hot_searching_manufacture_history" onkeyup="HotSearchingHistory()"
+                       style="width: 100px; font-size: 12px;" placeholder="Производитель..."
+                       title="Введите название производителя">
             </th>
         </tr>
         </thead>
