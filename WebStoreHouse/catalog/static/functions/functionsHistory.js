@@ -1,11 +1,3 @@
-window.onload = FirstLoad;
-
-var tableBase = ''
-
-function FirstLoad() {
-    tableBase = document.getElementById("myTableHistory");
-}
-
 // Оптимизированная версия HotSearching
 function HotSearching(tableId, dateId, timeId, fromId, whoId, crudId, toId, whomId, methodId, nameId, serialId,
                      statusId, locationId, typeId, manufactureId) {
@@ -35,7 +27,7 @@ function HotSearching(tableId, dateId, timeId, fromId, whoId, crudId, toId, whom
     rows.forEach(row => {
         const cells = row.cells;
         if (!cells || cells.length < 8) return;
-        const dateMatch = !filters.date || cells[1].textContent.toUpperCase().includes(filters.method);
+        const dateMatch = !filters.date || cells[1].textContent.toUpperCase().includes(filters.date);
         const timeMatch = !filters.time || cells[2].textContent.toUpperCase().includes(filters.time);
         const fromMatch = !filters.from || cells[3].textContent.toUpperCase().includes(filters.from);
         const whoMatch = !filters.who || cells[4].textContent.toUpperCase().includes(filters.who);

@@ -221,7 +221,7 @@ def unit_update(request):
         data_write['id_write'] = Unit.objects.get(id=id).first_id
         unit.save()
         write_history(request, data_write)
-        return HttpResponseRedirect("/home/#edit-tab-pane")
+        return HttpResponseRedirect("/home/")
         # return HttpResponseRedirect("/home/")
 
 
@@ -684,12 +684,12 @@ def unit_delete(request, id):
                   }
     unit.delete()
     write_history(request, data_write)
-    return HttpResponseRedirect('/home/#delete-tab-pane')
+    return HttpResponseRedirect('/home/')
     # return HttpResponseRedirect('/home/')
 
 
-def is_ajax(request):
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+# def is_ajax(request):
+#     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
 @permission_required('catalog.can_send_task', raise_exception=True)
