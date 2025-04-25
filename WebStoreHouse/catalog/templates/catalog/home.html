@@ -16,7 +16,7 @@
 
     <!-- Подключение кастомных стилей и скриптов -->
     {% load static %}
-    <script type="text/javascript" src="{% static 'functions/functionsBase.js' %}"></script>
+    <script type="text/javascript" src="{% static 'functions/functionsBase.js' %}?v=1.0.1"></script>
     <style>
         body {
             background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
@@ -509,6 +509,7 @@
         updateActions('history');
         document.getElementById('CheckSendAll').style.display = 'none';
     });
+
 </script>
 
 <!-- Кнопка фильтров -->

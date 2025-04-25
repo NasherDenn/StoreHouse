@@ -14,20 +14,6 @@ class MethodNdt(models.Model):
         return self.name
 
 
-# class Status(models.Model):
-#     name = models.CharField(
-#         max_length=30,
-#         help_text="Введите статус оборудования",
-#         verbose_name="Статус оборудования",
-#         null=True,
-#         blank=True,
-#         default=None
-#     )
-#
-#     def __str__(self):
-#         return self.name
-
-
 class Location(models.Model):
     name = models.CharField(
         max_length=10,
@@ -61,14 +47,6 @@ class Unit(models.Model):
         null=True,
         blank=True
     )
-
-    # status = models.ForeignKey(
-    #     'Status',
-    #     on_delete=models.CASCADE,
-    #     help_text='Выберите статус оборудования',
-    #     verbose_name='Статус',
-    #     related_name='status'
-    # )
 
     location = models.ForeignKey(
         'Location',
@@ -137,7 +115,6 @@ class WriteHistory(models.Model):
     )
 
     time_write = models.CharField(
-    # time_write = models.TimeField(
         max_length=12,
         null=True,
         blank=True,
